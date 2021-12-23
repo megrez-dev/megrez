@@ -16,23 +16,9 @@
 <html>
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="x-dns-prefetch-control" content="on">
-    <link rel="dns-prefetch" href="//cdn.bootcss.com" />
-    <link rel="dns-prefetch" href="//secure.gravatar.com" />
-    <link rel="dns-prefetch" href="//gravatar.loli.net" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
-    <meta name="renderer" content="webkit">
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta http-equiv="Cache-Control" content="no-transform" />
-    <meta http-equiv="Cache-Control" content="no-siteapp" />
-    <!-- <link type="text/css" rel="stylesheet" href="https://rawchen.com//css/top-style.css"> -->
-    <link type="text/css" rel="stylesheet" href="https://rawchen.com/usr/themes/rawchen/css/top-style.css">
-    <meta name="keywords" content="rawchen" />
-    <meta name="description" content="大道至简 大简至极" />
-    <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <link href="https://rawchen.com/usr/themes/rawchen/style.min.css" rel="stylesheet">
+    {% include "head.html" %}
+    <meta name="keywords" content="{{ global.BlogTitle }}" />
+    <meta name="description" content="{{ global.BlogDescription }}" />
     <title>{{ global.BlogTitle }}</title>
 </head>
 
