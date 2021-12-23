@@ -1,0 +1,58 @@
+<ol class="comment-list">
+    {% for comment in comments %}
+
+    <li id="li-comment-{{ comment.ID }}" class="comment-body comment-parent comment-odd">
+        <div id="comment-{{ comment.ID }}">
+            <div class="comment-view" onclick="">
+                <div class="comment-header">
+                    <img class="avatar" src="{{ comment.Author.Avatar }}" width="80" height="80" />
+                    <span class="comment-author"><a href="{{ comment.Author.Site }}" target="_blank"
+                            rel="external nofollow">{{ comment.Author.Name }}</a> </span>
+                </div>
+                <div class="comment-content">
+                    <p>{{ comment.Content }}</p>
+                </div>
+                <div class="comment-meta">
+                    <time class="comment-time">{{ comment.CreatedAt|date:"2006-01-02 15:04:05" }}</time>&nbsp;&nbsp;
+                    <span class="agent"><i class="fa fa-windows"></i> Windows 10</span>&nbsp;&nbsp;
+                    <span class="agent"><i class="fa fa-chrome"></i> Chrome 95</span>
+                    <span class="comment-reply" data-no-instant>
+                        <a href="/{{ page.Slug }}?replyTo={{ comment.ID }}#respond-page-{{ page.ID }}" rel="nofollow" onclick="return TypechoComment.reply('comment-{{ comment.ID }}', {{ comment.ID }}, {{ comment.ID }});">回复</a></span>
+                </div>
+            </div>
+        </div>
+        {% if comment.HasChild %}
+        <div class="comment-children">
+            <ol class="comment-list">
+                {% for subComment in comment.SubComments %}
+                <li id="li-comment-{{ subComment.ID }}" class="comment-body comment-child comment-odd">
+                    <div id="comment-{{ subComment.ID }}">
+                        <div class="comment-view" onclick="">
+                            <div class="comment-header">
+                                <img class="avatar" src="{{ subComment.Author.Avatar }}" width="80" height="80" />
+                                <span class="comment-author"><a href="{{ subComment.Author.Site }}" target="_blank"
+                                        rel="external nofollow">{{ subComment.Author.Name }}</a> </span>
+                            </div>
+                            <div class="comment-content">
+                                <span class="comment-author-at"><a href="#comment-{{ subComment.ParentID }}">@{{ subComment.ReplyAuthor.Name }}</a></span>
+                                <p>{{ subComment.Content }}</p>
+                            </div>
+                            <div class="comment-meta">
+                                <time class="comment-time">{{ subComment.CreatedAt|date:"2006-01-02 15:04:05" }}</time>&nbsp;&nbsp;
+                                <span class="agent"><i class="fa fa-windows"></i> Windows 10</span>&nbsp;&nbsp;
+                                <span class="agent"><i class="fa fa-chrome"></i> Chrome 95</span>
+                                <span class="comment-reply" data-no-instant><a
+                                        href="/{{ page.Slug }}?replyTo={{ subComment.ID }}#respond-page-{{ page.ID }}"
+                                        rel="nofollow"
+                                        onclick="return TypechoComment.reply('comment-{{ subComment.ID }}', {{ subComment.ID }}, {{ comment.ID }});">回复</a></span>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                {% endfor %}
+            </ol>
+        </div>
+        {% endif %}
+    </li>
+    {% endfor %}
+</ol>

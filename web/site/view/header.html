@@ -1,0 +1,49 @@
+<header id="header" class="header bg-white">
+    <div class="navbar-container">
+        <a href="/" class="navbar-logo">
+            <img src="https://rawchen.com/logo.png" alt="{{ global.BlogTitle }}" />
+        </a>
+        <div class="navbar-menu">
+
+            <div>
+                <a>分类</a>
+                <ul>
+                    <li><a href="https://rawchen.com/category/life/">点滴记录</a></li>
+                    <li><a href="https://rawchen.com/category/enjoy/">资源分享</a></li>
+                    <li><a href="https://rawchen.com/category/code/">一些代码</a></li>
+                    <li><a href="https://rawchen.com/category/se/">软件工程</a></li>
+                </ul>
+            </div>
+
+
+            {% for menu in global.Menus %}
+            <a href="/{{ menu.Slug }}">{{ menu.Name }}</a>
+            {% endfor %}
+
+        </div>
+        <a href="/search" class="navbar-search">
+            <span class="icon-search"></span>
+        </a>
+        <div class="navbar-mobile-menu" id="navbar-mobile-swith" onclick="">
+            <span class="icon-menu cross"><span class="middle"></span></span>
+            <ul>
+                <!--分类-->
+                <li class="navbar-menu-categorys">
+                    <a>分类</a>
+                    <ul>
+                        <li><a href="https://rawchen.com/category/life/">点滴记录</a></li>
+                        <li><a href="https://rawchen.com/category/enjoy/">资源分享</a></li>
+                        <li><a href="https://rawchen.com/category/code/">一些代码</a></li>
+                        <li><a href="https://rawchen.com/category/se/">软件工程</a></li>
+                    </ul>
+                </li>
+
+
+                
+                {% for menu in global.Menus %}
+                <li><a href="/{{ menu.Slug }}">{{ menu.Name }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</header>

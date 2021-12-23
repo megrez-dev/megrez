@@ -1,0 +1,79 @@
+{% block body %}
+{% endblock %}
+<a href="#0" class="cd-top">Top</a>
+<script type="text/javascript">
+    (function () {
+        var pres = document.querySelectorAll('pre');
+        var lineNumberClassName = 'line-numbers';
+        pres.forEach(function (item, index) {
+            item.className = item.className == '' ? lineNumberClassName : item.className + ' ' + lineNumberClassName;
+        });
+    })();
+</script>
+<script type="text/javascript" src="https://rawchen.com/usr/plugins/CodeHighlighter/static/clipboard.min.js"></script>
+<script type="text/javascript" src="https://rawchen.com/usr/plugins/CodeHighlighter/static/prism.js"></script>
+<script src="//cdn.bootcss.com/headroom/0.9.1/headroom.min.js"></script>
+<script>
+    var header = new Headroom(document.getElementById("header"), {
+        tolerance: 0,
+        offset: 70,
+        classes: {
+            initial: "animated",
+            pinned: "slideDown",
+            unpinned: "slideUp"
+        }
+    });
+    header.init();
+
+    //修正onclick
+    //***********************************
+    var navbarSwith = document.getElementById("navbar-mobile-swith");
+    navbarSwith.onclick = function () {
+        navbarSwith.classList.toggle("navbar-mobile-menu-on");
+    };
+//***********************************
+
+</script>
+<!--核心js-->
+<script type="text/javascript" src="https://cdn.bootcdn.net/ajax/libs/layui/2.5.6/layui.all.min.js"></script>
+<script type="text/javascript" src="https://cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://rawchen.com/usr/themes/rawchen/js/commentTyping.js"></script>
+<script type="text/javascript" src="https://rawchen.com/usr/themes/rawchen/js/top-script.js"></script>
+<script type="text/javascript">
+    var yephy = function (r) { function t() { return b[Math.floor(Math.random() * b.length)] } function e() { return String.fromCharCode(94 * Math.random() + 33) } function n(r) { for (var n = document.createDocumentFragment(), i = 0; r > i; i++) { var l = document.createElement("span"); l.textContent = e(), l.style.color = t(), n.appendChild(l) } return n } function i() { var t = o[c.skillI]; c.step ? c.step-- : (c.step = g, c.prefixP < l.length ? (c.prefixP >= 0 && (c.text += l[c.prefixP]), c.prefixP++) : "forward" === c.direction ? c.skillP < t.length ? (c.text += t[c.skillP], c.skillP++) : c.delay ? c.delay-- : (c.direction = "backward", c.delay = a) : c.skillP > 0 ? (c.text = c.text.slice(0, -1), c.skillP--) : (c.skillI = (c.skillI + 1) % o.length, c.direction = "forward")), r.textContent = c.text, r.appendChild(n(c.prefixP < l.length ? Math.min(s, s + c.prefixP) : Math.min(s, t.length - c.skillP))), setTimeout(i, d) } var l = "喜欢什么就去做吧！", o = ["后端开发", "极简化", "写博客", "去看海", "户外运动", "摄影"].map(function (r) { return r + "." }), a = 2, g = 1, s = 5, d = 75, b = ["rgb(110,64,170)", "rgb(150,61,179)", "rgb(191,60,175)", "rgb(228,65,157)", "rgb(254,75,131)", "rgb(255,94,99)", "rgb(255,120,71)", "rgb(251,150,51)", "rgb(226,183,47)", "rgb(198,214,60)", "rgb(175,240,91)", "rgb(127,246,88)", "rgb(82,246,103)", "rgb(48,239,130)", "rgb(29,223,163)", "rgb(26,199,194)", "rgb(35,171,216)", "rgb(54,140,225)", "rgb(76,110,219)", "rgb(96,84,200)"], c = { text: "", prefixP: -s, skillI: 0, skillP: 0, direction: "forward", delay: a, step: g }; i() }; yephy(document.getElementById('yephy')); var element = new Image(); Object.defineProperty(element, 'id', { get: function () { window.location.href = "https://rawchen.com" } }); console.log(element); document.body.oncopy = function () { layer.msg('复制成功，若要转载请务必保留本文链接！'); }; document.onkeydown = function () { if (window.event && window.event.keyCode == 123) { layer.msg("F12被禁用"); event.keyCode = 0; event.returnValue = false; } }
+</script>
+<script type="text/javascript">
+    $(function () {
+        $(".copy-to-clipboard-button").each(function (i, btn) {
+            btn.addEventListener("click", function () {
+                layer.msg('代码复制成功');
+            });
+        });
+    });
+
+    $("#comments a").each(function () {
+        var hrefs = $(this).prop("href");
+        if (hrefs != "#" && hrefs != "javascript:;" && hrefs != "javascript:void(0);") {
+            $(this).prop("target", "_blank");
+        }
+    });
+
+    $(".comment-author-at a").prop("target", "_self");
+    $(".page-navigator a").prop("target", "_self");
+
+    $("#post-content img").wrap(function () {
+        return '<a data-fancybox="gallery" href=' + this.src + '></a>';
+    });
+
+    if (this.$.ajaxSettings.url.indexOf("/links.html") >= 0 ||
+        this.$.ajaxSettings.url.indexOf("/about.html") >= 0 ||
+        this.$.ajaxSettings.url.indexOf("/movies.html") >= 0 ||
+        this.$.ajaxSettings.url.indexOf("/download.html") >= 0 ||
+        this.$.ajaxSettings.url.indexOf("/music.html") >= 0) {
+        $("#post-content img").unwrap();
+    }
+
+    if (!$("#directory ul").has("li").length > 0) {
+        $("#directory").css("display", "none");
+    }
+</script>

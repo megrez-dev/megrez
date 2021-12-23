@@ -1,0 +1,68 @@
+<footer id="footer" class="footer ">
+    <div class="footer-social">
+        <!--返回顶部-->
+        <div class="footer-container clearfix">
+            <div class="social-list">
+                <a class="social weibo" target="blank" href="https://weibo.com/rawchen">WEIBO</a>
+                <a class="social zhihu" target="blank" href="https://www.zhihu.com/people/rawchen">ZHIHU</a>
+                <a class="social rss" target="blank" href="https://rawchen.com/feed/">RSS</a>
+                <a class="social github" target="blank" href="https://github.com/rawchen">GITHUB</a>
+                <a class="social twitter" target="blank" href="https://twitter.com/yoyling_com">TWITTER</a>
+            </div>
+        </div>
+    </div>
+    <div class="footer-meta">
+        <div class="footer-container">
+            <div class="meta-item meta-copyright">
+                <div class="meta-copyright-info">
+                    <a href="https://rawchen.com/" class="info-logo">
+                        <img src="https://rawchen.com/logo-footer.png" alt="{{ global.BlogTitle }}" />
+                    </a>
+                    <div class="info-text">
+                        <p id="yephy"></p>
+
+
+                        <p>&copy; 2018-2021 {{ global.BlogTitle }}</p>
+
+
+                        <p><a href="http://beian.miit.gov.cn/" id="beian" target="_blank" rel="nofollow">{{ global.IPCRecord }}</a></p>
+                        <p>已在世界的角落里存活了<b>
+                                <script language="JavaScript"
+                                    type="text/javascript"> var urodz = new Date("04/10/2018"); var now = new Date(); var ile = now.getTime() - urodz.getTime(); var dni = (Math.floor(ile / (1000 * 60 * 60 * 24)) / 365).toFixed(2); document.write(+ dni)</script>
+                            </b> 年
+                        </p>
+                        <p>博主共写了<b> 123</b> 篇文章</p>
+
+                        <p>网站已经被<b> 657998</b> 人踩踏</p>
+                        <p style="padding-top: 5px;">
+                            <a href="https://github.com/rawchen" title="GitHub" target="blank"><i
+                                    class="fa fa-github-alt footer-icon" style="padding-left: 0px;"
+                                    aria-hidden="true"></i></a>
+                            <a href="http://wpa.qq.com/msgrd?v=3&uin=2221999792" title="QQ" target="blank"><i
+                                    class="fa fa-comments footer-icon" aria-hidden="true"></i></a>
+                            <a href="https://t.me/rawchen" title="Twitter" target="blank"><i
+                                    class="fa fa-telegram footer-icon" aria-hidden="true"></i></a>
+                            <a href="https://rawchen.com/feed" title="Feed" target="blank"><i
+                                    class="fa fa-feed footer-icon" aria-hidden="true" style="font-size: 26px;"></i></a>
+                            <a href="https://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=BnRncWVuY2hGd3coZWlr"
+                                title="Email" target="blank"><i class="fa fa-envelope footer-icon" aria-hidden="true"
+                                    style="font-size: 27px;"></i></a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="meta-item meta-posts">
+                <h3 class="meta-title">最新文章</h3>
+                {% for latestArticle in global.LatestArticles %}
+                <li><a href="/article/{{ latestArticle.Slug }}">{{ latestArticle.Title }}</a></li>
+                {% endfor %}
+            </div>
+            <div class="meta-item meta-comments">
+                <h3 class="meta-title">最近评论</h3>
+                {% for latestComment in global.LatestComments %}
+                <li><a href="{{ latestComment.URL }}">{{ latestComment.Content }}</a></li>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</footer>

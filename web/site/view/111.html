@@ -1,0 +1,510 @@
+<!--
+
+
+   ██████ ▒██    ██   ▄████▄  ░██ ▄█▀░       ██████╗ ██╗   ██╗ ██████╗
+  ░██    ▒ ██  ▒ ██▒░██▀  ▀██  ███▀	         ██╔══██╗██║   ██║██╔════╝
+  ▒██████ ░██   ▒██░░██░      ░██▄░          ██████╔╝██║   ██║██║  ███╗
+  ░██▒   ░░██  ░ ██░▒██▄  ▄██░▒██▀█▄░        ██╔══██╗██║   ██║██║   ██║
+  ░██░    ▒▒██████ ▒ ░▀████▀   ██ ░▀█▄       ██████╔╝╚██████╔╝╚██████╔╝
+  ▒ ░   ░▒▒▒ ▒ ▒ ░ ░▒ ▒  ░▒ ▒▒ ▒▒            ╚═════╝  ╚═════╝  ╚═════╝
+   rawchen.com░    ░  ░  ▒   ░ ░▒ ▒░
+   ░ ░    ░░░ ░ ░ ░        ░ ░░ ░
+            ░     ░ ░      ░  ░
+ -->
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="x-dns-prefetch-control" content="on">
+    <link rel="dns-prefetch" href="//cdn.bootcss.com" />
+    <link rel="dns-prefetch" href="//secure.gravatar.com" />
+    <link rel="dns-prefetch" href="//gravatar.loli.net" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <link type="text/css" rel="stylesheet" href="http://139.9.201.209//css/top-style.css">
+    <meta name="keywords" content="" />
+    <meta name="description"
+        content="关于我生于巴蜀，长于鹭岛，求学于长安。技术爱好者，从Java转向Golang中，目前全力拥抱云原生，拥抱 k8s 中  。域名Alkaid译为摇光星，又称破军，为北斗七星中的最后一颗。希望寓意自..." />
+    <script type="text/javascript">
+        (function () {
+            var event = document.addEventListener ? {
+                add: 'addEventListener',
+                triggers: ['scroll', 'mousemove', 'keyup', 'touchstart'],
+                load: 'DOMContentLoaded'
+            } : {
+                add: 'attachEvent',
+                triggers: ['onfocus', 'onmousemove', 'onkeyup', 'ontouchstart'],
+                load: 'onload'
+            }, added = false;
+
+            document[event.add](event.load, function () {
+                var r = document.getElementById('respond-page-2'),
+                    input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = '_';
+                input.value = (function () {
+                    var _QSV6 = //'S'
+                        '70' +//'jOk'
+                        'e0c' + 'Zp'//'Zp'
+                        +//'0wy'
+                        '3b' +//'ssv'
+                        'af' +//'lxf'
+                        '64e' + '5'//'2'
+                        +//'h'
+                        'd0' +//'fXy'
+                        '69' + '64'//'l'
+                        + '2sf'//'2sf'
+                        + 'a2b'//'A'
+                        + 'Kp'//'Kp'
+                        +//'l'
+                        '69b' +//'3'
+                        '195' +//'xW4'
+                        '50' +//'yeX'
+                        '8a', _fHjtLhJ = [[5, 7], [19, 22], [22, 24]];
+
+                    for (var i = 0; i < _fHjtLhJ.length; i++) {
+                        _QSV6 = _QSV6.substring(0, _fHjtLhJ[i][0]) + _QSV6.substring(_fHjtLhJ[i][1]);
+                    }
+
+                    return _QSV6;
+                })();
+
+                if (null != r) {
+                    var forms = r.getElementsByTagName('form');
+                    if (forms.length > 0) {
+                        function append() {
+                            if (!added) {
+                                forms[0].appendChild(input);
+                                added = true;
+                            }
+                        }
+
+                        for (var i = 0; i < event.triggers.length; i++) {
+                            var trigger = event.triggers[i];
+                            document[event.add](trigger, append);
+                            window[event.add](trigger, append);
+                        }
+                    }
+                }
+            });
+        })();
+    </script>
+    <link rel="stylesheet" type="text/css"
+        href="http://139.9.201.209/usr/plugins/CodeHighlighter/static/styles/okaikia.css" />
+    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css"
+        href="http://139.9.201.209/usr/plugins/FancyBox/css/jquery.fancybox.min.css" />
+    <script src="http://139.9.201.209/usr/plugins/FancyBox/js/jquery.fancybox.min.js"></script>
+    <style>
+        #pio {
+            left: 0;
+            bottom: 0;
+            z-index: 520;
+            position: fixed;
+            pointer-events: none;
+        }
+
+        @media screen and (max-width: 768px) {
+            #pio {
+                width: 8em;
+            }
+        }
+    </style>
+    <link href="//cdn.bootcss.com/highlight.js/9.10.0/styles/xcode.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="http://139.9.201.209/usr/themes/rawchen/style.min.css" rel="stylesheet">
+    <title>
+        关于 - AlkaidChen </title>
+</head>
+
+<body class="" gtools_scp_screen_capture_injected="true">
+    <header id="header" class="header bg-white">
+        <div class="navbar-container">
+            <a href="http://139.9.201.209/" class="navbar-logo">
+                AlkaidChen </a>
+            <div class="navbar-menu">
+
+                <div>
+                    <a>分类</a>
+                    <ul>
+                        <li><a href="http://139.9.201.209/index.php/category/default/">默认分类</a></li>
+                        <li><a href="http://139.9.201.209/index.php/category/leetcode/">LeetCode</a></li>
+                    </ul>
+                </div>
+
+
+                <a href="http://139.9.201.209/index.php/cross.html">日志</a>
+
+                <a href="http://139.9.201.209/index.php/links.html">友链</a>
+
+                <a class="current" href="http://139.9.201.209/index.php/about.html">关于</a>
+
+            </div>
+            <a href="http://alkaidchen.com/index.php/search.html" class="navbar-search">
+                <span class="icon-search"></span>
+            </a>
+            <div class="navbar-mobile-menu" id="navbar-mobile-swith" onclick="">
+                <span class="icon-menu cross"><span class="middle"></span></span>
+                <ul>
+                    <!--分类-->
+                    <li class="navbar-menu-categorys">
+                        <a>分类</a>
+                        <ul>
+                            <li><a href="http://139.9.201.209/index.php/category/default/">默认分类</a></li>
+                            <li><a href="http://139.9.201.209/index.php/category/leetcode/">LeetCode</a></li>
+                        </ul>
+                    </li>
+
+
+                    <li><a href="http://139.9.201.209/index.php/cross.html">日志</a></li>
+
+                    <li><a href="http://139.9.201.209/index.php/links.html">友链</a></li>
+
+                    <li><a class="current" href="http://139.9.201.209/index.php/about.html">关于</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+    <article class="main-content page-page">
+        <div class="post-header">
+            <h1 class="post-title" itemprop="name headline">
+                关于 </h1>
+            <div class="post-data">
+
+                <time datetime="2021-06-26T15:32:00+08:00" itemprop="datePublished"><i class="fa fa-clock-o"
+                        aria-hidden="true"> </i> 2021-06-26</time>&nbsp;&nbsp; <i class="fa fa-comments-o"
+                    aria-hidden="true"></i> <a href="#comments"> 0 评论</a>&nbsp;&nbsp; <i class="fa fa-eye"
+                    aria-hidden="true"></i> 431 浏览
+            </div>
+        </div>
+        <div id="post-content" class="post-content">
+            <h1>关于我</h1>
+            <p>生于巴蜀，长于鹭岛，求学于长安。技术爱好者，从Java转向Golang中，目前全力拥抱云原生，拥抱 k8s 中 <img class="smilies"
+                    src="http://139.9.201.209/usr/plugins/Smilies/bilibili/icon_mrgreen.png" alt="icon_mrgreen.png"
+                    style="max-width:32px;display:inline-block; box-shadow: none; margin-bottom: -8px;" /> 。</p>
+            <h1>域名</h1>
+            <p>Alkaid译为摇光星，又称破军，为北斗七星中的最后一颗。希望寓意自己能够一直满眼星辰。</p>
+            <h1>头像</h1>
+            <p>头像和图标中的柴犬来自我非常喜欢的画家<a href="https://weibo.com/peng126" target="_blank">西风八爪</a>。</p>
+            <h1>主题</h1>
+            <p>主题来自rawchen，根据pinghsu魔改而来，因为个人元素过多，因此没有开源的打算，感兴趣的话咨询<a href="https://rawchen.com/"
+                    target="_blank">rawchen</a>。</p>
+            <h1>项目版权</h1>
+            <p>如侵犯他人著作权、名誉权、隐私权及肖像权等请联系本站删除。</p>
+            <h1>github</h1><img id="githubChart" src="https://ghchart.rshah.org/af813d/alkaidchen"
+                onclick="window.open('https://github.com/alkaidchan')"><h1>联系我</h1><div class=" about-contact">
+            <a href="http://wpa.qq.com/msgrd?v=3&uin=362774405&site=qq&menu=yes" target="_blank">
+                <div class="qq">
+                    <span class="content">362774405</span>
+                    <i class="fa fa-qq"></i>
+                </div>
+            </a>
+            <a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=f0xJTUhIS0tPSj8ODlEcEBI" target="_blank">
+                <div class="email">
+                    <span class="content">362774405@qq.com</span>
+                    <i class="fa fa-envelope-o"></i>
+                </div>
+            </a>
+            <a href="https://t.me/alkaidchen" target="_blank">
+                <div class="telegram">
+                    <span class="content">AlkaidChen</span>
+                    <i class="fa fa-telegram"></i>
+                </div>
+            </a>
+        </div>
+        </div>
+    </article>
+
+
+
+    <div class="comment-container">
+        <div id="comments" class="clearfix">
+            <div id="respond-page-2" class="zdypl"><span class="response" data-no-instant>发表评论 <a
+                        id="cancel-comment-reply-link" href="http://139.9.201.209/index.php/about.html#respond-page-2"
+                        rel="nofollow" style="display:none" onclick="return TypechoComment.cancelReply();">
+                        取消评论</a></span>
+                <form method="post" action="http://139.9.201.209/index.php/about.html/comment" id="comment-form"
+                    class="comment-form" role="form" onsubmit="getElementById('misubmit').disabled=true;return true;">
+                    <div> <input type="text" name="author" maxlength="12" id="author"
+                            class="form-control input-control clearfix" placeholder="昵称 (必填哦)" value="" required>
+                        <input type="email" name="mail" id="mail" class="form-control input-control clearfix"
+                            placeholder="邮箱 (必填哦)" value="" required>
+                        <input type="url" name="url" id="url" class="form-control input-control clearfix"
+                            placeholder="博客地址 (https://)" value="">
+                    </div>
+
+                    <textarea name="text" id="textarea" class="form-control" placeholder="来都来了，看都看了，想说点什么吗 0_o"
+                        required></textarea>
+                    <button type="submit" class="submit" id="misubmit">提交</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+    <script
+        type="text/javascript">function showhidediv(id) { var sbtitle = document.getElementById(id); if (sbtitle) { if (sbtitle.style.display == "block") { sbtitle.style.display = "none" } else { sbtitle.style.display = "block" } } };</script>
+    <footer id="footer" class="footer bg-white">
+        <div class="footer-social">
+            <!--返回顶部-->
+            <div class="footer-container clearfix">
+                <div class="social-list">
+                    <a class="social rss" target="blank" href="http://139.9.201.209/feed/">RSS</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-meta">
+            <div class="footer-container">
+                <div class="meta-item meta-copyright">
+                    <div class="meta-copyright-info">
+                        <a href="http://139.9.201.209/" class="info-logo">
+                            AlkaidChen </a>
+                        <div class="info-text">
+                            <p id="yephy"></p>
+
+
+                            <p>&copy; 2018-2021 AlkaidChen</p>
+
+
+                            <p><a href="http://beian.miit.gov.cn/" id="beian" target="_blank"
+                                    rel="nofollow">闽ICP备18008354号-5</a></p>
+                            <p>已在世界的角落里存活了<b>
+                                    <script language="JavaScript"
+                                        type="text/javascript"> var urodz = new Date("06/26/2021"); var now = new Date(); var ile = now.getTime() - urodz.getTime(); var dni = Math.floor(ile / (1000 * 60 * 60 * 24)); document.write(+ dni) </script>
+                                </b> 天
+                            </p>
+                            <p>博主共写了<b> 3</b> 篇文章</p>
+
+                            <p>网站已经被<b> 6912</b> 人踩踏</p>
+                            <p style="padding-top: 5px;">
+                                <a href="https://github.com/alkaidchan" title="GitHub" target="blank"><i
+                                        class="fa fa-github-alt footer-icon" style="padding-left: 0px;"
+                                        aria-hidden="true"></i></a>
+                                <a href="http://wpa.qq.com/msgrd?v=3&uin=362774405" title="QQ" target="blank"><i
+                                        class="fa fa-qq footer-icon" aria-hidden="true"></i></a>
+                                <a href="https://t.me/alkaidchen" title="Telegram" target="blank"><i
+                                        class="fa fa-telegram footer-icon" aria-hidden="true"></i></a>
+                                <a href="https://alkaidchen.com/feed" title="Feed" target="blank"><i
+                                        class="fa fa-feed footer-icon" aria-hidden="true"
+                                        style="font-size: 26px;"></i></a>
+                                <a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=f0xJTUhIS0tPSj8ODlEcEBI"
+                                    title="Email" target="blank"><i class="fa fa-envelope footer-icon"
+                                        aria-hidden="true" style="font-size: 27px;"></i></a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="meta-item meta-posts">
+                    <h3 class="meta-title">最新文章</h3>
+                    <li><a href="http://139.9.201.209/index.php/leetcode/shu-zu-zhong-zhong-fu-de-shu-zi-lcof.html">剑指
+                            Offer 03. 数组中重复的数字</a></li>
+                    <li><a href="http://139.9.201.209/index.php/leetcode/fei-bo-na-qi-shu-lie-lcof.html">剑指 Offer 10- I.
+                            斐波那契数列</a></li>
+                    <li><a href="http://139.9.201.209/index.php/leetcode/yong-liang-ge-zhan-shi-xian-dui-lie-lcof.html">剑指
+                            Offer 09. 用两个栈实现队列</a></li>
+                </div>
+                <div class="meta-item meta-comments">
+                    <h3 class="meta-title">最近评论</h3>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <a href="#0" class="cd-top">Top</a>
+    <script>
+        (function () {
+            window.TypechoComment = {
+                dom : function (id) {
+                    return document.getElementById(id);
+                },
+                create : function (tag, attr) {
+                    var el = document.createElement(tag);
+                    for (var key in attr) {
+                        el.setAttribute(key, attr[key]);
+                    }
+                    return el;
+                },
+                reply : function (cid, coid) {
+                    var comment = this.dom(cid), parent = comment.parentNode,
+                        response = this.dom('respond-page-2'),
+                        input = this.dom('comment-parent'),
+                        form = 'form' == response.tagName ? response : response.getElementsByTagName('form')[0],
+                        textarea = response.getElementsByTagName('textarea')[0];
+                    if (null == input) {
+                        input = this.create('input', {
+                            'type' : 'hidden',
+                            'name' : 'parent',
+                            'id'   : 'comment-parent'
+                        });
+        
+                        form.appendChild(input);
+                    }
+                    input.setAttribute('value', coid);
+                    if (null == this.dom('comment-form-place-holder')) {
+                        var holder = this.create('div', {
+                            'id' : 'comment-form-place-holder'
+                        });
+        
+                        response.parentNode.insertBefore(holder, response);
+                    }
+                    comment.appendChild(response);
+                    this.dom('cancel-comment-reply-link').style.display = '';
+                    if (null != textarea && 'text' == textarea.name) {
+                        textarea.focus();
+                    }
+                    return false;
+                },
+                cancelReply : function () {
+                    var response = this.dom('respond-page-2'),
+                    holder = this.dom('comment-form-place-holder'),
+                    input = this.dom('comment-parent');
+                    if (null != input) {
+                        input.parentNode.removeChild(input);
+                    }
+                    if (null == holder) {
+                        return true;
+                    }
+                    this.dom('cancel-comment-reply-link').style.display = 'none';
+                    holder.parentNode.insertBefore(response, holder);
+                    return false;
+                }
+            };
+        })();
+    </script>
+    <script type="text/javascript">
+        (function () {
+            var pres = document.querySelectorAll('pre');
+            var lineNumberClassName = 'line-numbers';
+            pres.forEach(function (item, index) {
+                item.className = item.className == '' ? lineNumberClassName : item.className + ' ' + lineNumberClassName;
+            });
+        })();
+    </script>
+    <script type="text/javascript"
+        src="http://139.9.201.209/usr/plugins/CodeHighlighter/static/clipboard.min.js"></script>
+    <script type="text/javascript" src="http://139.9.201.209/usr/plugins/CodeHighlighter/static/prism.js"></script>
+    <script type="text/javascript">
+        Smilies = {
+            domId: function (id) {
+                return document.getElementById(id);
+            },
+            domTag: function (id) {
+                return document.getElementsByTagName(id)[0];
+            },
+            showBox: function () {
+                this.domId("smiliesbox").style.display = "block";
+                document.onclick = function () {
+                    Smilies.closeBox();
+                }
+            },
+            closeBox: function () {
+                this.domId("smiliesbox").style.display = "none";
+            },
+            grin: function (tag) {
+                tag = ' ' + tag + ' '; myField = this.domTag("textarea");
+                document.selection ? (myField.focus(), sel = document.selection.createRange(), sel.text = tag, myField.focus()) : this.insertTag(tag);
+            },
+            insertTag: function (tag) {
+                myField = Smilies.domTag("textarea");
+                myField.selectionStart || myField.selectionStart == "0" ? (
+                    startPos = myField.selectionStart,
+                    endPos = myField.selectionEnd,
+                    cursorPos = startPos,
+                    myField.value = myField.value.substring(0, startPos)
+                    + tag
+                    + myField.value.substring(endPos, myField.value.length),
+                    cursorPos += tag.length,
+                    myField.focus(),
+                    myField.selectionStart = cursorPos,
+                    myField.selectionEnd = cursorPos
+                ) : (
+                    myField.value += tag,
+                    myField.focus()
+                );
+                this.closeBox();
+            }
+        }
+    </script>
+    <script src="//cdn.bootcss.com/headroom/0.9.1/headroom.min.js"></script>
+    <script>
+        var header = new Headroom(document.getElementById("header"), {
+            tolerance: 0,
+            offset: 70,
+            classes: {
+                initial: "animated",
+                pinned: "slideDown",
+                unpinned: "slideUp"
+            }
+        });
+        header.init();
+
+        //修正onclick
+        //***********************************
+        var navbarSwith = document.getElementById("navbar-mobile-swith");
+        navbarSwith.onclick = function () {
+            navbarSwith.classList.toggle("navbar-mobile-menu-on");
+        };
+ //***********************************
+
+    </script>
+    <script type="text/x-mathjax-config">
+ MathJax.Hub.Config({
+     showProcessingMessages: false,
+     messageStyle: "none",
+     extensions: ["tex2jax.js"],
+     jax: ["input/TeX", "output/HTML-CSS"],
+     tex2jax: {
+         inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+         displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+         skipTags: ['script', 'noscript', 'style', 'textarea', 'pre','code','a'],
+         ignoreClass:"comment-content"
+     },
+     "HTML-CSS": {
+         availableFonts: ["STIX","TeX"],
+         showMathMenu: false
+     }
+ });
+ MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+ </script>
+    <script src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    <!--核心js-->
+    <script type="text/javascript" src="https://cdn.bootcdn.net/ajax/libs/layui/2.5.6/layui.all.min.js"></script>
+    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
+    <script type="text/javascript" src="http://139.9.201.209//js/commentTyping.js"></script>
+    <script type="text/javascript" src="http://139.9.201.209//js/top-script.js"></script>
+    <script type="text/javascript">
+        var yephy = function (r) { function t() { return b[Math.floor(Math.random() * b.length)] } function e() { return String.fromCharCode(94 * Math.random() + 33) } function n(r) { for (var n = document.createDocumentFragment(), i = 0; r > i; i++) { var l = document.createElement("span"); l.textContent = e(), l.style.color = t(), n.appendChild(l) } return n } function i() { var t = o[c.skillI]; c.step ? c.step-- : (c.step = g, c.prefixP < l.length ? (c.prefixP >= 0 && (c.text += l[c.prefixP]), c.prefixP++) : "forward" === c.direction ? c.skillP < t.length ? (c.text += t[c.skillP], c.skillP++) : c.delay ? c.delay-- : (c.direction = "backward", c.delay = a) : c.skillP > 0 ? (c.text = c.text.slice(0, -1), c.skillP--) : (c.skillI = (c.skillI + 1) % o.length, c.direction = "forward")), r.textContent = c.text, r.appendChild(n(c.prefixP < l.length ? Math.min(s, s + c.prefixP) : Math.min(s, t.length - c.skillP))), setTimeout(i, d) } var l = "喜欢什么就去做吧！", o = ["后端开发", "极简化", "写博客", "去看海", "户外运动", "摄影"].map(function (r) { return r + "." }), a = 2, g = 1, s = 5, d = 75, b = ["rgb(110,64,170)", "rgb(150,61,179)", "rgb(191,60,175)", "rgb(228,65,157)", "rgb(254,75,131)", "rgb(255,94,99)", "rgb(255,120,71)", "rgb(251,150,51)", "rgb(226,183,47)", "rgb(198,214,60)", "rgb(175,240,91)", "rgb(127,246,88)", "rgb(82,246,103)", "rgb(48,239,130)", "rgb(29,223,163)", "rgb(26,199,194)", "rgb(35,171,216)", "rgb(54,140,225)", "rgb(76,110,219)", "rgb(96,84,200)"], c = { text: "", prefixP: -s, skillI: 0, skillP: 0, direction: "forward", delay: a, step: g }; i() }; yephy(document.getElementById('yephy')); var element = new Image(); Object.defineProperty(element, 'id', { get: function () { window.location.href = "https://alkaidchen.com" } }); console.log(element); document.body.oncopy = function () { layer.msg('复制成功，若要转载请务必保留本文链接！'); }; document.onkeydown = function () { if (window.event && window.event.keyCode == 123) { layer.msg("F12被禁用"); event.keyCode = 0; event.returnValue = false; } }
+    </script>
+    <script type="text/javascript">
+        $("#comments a").each(function () {
+            var hrefs = $(this).prop("href");
+            if (hrefs != "#" && hrefs != "javascript:;" && hrefs != "javascript:void(0);") {
+                $(this).prop("target", "_blank");
+            }
+        });
+
+        $("#smiliesbutton a").prop("target", "_self");
+        $(".comment-author-at a").prop("target", "_self");
+        $(".page-navigator a").prop("target", "_self");
+
+        $("#post-content img").wrap(function () {
+            return '<a data-fancybox="gallery" href=' + this.src + '></a>';
+        });
+
+        if (this.$.ajaxSettings.url.indexOf("/links.html") >= 0 ||
+            this.$.ajaxSettings.url.indexOf("/about.html") >= 0 ||
+            this.$.ajaxSettings.url.indexOf("/movies.html") >= 0 ||
+            this.$.ajaxSettings.url.indexOf("/download.html") >= 0 ||
+            this.$.ajaxSettings.url.indexOf("/music.html") >= 0) {
+            $("#post-content img").unwrap();
+        }
+
+        if (!$("#directory ul").has("li").length > 0) {
+            $("#directory").css("display", "none");
+        }
+    </script>
