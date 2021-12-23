@@ -9,7 +9,7 @@ type BriefCategory struct {
 	Slug string
 }
 
-func GetBriefCategoryFromPO(po *po.Category) *BriefCategory {
+func GetBriefCategoryFromPO(po po.Category) *BriefCategory {
 	return &BriefCategory{
 		Name: po.Name,
 		Slug: po.Slug,

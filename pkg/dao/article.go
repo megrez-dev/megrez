@@ -11,10 +11,10 @@ func (dao *DAO) GetArticleByID(id uint) (po.Article, error) {
 	return article, result.Error
 }
 
-// GetArticlesByIDs return articles by ids
-func (dao *DAO) GetArticlesByIDs(ids []uint) ([]po.Article, error) {
+// ListArticlesByIDs return articles by ids
+func (dao *DAO) ListArticlesByIDs(ids []uint) ([]po.Article, error) {
 	articles := []po.Article{}
-	result := dao.db.Find(articles, ids)
+	result := dao.db.Find(&articles, ids)
 	return articles, result.Error
 }
 
@@ -32,10 +32,24 @@ func (dao *DAO) ListLatestArticles() ([]po.Article, error) {
 	return articles, result.Error
 }
 
+// ListArticlesByCategoryID return articles by categoryID
+func (dao *DAO) ListArticlesByCategoryID(cid uint, pageNum, pageSize int) ([]po.Article, error) {
+	articles := []po.Article{}
+	result := dao.db.Order("created_at desc").Where("category_id = ?", cid).Limit(pageSize).Offset((pageNum - 1) * pageSize).Find(&articles)
+	return articles, result.Error
+}
+
 // CountAllArticles return count of all articles
 func (dao *DAO) CountAllArticles() (int64, error) {
 	var count int64
 	result := dao.db.Model(&po.Article{}).Count(&count)
+	return count, result.Error
+}
+
+// CountArticlesByCategoryID
+func (dao *DAO) CountArticlesByCategoryID(cid uint) (int64, error) {
+	var count int64
+	result := dao.db.Model(&po.Article{}).Where("category_id = ?", cid).Count(&count)
 	return count, result.Error
 }
 

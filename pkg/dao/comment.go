@@ -59,6 +59,13 @@ func (dao *DAO) CountCommentsByArticleID(aid uint) (int64, error) {
 	return count, result.Error
 }
 
+// CountCommentsByPageID return count of comments by pageID
+func (dao *DAO) CountCommentsByPageID(pid uint) (int64, error) {
+	var count int64
+	result := dao.db.Model(&po.Comment{}).Where("page_id = ?", pid).Count(&count)
+	return count, result.Error
+}
+
 // CountRootCommentsByArticleID count root comments by articleID
 func (dao *DAO) CountRootCommentsByArticleID(aid uint) (int64, error) {
 	var count int64
@@ -66,8 +73,15 @@ func (dao *DAO) CountRootCommentsByArticleID(aid uint) (int64, error) {
 	return count, result.Error
 }
 
+// CountRootCommentsByPageID count root comments by pageID
+func (dao *DAO) CountRootCommentsByPageID(pid uint) (int64, error) {
+	var count int64
+	result := dao.db.Model(&po.Comment{}).Where("page_id = ? AND root_id = ?", pid, 0).Count(&count)
+	return count, result.Error
+}
+
 // CreateComment handle create comment
 func (dao *DAO) CreateComment(comment *po.Comment) error {
-	result := dao.db.Create(&comment)
+	result := dao.db.Create(comment)
 	return result.Error
 }

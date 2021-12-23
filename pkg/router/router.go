@@ -19,5 +19,6 @@ func NewRouter(d *dao.DAO) *gin.Engine {
 	routeAbout(g, d)
 	routeJournal(g, d)
 	routeSearch(g, d)
+	routeFavicon(g, d)
 	return g
 }

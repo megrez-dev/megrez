@@ -13,6 +13,7 @@ import (
 func routeAbout(g *gin.Engine, dao *dao.DAO) {
 	DAO = dao
 	g.GET("/about", about)
+	g.GET("/about/comment-page/:pageNum", about)
 }
 
 func about(c *gin.Context) {
@@ -28,15 +29,7 @@ func about(c *gin.Context) {
 			c.Redirect(500, "/error")
 		}
 	}
-	if c.Param("pageSize") == "" {
-		pageSize = 20
-	} else {
-		pageSize, err = strconv.Atoi(c.Param("pageSize"))
-		if err != nil {
-			log.Println("incorrect param pageSize, err:", err)
-			c.Redirect(500, "/error")
-		}
-	}
+	pageSize = 8
 
 	commentPOs, err := DAO.ListRootCommentsByPageID(1, pageNum, pageSize)
 	if err != nil {
@@ -62,5 +55,10 @@ func about(c *gin.Context) {
 		ID:   1,
 		Slug: "about",
 	}
-	c.HTML(200, "about.html", pongo2.Context{"page": page, "comments": comments, "global": globalOption})
+	commentsNum, err := DAO.CountRootCommentsByPageID(page.ID)
+	if err != nil {
+		c.Redirect(500, "/error")
+	}
+	pagination := vo.CaculatePagination(pageNum, pageSize, int(commentsNum))
+	c.HTML(200, "about.html", pongo2.Context{"page": page, "pagination": pagination, "comments": comments, "global": globalOption})
 }

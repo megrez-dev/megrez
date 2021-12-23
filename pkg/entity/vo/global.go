@@ -2,7 +2,6 @@ package vo
 
 import (
 	"fmt"
-	"log"
 	"strconv"
 
 	"github.com/megrez/pkg/dao"
@@ -13,8 +12,15 @@ type Global struct {
 	BlogURL         string
 	BlogTitle       string
 	BlogDescription string
+	BlogCover       string
 	IPCRecord       string
+	BlogAge         float64
+	Github          string
+	QQ              string
+	Email           string
+	Telegram        string
 	Menus           []*Menu
+	Categories      []*BriefCategory
 	LatestArticles  []*LatestArticl
 	LatestComments  []*LatestComment
 }
@@ -33,15 +39,15 @@ func GetLatestArticleFromPO(article *po.Article) (*LatestArticl, error) {
 	latestArticle := &LatestArticl{
 		Title: article.Title,
 	}
-	dao, err := dao.GetDAO()
-	if err != nil {
-		return latestArticle, err
-	}
-	blogURL, err := dao.GetOptionByKey(OptionKeyBlogURL)
-	if err != nil {
-		return latestArticle, err
-	}
-	latestArticle.URL = blogURL + "/" + strconv.Itoa(int(article.ID))
+	// dao, err := dao.GetDAO()
+	// if err != nil {
+	// 	return latestArticle, err
+	// }
+	// blogURL, err := dao.GetOptionByKey(OptionKeyBlogURL)
+	// if err != nil {
+	// 	return latestArticle, err
+	// }
+	latestArticle.URL = "/article/" + strconv.Itoa(int(article.ID))
 	return latestArticle, nil
 }
 
@@ -62,31 +68,43 @@ func GetLatestCommentFromPO(comment *po.Comment) (*LatestComment, error) {
 		return nil, err
 	}
 	var rootComments []po.Comment
+	// comment for article
 	if comment.Type == 1 {
 		rootComments, err = dao.ListRootCommentsByArticleID(comment.ArticleID, 0, 0)
 		if err != nil {
 			return nil, err
 		}
+		var index int
+		for i, rootComment := range rootComments {
+			if rootComment.ID == comment.ID || rootComment.ID == comment.RootID {
+				index = i + 1
+				break
+			}
+		}
+		pagination := (index + indexPageSize - 1) / indexPageSize
+		url := fmt.Sprintf("/article/%d/comment-page/%d#comment-%d", comment.ArticleID, pagination, comment.ID)
+		latestComment.URL = url
 	} else if comment.Type == 2 {
-		rootComments, err = dao.ListRootCommentsByArticleID(comment.ArticleID, 0, 0)
+		// comment for page
+		rootComments, err = dao.ListRootCommentsByPageID(comment.PageID, 0, 0)
 		if err != nil {
 			return nil, err
 		}
-	}
-	var index int
-	for i, rootComment := range rootComments {
-		log.Println("rootComment.ID", rootComment.ID)
-		log.Println("po.RootID", comment.RootID)
-		log.Println("po.ID", comment.ID)
-		log.Println("=========================")
-		if rootComment.ID == comment.ID || rootComment.ID == comment.RootID {
-			index = i + 1
-			break
+		var index int
+		for i, rootComment := range rootComments {
+			if rootComment.ID == comment.ID || rootComment.ID == comment.RootID {
+				index = i + 1
+				break
+			}
 		}
+		pagination := (index + indexPageSize - 1) / indexPageSize
+		page, err := dao.GetPageByID(comment.PageID)
+		if err != nil {
+			return nil, err
+		}
+		url := fmt.Sprintf("/%s/comment-page/%d#comment-%d", page.Slug, pagination, comment.ID)
+		latestComment.URL = url
 	}
-	page := (index + indexPageSize - 1) / indexPageSize
-	url := fmt.Sprintf("/article/%d/comment-page/%d#comment-%d", comment.ArticleID, page, comment.ID)
-	latestComment.URL = url
 
 	return latestComment, nil
 }
@@ -109,6 +127,10 @@ func GetGlobalOption() (Global, error) {
 	if err == nil {
 		global.BlogDescription = blogDescription
 	}
+	blogCover, err := dao.GetOptionByKey(OptionKeyBlogCover)
+	if err == nil {
+		global.BlogCover = blogCover
+	}
 	ipcRecord, err := dao.GetOptionByKey(OptionKeyIPCRecord)
 	if err == nil {
 		global.IPCRecord = ipcRecord
@@ -124,6 +146,17 @@ func GetGlobalOption() (Global, error) {
 		menus = append(menus, GetMenuFromPO(mensPO))
 	}
 	global.Menus = menus
+
+	// list category
+	categoryPOs, err := dao.ListAllCategories()
+	if err != nil {
+		return global, err
+	}
+	categories := []*BriefCategory{}
+	for _, categoryPO := range categoryPOs {
+		categories = append(categories, GetBriefCategoryFromPO(categoryPO))
+	}
+	global.Categories = categories
 
 	// latest articles
 	articlePOs, err := dao.ListLatestArticles()

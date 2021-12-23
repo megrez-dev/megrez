@@ -37,7 +37,7 @@ func index(c *gin.Context) {
 		}
 	}
 	if c.Param("pageSize") == "" {
-		pageSize = 10
+		pageSize = 8
 	} else {
 		pageSize, err = strconv.Atoi(c.Param("pageSize"))
 		if err != nil {
@@ -106,7 +106,7 @@ func articleDetail(c *gin.Context) {
 	if err != nil {
 		log.Println("query article from db failed, err: ", err)
 	}
-	articleDetial, err := vo.GetArticleDetailFromPO(&articlePO, pageNum, pageSize)
+	articleDetial, err := vo.GetArticleDetailFromPO(articlePO, pageNum, pageSize)
 	if err != nil {
 		log.Println("get article detail failed, err:", err)
 		c.Redirect(500, "/error")

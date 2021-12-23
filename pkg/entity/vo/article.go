@@ -24,6 +24,15 @@ type IndexArticle struct {
 	UpdatedAt   time.Time
 }
 
+type CommonArticle struct {
+	ID        uint
+	Title     string
+	Slug      string
+	Status    int
+	Private   bool
+	CreatedAt time.Time
+}
+
 type ArticleDetial struct {
 	ID            uint
 	Title         string
@@ -78,13 +87,25 @@ func GetIndexArticleFromPO(po *po.Article) (IndexArticle, error) {
 		return vo, err
 	}
 	vo.CommentsNum = commentsNum
-	categoryVO := GetBriefCategoryFromPO(&category)
+	categoryVO := GetBriefCategoryFromPO(category)
 	vo.Category = categoryVO
 	return vo, nil
 }
 
-func GetArticleDetailFromPO(po *po.Article, pageNum, pageSize int) (ArticleDetial, error) {
-	vo := ArticleDetial{}
+func GetCommonArticleFromPO(po po.Article) *CommonArticle {
+	article := &CommonArticle{
+		ID:        po.ID,
+		Title:     po.Title,
+		Slug:      po.Slug,
+		Status:    po.Status,
+		Private:   po.Private,
+		CreatedAt: po.CreatedAt,
+	}
+	return article
+}
+
+func GetArticleDetailFromPO(po po.Article, pageNum, pageSize int) (*ArticleDetial, error) {
+	vo := &ArticleDetial{}
 	vo.ID = po.ID
 	vo.Title = po.Title
 	vo.FormatContent = po.FormatContent
@@ -106,7 +127,7 @@ func GetArticleDetailFromPO(po *po.Article, pageNum, pageSize int) (ArticleDetia
 	if err != nil {
 		return vo, err
 	}
-	category := GetBriefCategoryFromPO(&categoryPO)
+	category := GetBriefCategoryFromPO(categoryPO)
 	vo.Category = category
 	// TODO: Tags
 	// vo.Tags = ...

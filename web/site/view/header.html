@@ -8,10 +8,9 @@
             <div>
                 <a>分类</a>
                 <ul>
-                    <li><a href="https://rawchen.com/category/life/">点滴记录</a></li>
-                    <li><a href="https://rawchen.com/category/enjoy/">资源分享</a></li>
-                    <li><a href="https://rawchen.com/category/code/">一些代码</a></li>
-                    <li><a href="https://rawchen.com/category/se/">软件工程</a></li>
+                    {% for category in global.Categories %}
+                    <li><a href="/category/{{ category.Slug }}">{{ category.Name }}</a></li>
+                    {% endfor %}
                 </ul>
             </div>
 
@@ -31,10 +30,9 @@
                 <li class="navbar-menu-categorys">
                     <a>分类</a>
                     <ul>
-                        <li><a href="https://rawchen.com/category/life/">点滴记录</a></li>
-                        <li><a href="https://rawchen.com/category/enjoy/">资源分享</a></li>
-                        <li><a href="https://rawchen.com/category/code/">一些代码</a></li>
-                        <li><a href="https://rawchen.com/category/se/">软件工程</a></li>
+                        {% for category in global.Categories %}
+                        <li><a href="/category/{{ category.Slug }}">{{ category.Name }}</a></li>
+                        {% endfor %}
                     </ul>
                 </li>
 

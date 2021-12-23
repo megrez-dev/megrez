@@ -55,17 +55,23 @@ func listJournal(c *gin.Context) {
 	if err != nil {
 		c.Redirect(500, "/error")
 	}
-	c.HTML(200, "journal.html", pongo2.Context{"journals": journals, "global": globalOption})
+
+	journalsNum, err := DAO.CountAllJournals()
+	if err != nil {
+		c.Redirect(500, "/error")
+	}
+	pagination := vo.CaculatePagination(pageNum, pageSize, int(journalsNum))
+	c.HTML(200, "journal.html", pongo2.Context{"journals": journals, "pagination": pagination, "global": globalOption})
 }
 
 func createJournal(c *gin.Context) {
 	journal := &po.Journal{
 		FormatContent: "测试journal测试journal测试journal测试journal",
-		Images:        "https://rawchen.com/sgjpic/23468945914666148.jpg;https://rawchen.com/sgjpic/23468945914666148.jpg;https://rawchen.com/sgjpic/23468945914666148.jpg;https://rawchen.com/sgjpic/23468945914666148.jpg",
-		Private:       false,
-		Visits:        0,
-		Likes:         0,
-		Status:        0,
+		// Images:        "https://rawchen.com/sgjpic/23468945914666148.jpg;https://rawchen.com/sgjpic/23468945914666148.jpg;https://rawchen.com/sgjpic/23468945914666148.jpg;https://rawchen.com/sgjpic/23468945914666148.jpg",
+		Private: false,
+		Visits:  0,
+		Likes:   0,
+		Status:  0,
 	}
 	err := DAO.CreateJournal(journal)
 	if err != nil {

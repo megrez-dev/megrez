@@ -42,7 +42,7 @@
     <link href="//cdn.bootcss.com/highlight.js/9.10.0/styles/xcode.min.css" rel="stylesheet">
     <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link href="https://rawchen.com/usr/themes/rawchen/style.min.css" rel="stylesheet">
-    <title> 友链 - RawChen · Blog </title>
+    <title>友链 - {{ global.BlogTitle }}</title>
 </head>
 
 <body class="" gtools_scp_screen_capture_injected="true">
@@ -76,41 +76,44 @@
 
     <div class="comment-container">
         <div id="comments" class="clearfix">
-            <div id="respond-page-2" class="zdypl">
-                <span class="response" data-no-instant>发表评论 <a id="cancel-comment-reply-link"
-                        href="/links#respond-page-2" rel="nofollow" style="display:none"
-                        onclick="return TypechoComment.cancelReply();"> 取消评论</a></span>
-                <form method="post" action="/page/2/comment" id="comment-form"
-                    class="comment-form" role="form" onsubmit="getElementById('misubmit').disabled=true;return true;">
-                    <span style="font-size: 14px;cursor:pointer;color:#eb5055;">AlkaidChen</span>&nbsp;欢迎回来&nbsp;, <span
-                        onClick='showhidediv("author_info")' ;
-                        style="cursor:pointer;color:#eb5055;">修改昵称</span>&nbsp;?</span>
-                    <div class="ytx"></div>
-                    <div style="display:none;" id="author_info">
-                        <input type="text" name="author" maxlength="12" id="author"
-                            class="form-control input-control clearfix" placeholder="昵称 (必填哦)" value="AlkaidChen"
-                            required>
-                        <input type="email" name="mail" id="mail" class="form-control input-control clearfix"
-                            placeholder="邮箱 (必填哦)" value="362774405@qq.com" required>
-                        <input type="url" name="url" id="url" class="form-control input-control clearfix"
-                            placeholder="博客地址 (https://)" value="http://alkaidchen.com">
-                    </div>
-                    <textarea name="text" id="textarea" class="form-control" placeholder="来都来了，看都看了，想说点什么吗 0_o"
-                        required></textarea>
+            <div id="respond-page-{{ page.ID }}" class="zdypl">
+                <span class="response" data-no-instant>发表评论 <a id="cancel-comment-reply-link" href="/about#respond-page-{{ page.ID }}" rel="nofollow" style="display:none" onclick="return TypechoComment.cancelReply();"> 取消评论</a></span>
+                <form method="post" action="/page/{{ page.ID }}/comment" id="comment-form" class="comment-form" role="form" onsubmit ="getElementById('misubmit').disabled=true;return true;">
+                    <input type="text" name="author" maxlength="12" id="author" class="form-control input-control clearfix" placeholder="昵称 (必填哦)" value="" required>
+                    <input type="email" name="mail" id="mail" class="form-control input-control clearfix" placeholder="邮箱 (必填哦)" value=""  required>
+                    <input type="url" name="url" id="url" class="form-control input-control clearfix" placeholder="博客地址 (https://)" value="" >
+                    <textarea name="text" id="textarea" class="form-control" placeholder="来都来了，看都看了，想说点什么吗 0_o" required ></textarea>
                     <button type="submit" class="submit" id="misubmit">提交</button>
                 </form>
             </div>
 
-            {% include "comment.html" %}
+            {% include "pageComment.html" %}
 
             <div class="lists-navigator clearfix">
                 <ol class="page-navigator">
-                    <li class="current"><a href="https://rawchen.com/links.html/comment-page-1#comments">1</a></li>
-                    <li><a href="https://rawchen.com/links.html/comment-page-2#comments">2</a></li>
-                    <li><a href="https://rawchen.com/links.html/comment-page-3#comments">3</a></li>
-                    <li><span>...</span></li>
-                    <li><a href="https://rawchen.com/links.html/comment-page-7#comments">7</a></li>
-                    <li class="next"><a href="https://rawchen.com/links.html/comment-page-2#comments">></a></li>
+                    {% if pagination.Pre != 0 %}
+                    <li class="prev"><a href="/{{ page.Slug }}/comment-page/{{ pagination.Pre }}#comments"><</a></li>
+                    {% endif %}
+                    {% if pagination.First != 0 %}
+                    <li><a href="/{{ page.Slug }}/comment-page/{{ pagination.First }}#comments">{{ pagination.First }}</a></li>
+                    <li><span>-</span></li>
+                    {% endif %}
+                    {% for i in pagination.Range %}
+                    {% if i == pagination.Current %}
+                    <li class="current"><a href="/{{ page.Slug }}/comment-page/{{ i }}#comments">{{ i }}</a>
+                    </li>
+                    {% else %}
+                    <li><a href="/{{ page.Slug }}/comment-page/{{ i }}#comments">{{ i }}</a></li>
+                    {% endif %}
+                    {% endfor %}
+                    {% if pagination.Last != 0 %}
+                    <li><span>-</span></li>
+                    <li><a href="/{{ page.Slug }}/comment-page/{{ pagination.Last }}#comments">{{ pagination.Last }}</a></li>
+                    {% endif %}
+                    {% if pagination.Next != 0 %}
+                    <li class="next"><a
+                            href="/{{ page.Slug }}/comment-page/{{ pagination.Next }}#comments">></a></li>
+                    {% endif %}
                 </ol>
             </div>
         </div>
@@ -140,7 +143,7 @@
                         root = this.dom('comment-root'),
                         form = 'form' == response.tagName ? response : response.getElementsByTagName('form')[0],
                         textarea = response.getElementsByTagName('textarea')[0];
-                    if (null == input) {
+                    if (null == parent) {
                         parent = this.create('input', {
                             'type': 'hidden',
                             'name': 'parent',
@@ -176,9 +179,13 @@
                 cancelReply: function () {
                     var response = this.dom('respond-page-{{ page.ID }}'),
                         holder = this.dom('comment-form-place-holder'),
-                        input = this.dom('comment-parent');
-                    if (null != input) {
-                        input.parentNode.removeChild(input);
+                        parent = this.dom('comment-parent');
+                        root = this.dom('comment-root');
+                    if (null != parent) {
+                        parent.parentNode.removeChild(parent);
+                    }
+                    if (null != root) {
+                        root.parentNode.removeChild(root);
                     }
                     if (null == holder) {
                         return true;

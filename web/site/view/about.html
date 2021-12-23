@@ -40,8 +40,7 @@
     <link href="//cdn.bootcss.com/highlight.js/9.10.0/styles/xcode.min.css" rel="stylesheet">
     <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link href="https://rawchen.com/usr/themes/rawchen/style.min.css" rel="stylesheet">
-    <title>
-        关于 - RawChen · Blog </title>
+    <title>关于 - {{ global.BlogTitle }}</title>
 </head>
 
 <body class="" gtools_scp_screen_capture_injected="true">
@@ -61,7 +60,7 @@
             </div>
         </div>
         <div id="post-content" class="post-content">
-            <p>软件工程大四学生，渴望并相信着美好的事情将会发生，会一直启用这个博客，算是一个不错的人生笔记。<br>代码改变世界可能很难，但做一些有趣的事情可能正好。<img class="smilies"
+            <p>渴望并相信着美好的事情将会发生，会一直启用这个博客，算是一个不错的人生笔记。<br>代码改变世界可能很难，但做一些有趣的事情可能正好。<img class="smilies"
                     src="https://rawchen.com/usr/plugins/Smilies/bilibili/icon_smile.png" alt="icon_smile.png"
                     style="max-width:32px;display:inline-block; box-shadow: none; margin-bottom: -8px;" /><img
                     class="smilies" src="https://rawchen.com/usr/plugins/Smilies/bilibili/icon_rolleyes.png"
@@ -74,12 +73,12 @@
                     class="smilies" src="https://rawchen.com/usr/plugins/Smilies/bilibili/icon_biggrin.png"
                     alt="icon_biggrin.png"
                     style="max-width:32px;display:inline-block; box-shadow: none; margin-bottom: -8px;" /></p><img
-                id="githubChart" src="https://ghchart.rshah.org/af813d/rawchen"
-                onclick="window.open('https://github.com/rawchen')">
+                id="githubChart" src="https://ghchart.rshah.org/af813d/alkaidchan"
+                onclick="window.open('https://github.com/alkaidchan')">
         <div class=" about-contact">
-            <a href="http://wpa.qq.com/msgrd?v=3&uin=2221999792&site=qq&menu=yes" target="_blank">
+            <a href="http://wpa.qq.com/msgrd?v=3&uin=362774405&site=qq&menu=yes" target="_blank">
                 <div class="qq">
-                    <span class="content">2221999792</span>
+                    <span class="content">362774405</span>
                     <i class="fa fa-qq"></i>
                 </div>
             </a>
@@ -105,9 +104,9 @@
 
     <div class="comment-container">
         <div id="comments" class="clearfix">
-            <div id="respond-page-1" class="zdypl">
-                <span class="response" data-no-instant>发表评论 <a id="cancel-comment-reply-link" href="/about#respond-page-1" rel="nofollow" style="display:none" onclick="return TypechoComment.cancelReply();"> 取消评论</a></span>
-                <form method="post" action="/page/1/comment" id="comment-form" class="comment-form" role="form" onsubmit ="getElementById('misubmit').disabled=true;return true;">
+            <div id="respond-page-{{ page.ID }}" class="zdypl">
+                <span class="response" data-no-instant>发表评论 <a id="cancel-comment-reply-link" href="/about#respond-page-{{ page.ID }}" rel="nofollow" style="display:none" onclick="return TypechoComment.cancelReply();"> 取消评论</a></span>
+                <form method="post" action="/page/{{ page.ID }}/comment" id="comment-form" class="comment-form" role="form" onsubmit ="getElementById('misubmit').disabled=true;return true;">
                     <input type="text" name="author" maxlength="12" id="author" class="form-control input-control clearfix" placeholder="昵称 (必填哦)" value="" required>
                     <input type="email" name="mail" id="mail" class="form-control input-control clearfix" placeholder="邮箱 (必填哦)" value=""  required>
                     <input type="url" name="url" id="url" class="form-control input-control clearfix" placeholder="博客地址 (https://)" value="" >
@@ -120,14 +119,31 @@
 
             <div class="lists-navigator clearfix">
                 <ol class="page-navigator">
-                    <li class="current"><a href="https://rawchen.com/about.html/comment-page-1#comments">1</a></li>
-                    <li><a href="https://rawchen.com/about.html/comment-page-2#comments">2</a></li>
-                    <li><a href="https://rawchen.com/about.html/comment-page-3#comments">3</a></li>
-                    <li><a href="https://rawchen.com/about.html/comment-page-4#comments">4</a></li>
-                    <li class="next"><a href="https://rawchen.com/about.html/comment-page-2#comments">></a></li>
+                    {% if pagination.Pre != 0 %}
+                    <li class="prev"><a href="/{{ page.Slug }}/comment-page/{{ pagination.Pre }}#comments"><</a></li>
+                    {% endif %}
+                    {% if pagination.First != 0 %}
+                    <li><a href="/{{ page.Slug }}/comment-page/{{ pagination.First }}#comments">{{ pagination.First }}</a></li>
+                    <li><span>-</span></li>
+                    {% endif %}
+                    {% for i in pagination.Range %}
+                    {% if i == pagination.Current %}
+                    <li class="current"><a href="/{{ page.Slug }}/comment-page/{{ i }}#comments">{{ i }}</a>
+                    </li>
+                    {% else %}
+                    <li><a href="/{{ page.Slug }}/comment-page/{{ i }}#comments">{{ i }}</a></li>
+                    {% endif %}
+                    {% endfor %}
+                    {% if pagination.Last != 0 %}
+                    <li><span>-</span></li>
+                    <li><a href="/{{ page.Slug }}/comment-page/{{ pagination.Last }}#comments">{{ pagination.Last }}</a></li>
+                    {% endif %}
+                    {% if pagination.Next != 0 %}
+                    <li class="next"><a
+                            href="/{{ page.Slug }}/comment-page/{{ pagination.Next }}#comments">></a></li>
+                    {% endif %}
                 </ol>
             </div>
-
         </div>
     </div>
     <script

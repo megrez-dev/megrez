@@ -3,11 +3,7 @@
         <!--返回顶部-->
         <div class="footer-container clearfix">
             <div class="social-list">
-                <a class="social weibo" target="blank" href="https://weibo.com/rawchen">WEIBO</a>
-                <a class="social zhihu" target="blank" href="https://www.zhihu.com/people/rawchen">ZHIHU</a>
-                <a class="social rss" target="blank" href="https://rawchen.com/feed/">RSS</a>
-                <a class="social github" target="blank" href="https://github.com/rawchen">GITHUB</a>
-                <a class="social twitter" target="blank" href="https://twitter.com/yoyling_com">TWITTER</a>
+                <a class="social twitter">{{ global.BlogDescription }}</a>
             </div>
         </div>
     </div>
@@ -54,7 +50,7 @@
             <div class="meta-item meta-posts">
                 <h3 class="meta-title">最新文章</h3>
                 {% for latestArticle in global.LatestArticles %}
-                <li><a href="/article/{{ latestArticle.Slug }}">{{ latestArticle.Title }}</a></li>
+                <li><a href="{{ latestArticle.URL }}">{{ latestArticle.Title }}</a></li>
                 {% endfor %}
             </div>
             <div class="meta-item meta-comments">

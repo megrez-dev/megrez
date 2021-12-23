@@ -14,7 +14,7 @@ import (
 func routeLink(g *gin.Engine, dao *dao.DAO) {
 	DAO = dao
 	g.GET("/links", listLinks)
-	g.GET("/links/:pageNum", listLinks)
+	g.GET("/links/comment-page/:pageNum", listLinks)
 	g.POST("/admin/link", createLink)
 }
 
@@ -32,7 +32,7 @@ func listLinks(c *gin.Context) {
 		}
 	}
 	if c.Param("pageSize") == "" {
-		pageSize = 10
+		pageSize = 8
 	} else {
 		pageSize, err = strconv.Atoi(c.Param("pageSize"))
 		if err != nil {
@@ -64,7 +64,20 @@ func listLinks(c *gin.Context) {
 	if err != nil {
 		c.Redirect(500, "/error")
 	}
-	c.HTML(200, "links.html", pongo2.Context{"links": links, "comments": comments, "global": globalOption})
+
+	page := struct {
+		ID   uint
+		Slug string
+	}{
+		ID:   2,
+		Slug: "links",
+	}
+	commentsNum, err := DAO.CountRootCommentsByPageID(page.ID)
+	if err != nil {
+		c.Redirect(500, "/error")
+	}
+	pagination := vo.CaculatePagination(pageNum, pageSize, int(commentsNum))
+	c.HTML(200, "links.html", pongo2.Context{"page": page, "pagination": pagination, "links": links, "comments": comments, "global": globalOption})
 }
 
 func createLink(c *gin.Context) {

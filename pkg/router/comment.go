@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/megrez/pkg/dao"
 	"github.com/megrez/pkg/entity/po"
+	"github.com/megrez/pkg/entity/vo"
 )
 
 func routeComment(g *gin.Engine, dao *dao.DAO) {
@@ -52,9 +53,30 @@ func createCommentForArticle(c *gin.Context) {
 	err = DAO.CreateComment(comment)
 	if err != nil {
 		log.Println("create comment failed, err: ", err)
-		c.JSON(500, "failed")
+		c.Redirect(500, "/error")
 	}
-	url := fmt.Sprintf("/article/%d#comment-%d", articleID, comment.ID)
+	// caculate pagination
+	pageSizeStr, err := DAO.GetOptionByKey(vo.OptionComentsPageSize)
+	if err != nil {
+		c.Redirect(500, "/error")
+	}
+	pageSize, err := strconv.Atoi(pageSizeStr)
+	if err != nil {
+		c.Redirect(500, "/error")
+	}
+	rootComments, err := DAO.ListRootCommentsByArticleID(comment.ArticleID, 0, 0)
+	if err != nil {
+		c.Redirect(500, "/error")
+	}
+	var index int
+	for i, rootComment := range rootComments {
+		if rootComment.ID == comment.ID || rootComment.ID == comment.RootID {
+			index = i + 1
+			break
+		}
+	}
+	pagination := (index + pageSize - 1) / pageSize
+	url := fmt.Sprintf("/article/%d/comment-page/%d#comment-%d", comment.ArticleID, pagination, comment.ID)
 	c.Redirect(302, url)
 }
 
@@ -90,17 +112,38 @@ func createCommentForPage(c *gin.Context) {
 		Type:     2,
 		Status:   0,
 	}
-	page, err := DAO.GetPageByID(pageID)
+	page, err := DAO.GetPageByID(uint(pageID))
 	if err != nil {
 		log.Println("get page failed, err: ", err)
-		c.JSON(500, "failed")
+		c.Redirect(500, "/error")
 	}
 	err = DAO.CreateComment(comment)
 	if err != nil {
 		log.Println("create comment failed, err: ", err)
-		c.JSON(500, "failed")
+		c.Redirect(500, "/error")
 	}
-	url := fmt.Sprintf("/%s#comment-%d", page.Slug, comment.ID)
+	// caculate pagination
+	pageSizeStr, err := DAO.GetOptionByKey(vo.OptionComentsPageSize)
+	if err != nil {
+		c.Redirect(500, "/error")
+	}
+	pageSize, err := strconv.Atoi(pageSizeStr)
+	if err != nil {
+		c.Redirect(500, "/error")
+	}
+	rootComments, err := DAO.ListRootCommentsByPageID(comment.PageID, 0, 0)
+	if err != nil {
+		c.Redirect(500, "/error")
+	}
+	var index int
+	for i, rootComment := range rootComments {
+		if rootComment.ID == comment.ID || rootComment.ID == comment.RootID {
+			index = i + 1
+			break
+		}
+	}
+	pagination := (index + pageSize - 1) / pageSize
+	url := fmt.Sprintf("/%s/comment-page/%d#comment-%d", page.Slug, pagination, comment.ID)
 	c.Redirect(302, url)
 }
 

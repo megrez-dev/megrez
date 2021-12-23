@@ -26,8 +26,7 @@
     <link href="//cdn.bootcss.com/highlight.js/9.10.0/styles/xcode.min.css" rel="stylesheet">
     <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link href="https://rawchen.com/usr/themes/rawchen/style.min.css" rel="stylesheet">
-    <title>
-        新人云服务器，且行且珍惜 - RawChen · Blog </title>
+    <title>{{ article.Title }} - {{ global.BlogTitle }}</title>
 </head>
 {% include "header.html" %}
 
@@ -112,7 +111,6 @@
                 </div>
                 {% endif %}
                 <!-- 下一篇 -->
-                <!-- TODO: 通过 CSS 使得只有 next 时右对齐 -->
                 {% if article.Next %}
                 <div class="next-prev">
                     <a href="/article/{{ article.Next.ID }}" title="{{ article.Next.Title }}">

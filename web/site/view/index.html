@@ -45,7 +45,7 @@
                     <div class="post-onelist-item-container">
                         <a href="/">
                             <div class="onelist-item-thumb bg-deepgrey"
-                                style="background-image:url(https://cdn.rawchen.com/cover.jpg);">
+                                style="background-image:url({{ global.BlogCover }});">
                             </div>
                         </a>
                         <div class="onelist-item-info">
@@ -55,15 +55,17 @@
                             <div class="item-meta" style="font-size: 15px">
                                 <p>{{ global.BlogDescription }}</p>
                             </div>
-                            <div class="item-meta" style="font-size: 15px">
-                                <div class="social-list">
-                                    <a href="https://tv.rawchen.com" target="_blank" style="border:none;">TV </a>丨
-                                    <a href="https://pan.rawchen.com" target="_blank" style="border:none;">PAN </a>丨
-                                    <a href="https://rawchen.com/link" target="_blank" style="border:none;">LINK</a>丨
-                                    <a href="https://java.rawchen.com" target="_blank" style="border:none;">JAVA</a>丨
-                                    <a href="https://rawchen.com/c" target="_blank" style="border:none;">GCC</a>
+                            <!-- 
+                                <div class="item-meta" style="font-size: 15px">
+                                    <div class="social-list">
+                                        <a href="https://tv.rawchen.com" target="_blank" style="border:none;">TV </a>丨
+                                        <a href="https://pan.rawchen.com" target="_blank" style="border:none;">PAN </a>丨
+                                        <a href="https://rawchen.com/link" target="_blank" style="border:none;">LINK</a>丨
+                                        <a href="https://java.rawchen.com" target="_blank" style="border:none;">JAVA</a>丨
+                                        <a href="https://rawchen.com/c" target="_blank" style="border:none;">GCC</a>
+                                    </div>
                                 </div>
-                            </div>
+                            -->
                         </div>
                     </div>
                 </div>
@@ -83,7 +85,7 @@
                         </div>
                         <div class="item-meta">
                             <time datetime="2020-11-22T23:00:00+08:00" itemprop="datePublished"><i class="fa fa-clock-o"
-                                    aria-hidden="true"> </i> {{ article.CreatedAt|date:"2006-01-02 15:04:05" }}</time>&nbsp;&nbsp; <i class="fa fa-tags" aria-hidden="true"></i> <a
+                                    aria-hidden="true"> </i> {{ article.CreatedAt|date:"2006-01-02" }}</time>&nbsp;&nbsp; <i class="fa fa-tags" aria-hidden="true"></i> <a
                                 href="category/{{ article.Category.Slug }}">{{ article.Category.Name }}</a>&nbsp;&nbsp;
                             <i class="fa fa-comments-o" aria-hidden="true"></i> <a
                                 href="/article/{{ article.ID }}#comments">{{article.CommentsNum}}

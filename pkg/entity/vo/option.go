@@ -4,6 +4,7 @@ var (
 	OptionKeyBlogURL         = "blog_url"
 	OptionKeyBlogTitle       = "blog_title"
 	OptionKeyBlogDescription = "blog_description"
+	OptionKeyBlogCover       = "blog_cover"
 	OptionKeyHeaderImg       = "header_img"
 	OptionKeyFooterImg       = "footer_img"
 	OptionKeyCoverImg        = "cover_img"
