@@ -6,8 +6,8 @@ import (
 
 	"github.com/fsnotify/fsnotify"
 	"github.com/gin-gonic/gin"
-	"github.com/megrez/internal/dao"
-	"github.com/megrez/internal/router"
+	"github.com/megrez/pkg/dao"
+	"github.com/megrez/pkg/router"
 	"github.com/spf13/viper"
 )
 

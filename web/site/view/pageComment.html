@@ -41,10 +41,8 @@
                                 <time class="comment-time">{{ subComment.CreatedAt|date:"2006-01-02 15:04:05" }}</time>&nbsp;&nbsp;
                                 <span class="agent"><i class="fa fa-windows"></i> Windows 10</span>&nbsp;&nbsp;
                                 <span class="agent"><i class="fa fa-chrome"></i> Chrome 95</span>
-                                <span class="comment-reply" data-no-instant><a
-                                        href="/{{ page.Slug }}?replyTo={{ subComment.ID }}#respond-page-{{ page.ID }}"
-                                        rel="nofollow"
-                                        onclick="return TypechoComment.reply('comment-{{ subComment.ID }}', {{ subComment.ID }}, {{ comment.ID }});">回复</a></span>
+                                <span class="comment-reply" data-no-instant>
+                                    <a href="/{{ page.Slug }}?replyTo={{ subComment.ID }}#respond-page-{{ page.ID }}" rel="nofollow" onclick="return TypechoComment.reply('comment-{{ subComment.ID }}', {{ subComment.ID }}, {{ comment.ID }});">回复</a></span>
                             </div>
                         </div>
                     </div>
