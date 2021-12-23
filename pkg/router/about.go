@@ -62,6 +62,5 @@ func about(c *gin.Context) {
 		ID:   1,
 		Slug: "about",
 	}
-	pagination
 	c.HTML(200, "about.html", pongo2.Context{"page": page, "comments": comments, "global": globalOption})
 }
