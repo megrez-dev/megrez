@@ -1,17 +1,3 @@
-<!--
-
-
-   ██████ ▒██    ██   ▄████▄  ░██ ▄█▀░       ██████╗ ██╗   ██╗ ██████╗
-  ░██    ▒ ██  ▒ ██▒░██▀  ▀██  ███▀	         ██╔══██╗██║   ██║██╔════╝
-  ▒██████ ░██   ▒██░░██░      ░██▄░          ██████╔╝██║   ██║██║  ███╗
-  ░██▒   ░░██  ░ ██░▒██▄  ▄██░▒██▀█▄░        ██╔══██╗██║   ██║██║   ██║
-  ░██░    ▒▒██████ ▒ ░▀████▀   ██ ░▀█▄       ██████╔╝╚██████╔╝╚██████╔╝
-  ▒ ░   ░▒▒▒ ▒ ▒ ░ ░▒ ▒  ░▒ ▒▒ ▒▒            ╚═════╝  ╚═════╝  ╚═════╝
-   rawchen.com░    ░  ░  ▒   ░ ░▒ ▒░
-   ░ ░    ░░░ ░ ░ ░        ░ ░░ ░
-            ░     ░ ░      ░  ░
- -->
-
  <!DOCTYPE html>
  <html>
  
@@ -84,121 +70,9 @@
      {% include "footer.html" %}
  
      <a href="#0" class="cd-top">Top</a>
-     <script>
-             (function () {
-                 window.TypechoComment = {
-                     dom: function (id) {
-                         return document.getElementById(id);
-                     },
-                     create: function (tag, attr) {
-                         var el = document.createElement(tag);
-                         for (var key in attr) {
-                             el.setAttribute(key, attr[key]);
-                         }
-                         return el;
-                     },
-                     reply: function (cid, coid) {
-                         var comment = this.dom(cid), parent = comment.parentNode,
-                             response = this.dom('respond-page-328'),
-                             input = this.dom('comment-parent'),
-                             form = 'form' == response.tagName ? response : response.getElementsByTagName('form')[0],
-                             textarea = response.getElementsByTagName('textarea')[0];
-                         if (null == input) {
-                             input = this.create('input', {
-                                 'type': 'hidden',
-                                 'name': 'parent',
-                                 'id': 'comment-parent'
-                             });
- 
-                             form.appendChild(input);
-                         }
-                         input.setAttribute('value', coid);
-                         if (null == this.dom('comment-form-place-holder')) {
-                             var holder = this.create('div', {
-                                 'id': 'comment-form-place-holder'
-                             });
- 
-                             response.parentNode.insertBefore(holder, response);
-                         }
-                         comment.appendChild(response);
-                         this.dom('cancel-comment-reply-link').style.display = '';
-                         if (null != textarea && 'text' == textarea.name) {
-                             textarea.focus();
-                         }
-                         return false;
-                     },
-                     cancelReply: function () {
-                         var response = this.dom('respond-page-328'),
-                             holder = this.dom('comment-form-place-holder'),
-                             input = this.dom('comment-parent');
-                         if (null != input) {
-                             input.parentNode.removeChild(input);
-                         }
-                         if (null == holder) {
-                             return true;
-                         }
-                         this.dom('cancel-comment-reply-link').style.display = 'none';
-                         holder.parentNode.insertBefore(response, holder);
-                         return false;
-                     }
-                 };
-             })();
-         function getCommentCookie(name) {
-             var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
-             if (arr = document.cookie.match(reg))
-                 return unescape(decodeURI(arr[2]));
-             else
-                 return null;
-         }
-         function addCommentInputValue() {
-             document.getElementById('author').value = getCommentCookie('8664e4e4cb09d6954da82203d8fca900__typecho_remember_author');
-             document.getElementById('mail').value = getCommentCookie('8664e4e4cb09d6954da82203d8fca900__typecho_remember_mail');
-             document.getElementById('url').value = getCommentCookie('8664e4e4cb09d6954da82203d8fca900__typecho_remember_url');
-         }
-         addCommentInputValue();
-     </script>
-     <script type="text/javascript">
-         Smilies = {
-             domId: function (id) {
-                 return document.getElementById(id);
-             },
-             domTag: function (id) {
-                 return document.getElementsByTagName(id)[0];
-             },
-             showBox: function () {
-                 this.domId("smiliesbox").style.display = "block";
-                 document.onclick = function () {
-                     Smilies.closeBox();
-                 }
-             },
-             closeBox: function () {
-                 this.domId("smiliesbox").style.display = "none";
-             },
-             grin: function (tag) {
-                 tag = ' ' + tag + ' '; myField = this.domTag("textarea");
-                 document.selection ? (myField.focus(), sel = document.selection.createRange(), sel.text = tag, myField.focus()) : this.insertTag(tag);
-             },
-             insertTag: function (tag) {
-                 myField = Smilies.domTag("textarea");
-                 myField.selectionStart || myField.selectionStart == "0" ? (
-                     startPos = myField.selectionStart,
-                     endPos = myField.selectionEnd,
-                     cursorPos = startPos,
-                     myField.value = myField.value.substring(0, startPos)
-                     + tag
-                     + myField.value.substring(endPos, myField.value.length),
-                     cursorPos += tag.length,
-                     myField.focus(),
-                     myField.selectionStart = cursorPos,
-                     myField.selectionEnd = cursorPos
-                 ) : (
-                     myField.value += tag,
-                     myField.focus()
-                 );
-                 this.closeBox();
-             }
-         }
-     </script>
+     
+     {% include "pageCommentJS.html" %}
+
      <script type="text/javascript">
              (function () {
                  var pres = document.querySelectorAll('pre');
@@ -225,13 +99,10 @@
          header.init();
  
          //修正onclick
-         //***********************************
          var navbarSwith = document.getElementById("navbar-mobile-swith");
          navbarSwith.onclick = function () {
              navbarSwith.classList.toggle("navbar-mobile-menu-on");
          };
-  //***********************************
- 
      </script>
  
      <!--核心js-->

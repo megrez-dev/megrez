@@ -1,0 +1,251 @@
+<article class="main-content post-page" itemscope itemtype="http://schema.org/Article">
+    <div class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+            爬B站前100万用户的公开数据 </h1>
+        <div class="post-data">
+            <time datetime="2021-12-22T23:26:00+08:00" itemprop="datePublished"><i class="fa fa-clock-o"
+                    aria-hidden="true"> </i> 2021-12-22</time>&nbsp;&nbsp; <i class="fa fa-tags" aria-hidden="true"></i>
+            <a href="https://rawchen.com/category/code/">一些代码</a>&nbsp;&nbsp; <i class="fa fa-comments-o"
+                aria-hidden="true"></i> <a href="#comments"> 1 评论</a>&nbsp;&nbsp; <i class="fa fa-eye"
+                aria-hidden="true"></i> 61 浏览
+        </div>
+    </div>
+    <div id="post-content" class="post-content" itemprop="articleBody">
+        <p class="post-tags">
+            <a href="https://rawchen.com/tag/Python%E7%88%AC%E8%99%AB/">Python爬虫</a> <a
+                href="https://rawchen.com/tag/Python/">Python</a> <a href="https://rawchen.com/tag/Quick-BI/">Quick
+                BI</a>
+        </p>
+        <h1>B站用户大数据实时分析 - Python</h1>
+        <blockquote>
+            <p>大数据实时报表：<a
+                    href="https://bi.aliyuncs.com/token3rd/dashboard/view/pc.htm?pageId=f42b3dd6-b108-43b4-ace7-ccb0a3556131&accessToken=ccb053611662ae5b4313652162056f5d&dd_orientation=auto"
+                    target="_blank">https://bi.aliyuncs.com/xxx</a><br>数据简单预览：<a href="https://rawchen.com/pa2.php"
+                    target="_blank">https://rawchen.com/pa2.php</a><br>数据下载：<a
+                    href="https://pan.rawchen.com/folder/61bb4f411fbe8a35d5f4442291ae4ed20cb6cb58"
+                    target="_blank">https://pan.rawchen.com/folder/61bb4f411fbe8a35d5f4442291ae4ed20cb6cb58</a></p>
+        </blockquote>
+        <h2>一、项目概述</h2>
+        <p>2021年随着互联网高速发展，新媒体行业的巨大拐点提前到来，风险伴随着机遇，原有的资源优势正在被运营能力所取代，依托于真实的大数据进行专业化精准分析和运营是未来整个互联网新媒体行业进化的必然手段。</p>
+        <p>这份报告通过 <strong>5台</strong> 服务器 <strong>13天</strong> 爬取了 <strong>100万</strong>
+            条B站用户大数据并进行实时分析，并能通过分析得出结论，可以为我们直观展示B站实时的用户现状，普通消费者在购买会员、发布视频、对比视频播放量、对比被关注度，等场景中提供实际指导意义。</p>
+        <h2>二、Python数据分析环境</h2>
+        <p>本项目采用Python数据分析环境，分软件环境、数据分析需要用到的库包、Python数据分析与可视化环境。</p>
+        <ol>
+            <li>硬件环境：阿里服务器、腾讯轻量服务器、Bandwagonhost、树莓派3B、笔记本电脑</li>
+            <li>软件环境：Python3.7.4 + Visual Studio Code + MySQL5.7.35</li>
+            <li>导入依赖：requests + pymysql</li>
+            <li>数据清洗：pymysql（case when）</li>
+            <li>数据可视化：阿里Quick BI</li>
+        </ol>
+        <h2>三、数据采集</h2>
+        <p>首先打开B站首页和B站用户界面，通过谷歌浏览器F12的开发者工具分析各个请求接口，分析到不同的接口后再通过Postman测试并发数，测试是否需要登录操作来完成查询接口。再通过Python操作数据逐一存入MySQL数据库文件中。
+        </p>
+        <p><a href="https://api.bilibili.com/x/space/acc/info?mid=1&jsonp=jsonp"
+                target="_blank">https://api.bilibili.com/x/space/acc/info?mid=1&jsonp=jsonp</a><br><a
+                href="https://api.bilibili.com/x/relation/stat?vmid=1&jsonp=jsonp"
+                target="_blank">https://api.bilibili.com/x/relation/stat?vmid=1&jsonp=jsonp</a><br><a
+                href="https://api.bilibili.com/x/space/upstat?mid=1&jsonp=jsonp"
+                target="_blank">https://api.bilibili.com/x/space/upstat?mid=1&jsonp=jsonp</a><br><a
+                href="https://api.bilibili.com/x/space/navnum?mid=1&jsonp=jsonp"
+                target="_blank">https://api.bilibili.com/x/space/navnum?mid=1&jsonp=jsonp</a><br><a
+                href="https://api.bilibili.com/x/ugcpay-rank/elec/month/up?up_mid=1&jsonp=jsonp"
+                target="_blank">https://api.bilibili.com/x/ugcpay-rank/elec/month/up?up_mid=1&jsonp=jsonp</a></p>
+        <pre><code class="lang-python">from os import times
+import time
+import requests
+import pymysql
+from pymysql.converters import escape_string
+
+def main():
+    # try:
+    # conn = pymysql.connect(host=&quot;xxx.xx.xxx.xx&quot;, user=&quot;xx&quot;,password=&quot;xx&quot;,database=&quot;pa&quot;,charset=&quot;utf8&quot;)
+    conn = pymysql.connect(host=&quot;localhost&quot;, user=&quot;root&quot;, password=&quot;root&quot;, database=&quot;pa&quot;, charset=&quot;utf8&quot;)
+    # cursor = conn.cursor()
+    # cursor.execute(&quot;truncate pa&quot;)
+    # conn.commit()
+
+    for i in range(1, 1000000):
+        time.sleep(1)
+
+        url_info = &quot;https://api.bilibili.com/x/space/acc/info?mid={}&amp;jsonp=jsonp&quot;.format(i)
+        json_info = requests.get(url_info).json()
+        if json_info['code'] != -404:
+            json_info_data = json_info['data']
+            name = json_info_data['name']
+            birthday = json_info_data['birthday']
+            level = json_info_data['level']
+            sex = json_info_data['sex']
+            face = json_info_data['face']
+            coins = json_info_data['coins']
+            sign = json_info_data['sign']
+            top_photo = json_info_data['top_photo']
+
+            official = json_info_data['official']
+            official_role = official['role']
+            official_title = official['title']
+
+            vip = json_info_data['vip']
+            vip_type = vip['type']
+            vip_role = vip['role']
+            vip_nickname_color = vip['nickname_color']
+            vip_due_date = vip['due_date']
+
+            vip_label = vip['label']
+            vip_label_text = vip_label['text']
+            vip_label_text_color = vip_label['text_color']
+            vip_label_bg_color = vip_label['bg_color']
+
+            pendant = json_info_data['pendant']
+            pendant_pid = pendant['pid']
+            pendant_image = pendant['image']
+            pendant_name = pendant['name']
+
+            live_room = json_info_data['live_room']
+            live_room_room_status = live_room['roomStatus']
+            live_url = live_room['url']
+            live_title = live_room['title']
+            live_cover = live_room['cover']
+            live_online = live_room['online']
+
+            school = json_info_data['school']
+            if school is not None:
+                school_name = school['name']
+            else:
+                school_name = ''
+
+            profession = json_info_data['profession']
+            profession_name = profession['name']
+
+            url_2 = &quot;https://api.bilibili.com/x/relation/stat?vmid={}&amp;jsonp=jsonp&quot;.format(i)
+            json_stat = requests.get(url_2).json()['data']
+            follower = json_stat['follower']
+            following = json_stat['following']
+            black = json_stat['black']
+            whisper = json_stat['whisper']
+
+            url_3 = &quot;https://api.bilibili.com/x/space/upstat?mid={}&amp;jsonp=jsonp&quot;.format(i)
+            headers = {}
+            headers['User-Agent'] = 'PostmanRuntime/7.28.4'
+            headers['Host'] = 'api.bilibili.com'
+            headers['Cookie'] = &quot;_uuid=15192421-707A-6B3D-DCA3-50944Cxxxxxxxxxxxxxxxxxxxxxxx&quot;
+            json_upstat = requests.get(url_3, headers = headers)
+            # print(json_upstat.json())
+            json_upstat_data = json_upstat.json()['data']
+            archive = json_upstat_data['archive']
+            archive_view = archive['view']
+
+            article = json_upstat_data['article']
+            article_view = article['view']
+
+            likes = json_upstat_data['likes']
+
+            # archive_view = 1
+            # article_view = 1
+            # likes = 1
+
+            url_4 = &quot;https://api.bilibili.com/x/space/navnum?mid={}&amp;jsonp=jsonp&quot;.format(i)
+            json_navnum = requests.get(url_4).json()['data']
+            album_num = json_navnum['album']
+            article_num = json_navnum['article']
+            audio_num = json_navnum['audio']
+            bangumi_num = json_navnum['bangumi']
+            video_num = json_navnum['video']
+            tag_num = json_navnum['tag']
+            cinema_num = json_navnum['cinema']
+            season_num = json_navnum['season_num']
+            playlist_num = json_navnum['playlist']
+
+            url_5 = &quot;https://api.bilibili.com/x/ugcpay-rank/elec/month/up?up_mid={}&amp;jsonp=jsonp&quot;.format(i)
+            json_up = requests.get(url_5).json()
+            if json_up['code'] == 0:
+                json_up_data = json_up['data']
+                up_total_count = json_up_data['total_count']
+            else:
+                up_total_count = 0
+
+            cursor = conn.cursor()
+            cursor.execute('insert into pa values(%s, &quot;%s&quot;, &quot;%s&quot;, %s, &quot;%s&quot;,&quot;%s&quot;,%.1f, &quot;%s&quot;, &quot;%s&quot;, %s, %s, %s, %s, %s, &quot;%s&quot;, %s, %s, &quot;%s&quot;, &quot;%s&quot;, &quot;%s&quot;, &quot;%s&quot;, &quot;%s&quot;,%s, &quot;%s&quot;, &quot;%s&quot;,%s, &quot;%s&quot;, &quot;%s&quot;, &quot;%s&quot;,%s, &quot;%s&quot;, &quot;%s&quot;, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)' %
+                    (i, escape_string(name), birthday, level, sex, face, coins, escape_string(sign), top_photo, follower, following, black, whisper, official_role, official_title, vip_type, vip_role, vip_nickname_color, vip_due_date, vip_label_text, vip_label_text_color, vip_label_bg_color, pendant_pid, pendant_image, pendant_name, live_room_room_status, live_url, escape_string(live_title), live_cover, live_online, school_name, profession_name, archive_view, article_view, likes, album_num, article_num, audio_num, bangumi_num, video_num, tag_num, cinema_num, season_num, playlist_num, up_total_count))
+            conn.commit()
+            print(i, name, birthday, level, sex, face, coins, sign, top_photo, follower, following, black, whisper, official_role, official_title, vip_type, vip_role, vip_nickname_color, vip_due_date, vip_label_text, vip_label_text_color, vip_label_bg_color, pendant_pid, pendant_image, pendant_name, live_room_room_status, live_url, live_title, live_cover, live_online, school_name, profession_name, archive_view, article_view, likes, album_num, article_num, audio_num, bangumi_num, video_num, tag_num, cinema_num, season_num, playlist_num, up_total_count)
+
+    # except Exception as e:
+    #     print (&quot;程序异常: &quot;, e)
+
+def download_face(face_url, name):
+    image = requests.get(face_url).content
+    with open(&quot;C:/Users/Administrator/Desktop/{}.jpg&quot;.format(name), 'wb') as f:
+        f.write(image)
+
+if __name__ == '__main__':
+    main()</code></pre>
+        <h2>四、数据预处理（数据清洗）</h2>
+        <p>在数据清洗阶段通过SQL语句中的CASE WHEN批量修改处理数据库字段数据，以下是处理大会员标签文字为空的情况，如果该字段为空则设置为普通用户。</p>
+        <pre><code class="lang-python">import pymysql
+from pymysql.converters import escape_string
+
+def main():
+    # try:
+    # conn = pymysql.connect(host=&quot;xxx.xx.xxx.xx&quot;, user=&quot;xx&quot;,password=&quot;xx&quot;,database=&quot;pa&quot;,charset=&quot;utf8&quot;)
+    conn = pymysql.connect(host=&quot;localhost&quot;, user=&quot;root&quot;, password=&quot;root&quot;, database=&quot;test&quot;, charset=&quot;utf8&quot;)
+
+    cursor = conn.cursor()
+    result = cursor.execute(&quot;UPDATE pa SET vip_label_text = CASE vip_label_text WHEN '' THEN '普通用户' END WHERE vip_label_text = ''&quot;)
+    if result &lt;= 0:
+        print(&quot;未执行成功或没有数据可以更新！&quot;)
+    else:
+        print(&quot;执行更新操作成功！影响行数：&quot;, result)
+    conn.commit()
+
+    # except Exception as e:
+    #     print (&quot;程序异常: &quot;, e)
+
+if __name__ == '__main__':
+    main()</code></pre>
+        <h2>五、数据可视化</h2>
+        <h3>Quick BI</h3>
+        <p>非传统ECharts</p>
+        <ol>
+            <li>建立数据源<br> <img src="https://cdn.rawchen.com/2021/12/python-pa-bilibili/01.png" alt="" title=""></li>
+            <li>建立数据集<br> <img src="https://cdn.rawchen.com/2021/12/python-pa-bilibili/02.png" alt="" title=""></li>
+            <li>建立仪表盘<br> <img src="https://cdn.rawchen.com/2021/12/python-pa-bilibili/03.png" alt="" title=""></li>
+            <li>添加图表以及纬度和度量</li>
+        </ol>
+        <h2>六、解决问题</h2>
+        <h3>模拟登陆</h3>
+        <p>因为有的接口是需要登录后才能爬到的，因此需要通过模拟登陆，最好的实现方式就是Cookie模拟登陆了。</p>
+        <pre><code class="lang-python">headers = {}
+headers['User-Agent'] = 'PostmanRuntime/7.28.4'
+headers['Host'] = 'api.bilibili.com'
+headers['Cookie'] = &quot;_uuid=15192421-707A-6B3D-DCA3-50944Cxxxxxxxxxxxxxxxxxxxxxxx&quot;
+json_upstat = requests.get(url_3, headers = headers)</code></pre>
+        <h3>请求接口限流</h3>
+        <p>B站这几个API默认都是限制每个IP每次请求的间隔必须超过1秒，否则返回的json将会显示被拦截。</p>
+        <h3>空用户处理</h3>
+        <pre><code class="lang-python">{
+    code: -404,
+    message: &quot;啥都木有&quot;,
+    ttl: 1
+}</code></pre>
+        <p>需要对该状态码进行判断。</p>
+        <h2>七、得出结论</h2>
+        <ol>
+            <li>可以看到有百分之90左右的用户都是对性别设置了保密。</li>
+            <li>播放数用户平均值11.8万足以说明我们访问B站播放视频的频率是真的高，另外最多的一个用户的视频播放超过了355亿了！</li>
+            <li>阅读数平均值100万说明在B站中不在是单一的视频网站，网络文章也是一个新兴媒体。</li>
+            <li>视频数平均值4.5，平均下来每人发布5条视频。</li>
+            <li>平均下来每人发布2张图，8个电影、0.1个专栏、0.04个音频。</li>
+            <li>平均下来每人粉丝大概有500人，关注了100人，充电数2次。</li>
+            <li>B站总体用户等级在5级和6级，更小部分在1级和4级。足以说明活跃量情况。</li>
+            <li>通过词云分析可以看到很多用户是没有开启直播并修改标题的，而昵称都是个位数，说明了以前都是限制了昵称唯一性的。</li>
+            <li>在B站中身份认证的用户是极少数的且涉及各个领域，bilibili 知名UP主、bilibili 知名游戏UP主、bilibili 直播高能主播等等。</li>
+            <li>大会员这一问题也是关注度很大的，根据统计分析，一半多点的用户是不愿意开大会员的，而另外一半竟然大部分是年度会员。可以看到还有百年大会员和年度小会员（从没见到过）。</li>
+            <li>根据学校分布看得出上海交大、清北、浙大、复旦等名校数位居前几，因此说明了越是名校越想凸显该身份。</li>
+            <li>根据第十条结论与不同等级会员总视频播放量结论看出，虽然年度大会员用户数少，但还是这些用户的视频播放量还很高。</li>
+            <li>从不同等级平均视频数量、不同等级平均视频播放量、不同等级平均充电数得出结论，等级越高，视频质量越高这应该是双向的。同时会给打赏的自然也就跟质量成正比。</li>
+            <li>另外在爬取过程中，93万id开始-100万id之后的用户开始大部分都是没有任何活跃度的，足以说明恶意注册大概就开始了。</li>
+        </ol>
+        <h2>八、另外</h2>
+        <p>Python与PHP在某些方面真的非常好用，相比于Java的数据库操作、网络请求对比来看就真的很香了。</p>
+    </div>
