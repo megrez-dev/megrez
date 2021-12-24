@@ -17,7 +17,7 @@
                     <span class="agent"><i class="fa fa-windows"></i> Windows 10</span>&nbsp;&nbsp;
                     <span class="agent"><i class="fa fa-chrome"></i> Chrome 95</span>
                     <span class="comment-reply" data-no-instant>
-                        <a href="/{{ page.Slug }}?replyTo={{ comment.ID }}#respond-page-{{ page.ID }}" rel="nofollow" onclick="return TypechoComment.reply('comment-{{ comment.ID }}', {{ comment.ID }}, {{ comment.ID }});">回复</a></span>
+                        <a href="/{{ page.Slug }}?replyTo={{ comment.ID }}#respond-page-{{ page.ID }}" rel="nofollow" onclick="return TypechoComment.replyPage('comment-{{ comment.ID }}', {{ comment.ID }}, {{ comment.ID }});">回复</a></span>
                 </div>
             </div>
         </div>
@@ -42,7 +42,7 @@
                                 <span class="agent"><i class="fa fa-windows"></i> Windows 10</span>&nbsp;&nbsp;
                                 <span class="agent"><i class="fa fa-chrome"></i> Chrome 95</span>
                                 <span class="comment-reply" data-no-instant>
-                                    <a href="/{{ page.Slug }}?replyTo={{ subComment.ID }}#respond-page-{{ page.ID }}" rel="nofollow" onclick="return TypechoComment.reply('comment-{{ subComment.ID }}', {{ subComment.ID }}, {{ comment.ID }});">回复</a></span>
+                                    <a href="/{{ page.Slug }}?replyTo={{ subComment.ID }}#respond-page-{{ page.ID }}" rel="nofollow" onclick="return TypechoComment.replyPage('comment-{{ subComment.ID }}', {{ subComment.ID }}, {{ comment.ID }});">回复</a></span>
                             </div>
                         </div>
                     </div>

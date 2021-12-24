@@ -1,8 +1,6 @@
 package vo
 
 import (
-	"encoding/json"
-	"fmt"
 	"strings"
 	"time"
 
@@ -33,7 +31,5 @@ func GetJournalFromPO(po po.Journal) Journal {
 		Status:        po.Status,
 		PublishTime:   po.CreatedAt,
 	}
-	b, _ := json.Marshal(journal)
-	fmt.Println(string(b))
 	return journal
 }

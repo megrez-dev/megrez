@@ -66,16 +66,22 @@ func listLinks(c *gin.Context) {
 	}
 
 	page := struct {
-		ID   uint
-		Slug string
+		ID          uint
+		Name        string
+		Slug        string
+		CommentsNum int64
+		Visits      int64
 	}{
-		ID:   2,
-		Slug: "links",
+		ID:     2,
+		Name:   "友链",
+		Slug:   "links",
+		Visits: 10086,
 	}
 	commentsNum, err := DAO.CountRootCommentsByPageID(page.ID)
 	if err != nil {
 		c.Redirect(500, "/error")
 	}
+	page.CommentsNum = commentsNum
 	pagination := vo.CaculatePagination(pageNum, pageSize, int(commentsNum))
 	c.HTML(200, "links.html", pongo2.Context{"page": page, "pagination": pagination, "links": links, "comments": comments, "global": globalOption})
 }

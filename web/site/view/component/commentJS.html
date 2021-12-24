@@ -1,5 +1,4 @@
-<script>
-    (function () {
+function () {
         window.TypechoComment = {
             dom: function (id) {
                 return document.getElementById(id);
@@ -11,9 +10,9 @@
                 }
                 return el;
             },
-            reply: function (cid, coid, rid) {
-                var comment = this.dom(cid), parent = comment.parentNode,
-                    response = this.dom('respond-page-{{ page.ID }}'),
+            reply: function (cid, coid, rid, respid) {
+                var comment = this.dom(cid),
+                    response = this.dom(respid),
                     parent = this.dom('comment-parent'),
                     root = this.dom('comment-root'),
                     form = 'form' == response.tagName ? response : response.getElementsByTagName('form')[0],
@@ -51,16 +50,20 @@
                 }
                 return false;
             },
-            cancelReply: function () {
-                var response = this.dom('respond-page-{{ page.ID }}'),
+            replyArticle: function (cid, coid, rid) {
+                var respid = 'respond-post-{{ article.ID }}';
+                this.reply(cid, coid, rid, respid)
+            },
+            replyPage: function (cid, coid, rid) {
+                var respid = 'respond-page-{{ page.ID }}';
+                this.reply(cid, coid, rid, respid)
+            },
+            cancelReply: function (respid) {
+                var response = this.dom(respid),
                     holder = this.dom('comment-form-place-holder'),
                     parent = this.dom('comment-parent');
-                    root = this.dom('comment-root');
                 if (null != parent) {
                     parent.parentNode.removeChild(parent);
-                }
-                if (null != root) {
-                    root.parentNode.removeChild(root);
                 }
                 if (null == holder) {
                     return true;
@@ -68,7 +71,14 @@
                 this.dom('cancel-comment-reply-link').style.display = 'none';
                 holder.parentNode.insertBefore(response, holder);
                 return false;
+            },
+            cancelReplyArticle: function () {
+                var respid = 'respond-post-{{ article.ID }}';
+                this.cancelReply(respid);
+            },
+            cancelReplyPage: function () {
+                var respid = 'respond-post-{{ article.ID }}';
+                this.cancelReply(respid);
             }
         };
-    })();
-</script>
+    }

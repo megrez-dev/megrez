@@ -49,16 +49,22 @@ func about(c *gin.Context) {
 		c.Redirect(500, "/error")
 	}
 	page := struct {
-		ID   uint
-		Slug string
+		ID          uint
+		Name        string
+		Slug        string
+		Visits      int64
+		CommentsNum int64
 	}{
 		ID:   1,
+		Name: "关于",
 		Slug: "about",
+		Visits: 10086,
 	}
 	commentsNum, err := DAO.CountRootCommentsByPageID(page.ID)
 	if err != nil {
 		c.Redirect(500, "/error")
 	}
+	page.CommentsNum = commentsNum
 	pagination := vo.CaculatePagination(pageNum, pageSize, int(commentsNum))
 	c.HTML(200, "about.html", pongo2.Context{"page": page, "pagination": pagination, "comments": comments, "global": globalOption})
 }

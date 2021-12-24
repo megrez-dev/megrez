@@ -45,3 +45,21 @@
         </div>
     </div>
 </header>
+<script>
+    var header = new Headroom(document.getElementById("header"), {
+        tolerance: 0,
+        offset: 70,
+        classes: {
+            initial: "animated",
+            pinned: "slideDown",
+            unpinned: "slideUp"
+        }
+    });
+    header.init();
+
+    //修正onclick
+    var navbarSwith = document.getElementById("navbar-mobile-swith");
+    navbarSwith.onclick = function () {
+        navbarSwith.classList.toggle("navbar-mobile-menu-on");
+    };
+</script>
