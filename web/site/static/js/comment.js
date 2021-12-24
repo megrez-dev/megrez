@@ -49,14 +49,14 @@ function reply(did, pid, rid, respid) {
     return false;
 }
 function replyArticle(aid, cid, rid) {
-    var did = 'comment-' + cid
+    var did = 'comment-' + cid;
     var respid = 'respond-post-' + aid;
-    reply(did, cid, rid, respid)
+    reply(did, cid, rid, respid);
 }
 function replyPage(pid, cid, rid) {
-    var did = 'comment-' + cid
+    var did = 'comment-' + cid;
     var respid = 'respond-page-' + pid;
-    reply(did, cid, rid, respid)
+    reply(did, cid, rid, respid);
 }
 function cancelReply(respid) {
     var response = dom(respid),
@@ -77,6 +77,6 @@ function cancelReplyArticle(aid) {
     cancelReply(respid);
 }
 function cancelReplyPage(pid) {
-    var respid = 'respond-post-' + pid;
+    var respid = 'respond-page-' + pid;
     cancelReply(respid);
 }

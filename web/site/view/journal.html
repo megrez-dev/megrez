@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     {% include "component/head.html" %}
     <meta name="keywords" content="" />
     <meta name="description" content="日志" />
     <title>日志 - {{ global.BlogTitle }}</title>
 </head>
-
 <body class="" gtools_scp_screen_capture_injected="true">
 
     {% include "layout/header.html" %}
@@ -80,40 +78,9 @@
 
     <a href="#0" class="cd-top">Top</a>
     <script type="text/javascript">
-            (function () {
-                var pres = document.querySelectorAll('pre');
-                var lineNumberClassName = 'line-numbers';
-                pres.forEach(function (item, index) {
-                    item.className = item.className == '' ? lineNumberClassName : item.className + ' ' + lineNumberClassName;
-                });
-            })();
-    </script>
-    <!--核心js-->
-    <script type="text/javascript" src="https://cdn.bootcdn.net/ajax/libs/layui/2.5.6/layui.all.min.js"></script>
-    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
-    <script type="text/javascript" src="https://alkaidchen-1257721976.cos.ap-guangzhou.myqcloud.com/blog/static/js/commentTyping.js"></script>
-    <script type="text/javascript">
-        $(function () {
-            $(".copy-to-clipboard-button").each(function (i, btn) {
-                btn.addEventListener("click", function () {
-                    layer.msg('代码复制成功');
-                });
-            });
-        });
-
         $("#post-content img").wrap(function () {
             return '<a data-fancybox="gallery" href=' + this.src + '></a>';
         });
-
-        if (this.$.ajaxSettings.url.indexOf("/links.html") >= 0 ||
-            this.$.ajaxSettings.url.indexOf("/about.html") >= 0 ||
-            this.$.ajaxSettings.url.indexOf("/movies.html") >= 0 ||
-            this.$.ajaxSettings.url.indexOf("/download.html") >= 0 ||
-            this.$.ajaxSettings.url.indexOf("/music.html") >= 0) {
-            $("#post-content img").unwrap();
-        }
-
-        if (!$("#directory ul").has("li").length > 0) {
-            $("#directory").css("display", "none");
-        }
     </script>
+</body>
+</html>

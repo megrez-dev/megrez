@@ -18,7 +18,7 @@
                     <span class="comment-reply" data-no-instant><a 
                         href="javascript:void(0);"
                         rel="nofollow"
-                        onclick="return TypechoComment.replyArticle('comment-{{ comment.ID }}', {{ comment.ID }}, {{ comment.ID }});">回复</a></span>
+                        onclick="return replyArticle({{ article.ID }}, {{ comment.ID }}, {{ comment.ID }});">回复</a></span>
                 </div>
             </div>
         </div>
@@ -45,7 +45,7 @@
                                 <span class="comment-reply" data-no-instant><a
                                         href="javascript:void(0);"
                                         rel="nofollow"
-                                        onclick="return TypechoComment.replyArticle('comment-{{ subComment.ID }}', {{ subComment.ID }}, {{ comment.ID }});">回复</a></span>
+                                        onclick="return replyArticle({{ article.ID }}, {{ subComment.ID }}, {{ comment.ID }});">回复</a></span>
                             </div>
                         </div>
                     </div>

@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     {% include "component/head.html" %}
     <meta name="keywords" content="阿里云,Alibaba Cloud" />
@@ -118,7 +117,7 @@
         <div id="comments" class="clearfix">
             <div id="respond-post-{{ article.ID }}" class="zdypl"><span class="response" data-no-instant>发表评论 <a
                         id="cancel-comment-reply-link" href="javascript:void(0);"
-                        rel="nofollow" style="display:none" onclick="return TypechoComment.cancelReplyArticle();">
+                        rel="nofollow" style="display:none" onclick="return cancelReplyArticle({{ article.ID }});">
                         取消评论</a></span>
                 <form method="post" action="/article/{{ article.ID }}/comment" id="comment-form" class="comment-form"
                     role="form" onsubmit="getElementById('misubmit').disabled=true;return true;">
@@ -275,7 +274,6 @@
         });
         postDirectory.init();
     </script>
-    {% include "component/commentJS.html" %}
     <script type="text/javascript">
         (function () {
             var pres = document.querySelectorAll('pre');
@@ -285,6 +283,21 @@
             });
         })();
     </script>
+    <script type="text/javascript">
+        $(function () {
+            $(".copy-to-clipboard-button").each(function (i, btn) {
+                btn.addEventListener("click", function () {
+                    layer.msg('代码复制成功');
+                });
+            });
+        });
+    
+        $("#post-content img").wrap(function () {
+            return '<a data-fancybox="gallery" href=' + this.src + '></a>';
+        });
+        if (!$("#directory ul").has("li").length > 0) {
+            $("#directory").css("display", "none");
+        }
+    </script>
 </body>
-
 </html>

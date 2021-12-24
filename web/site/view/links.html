@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     {% include "component/head.html" %}
     <meta name="keywords" content="" />
@@ -38,7 +37,7 @@
     <div class="comment-container">
         <div id="comments" class="clearfix">
             <div id="respond-page-{{ page.ID }}" class="zdypl">
-                <span class="response" data-no-instant>发表评论 <a id="cancel-comment-reply-link" href="javascript:void(0);" rel="nofollow" style="display:none" onclick="return TypechoComment.cancelReplyPage();"> 取消评论</a></span>
+                <span class="response" data-no-instant>发表评论 <a id="cancel-comment-reply-link" href="javascript:void(0);" rel="nofollow" style="display:none" onclick="return cancelReplyPage({{ page.ID }});"> 取消评论</a></span>
                 <form method="post" action="/page/{{ page.ID }}/comment" id="comment-form" class="comment-form" role="form" onsubmit ="getElementById('misubmit').disabled=true;return true;">
                     <input type="text" name="author" maxlength="12" id="author" class="form-control input-control clearfix" placeholder="昵称 (必填哦)" value="" required>
                     <input type="email" name="mail" id="mail" class="form-control input-control clearfix" placeholder="邮箱 (必填哦)" value=""  required>
@@ -82,43 +81,6 @@
 
     {% include "layout/footer.html" %}
     <a href="#0" class="cd-top">Top</a>
-
-    {% include "component/commentJS.html" %}
-
-    <script type="text/javascript">
-            (function () {
-                var pres = document.querySelectorAll('pre');
-                var lineNumberClassName = 'line-numbers';
-                pres.forEach(function (item, index) {
-                    item.className = item.className == '' ? lineNumberClassName : item.className + ' ' + lineNumberClassName;
-                });
-            })();
-    </script>
-    <script type="text/javascript"
-        src="https://rawchen.com/usr/plugins/CodeHighlighter/static/clipboard.min.js"></script>
-    <script type="text/javascript" src="https://rawchen.com/usr/plugins/CodeHighlighter/static/prism.js"></script>
-    <!--核心js-->
-    <script type="text/javascript" src="https://cdn.bootcdn.net/ajax/libs/layui/2.5.6/layui.all.min.js"></script>
-    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
     <script type="text/javascript" src="https://alkaidchen-1257721976.cos.ap-guangzhou.myqcloud.com/blog/static/js/commentTyping.js"></script>
-    <script type="text/javascript">
-        $(function () {
-            $(".copy-to-clipboard-button").each(function (i, btn) {
-                btn.addEventListener("click", function () {
-                    layer.msg('代码复制成功');
-                });
-            });
-        });
-        
-        if (this.$.ajaxSettings.url.indexOf("/links.html") >= 0 ||
-            this.$.ajaxSettings.url.indexOf("/about.html") >= 0 ||
-            this.$.ajaxSettings.url.indexOf("/movies.html") >= 0 ||
-            this.$.ajaxSettings.url.indexOf("/download.html") >= 0 ||
-            this.$.ajaxSettings.url.indexOf("/music.html") >= 0) {
-            $("#post-content img").unwrap();
-        }
-
-        if (!$("#directory ul").has("li").length > 0) {
-            $("#directory").css("display", "none");
-        }
-    </script>
+</body>
+</html>
