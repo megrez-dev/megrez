@@ -31,7 +31,9 @@ func New(dsn string) (*DAO, error) {
 		&po.Option{},
 		&po.Page{},
 		&po.Menu{},
-		&po.Tag{})
+		&po.Tag{},
+		&po.ArticleTag{},
+	)
 	if err != nil {
 		log.Println("migrate database failed, ", err)
 		return nil, err

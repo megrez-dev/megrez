@@ -27,6 +27,6 @@ func (dao *DAO) ListAllCategories() ([]po.Category, error) {
 
 // CreateCategory handle create category
 func (dao *DAO) CreateCategory(category *po.Category) error {
-	result := dao.db.Create(&category)
+	result := dao.db.Create(category)
 	return result.Error
 }

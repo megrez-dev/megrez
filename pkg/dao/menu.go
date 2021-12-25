@@ -13,6 +13,6 @@ func (dao *DAO) ListAllMenus() ([]po.Menu, error) {
 
 // CreateMenu handle create menu
 func (dao *DAO) CreateMenu(menu *po.Menu) error {
-	result := dao.db.Create(&menu)
+	result := dao.db.Create(menu)
 	return result.Error
 }

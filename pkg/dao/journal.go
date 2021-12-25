@@ -18,6 +18,6 @@ func (dao *DAO) CountAllJournals() (int64, error) {
 
 // CreateJournal handle create link
 func (dao *DAO) CreateJournal(journal *po.Journal) error {
-	result := dao.db.Create(&journal)
+	result := dao.db.Create(journal)
 	return result.Error
 }

@@ -13,5 +13,5 @@ require (
 	github.com/spf13/viper v1.9.0
 	github.com/ugorji/go v1.2.6 // indirect
 	gorm.io/driver/mysql v1.2.0
-	gorm.io/gorm v1.22.3
+	gorm.io/gorm v1.22.4
 )

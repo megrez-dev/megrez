@@ -1952,10 +1952,6 @@ article.main-content.post-page iframe {
 	background: #e8583d
 }
 
-.post-tags a::before {
-	content: '#'
-}
-
 .post-content .post-tags a:hover {
 	color: #5f5f5f;
 	border: 1px solid #f7f7f7;

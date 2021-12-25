@@ -11,6 +11,6 @@ func (dao *DAO) ListAllLinks() ([]po.Link, error) {
 
 // CreateLink handle create link
 func (dao *DAO) CreateLink(link *po.Link) error {
-	result := dao.db.Create(&link)
+	result := dao.db.Create(link)
 	return result.Error
 }

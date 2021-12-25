@@ -9,6 +9,7 @@ import (
 	"github.com/megrez/pkg/dao"
 	"github.com/megrez/pkg/entity/po"
 	"github.com/megrez/pkg/entity/vo"
+	"gorm.io/gorm"
 )
 
 func routeComment(g *gin.Engine, dao *dao.DAO) {
@@ -37,16 +38,45 @@ func createCommentForArticle(c *gin.Context) {
 		}
 	}
 	text := c.PostForm("text")
-	// TODO: create author
-	// authorName := c.PostForm("author")
-	// authorMail := c.PostForm("mail")
-	// authorURL := c.PostForm("url")
+	authorURL := c.PostForm("url")
+	authorMail := c.PostForm("mail")
+	authorName := c.PostForm("author")
+	authorIP := c.ClientIP()
+	// TODO: set avatar
+	// authorAvatar, err := getAvatarByMail(authorMail)
+	author, err := DAO.GetAuthorMyMail(authorMail)
+	if err == gorm.ErrRecordNotFound {
+		// if author not exists, create author
+		author = po.Author{
+			Name: authorName,
+			Mail: authorMail,
+			Site: authorURL,
+			IP:   authorIP,
+		}
+		err = DAO.CreateAuthor(&author)
+		if err != nil {
+			c.Redirect(500, "/error")
+		}
+	} else if err != nil {
+		c.Redirect(500, "/error")
+	}
+	// if author exists, update author
+	author.Name = authorName
+	author.Site = authorURL
+	author.IP = authorIP
+	err = DAO.UpdateAuthor(&author)
+	if err != nil {
+		c.Redirect(500, "/error")
+	}
+	//TODO: 设置评论 agent 信息
+	agent := c.Request.UserAgent()
+	log.Println("agent:", agent)
 	comment := &po.Comment{
 		ArticleID: uint(articleID),
 		Content:   text,
 		RootID:    uint(rootID),
 		ParentID:  uint(parentID),
-		AuthorID:  1,
+		AuthorID:  author.ID,
 		Type:      1,
 		Status:    0,
 	}

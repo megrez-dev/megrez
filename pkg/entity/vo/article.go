@@ -129,8 +129,13 @@ func GetArticleDetailFromPO(po po.Article, pageNum, pageSize int) (*ArticleDetia
 	}
 	category := GetBriefCategoryFromPO(categoryPO)
 	vo.Category = category
-	// TODO: Tags
-	// vo.Tags = ...
+	tagPOs, err := dao.GetTagsByArticleID(po.ID)
+	tags := []*BriefTag{}
+	for _, tagPO := range tagPOs {
+		tag := GetBriefTagFromPO(tagPO)
+		tags = append(tags, tag)
+	}
+	vo.Tags = tags
 	commentPOs, err := dao.ListRootCommentsByArticleID(po.ID, pageNum, pageSize)
 	if err != nil {
 		return vo, err

@@ -9,8 +9,8 @@ type BriefTag struct {
 	Slug string
 }
 
-func GetBriefTagFromPO(po *po.Tag) BriefTag {
-	return BriefTag{
+func GetBriefTagFromPO(po po.Tag) *BriefTag {
+	return &BriefTag{
 		Name: po.Name,
 		Slug: po.Slug,
 	}

@@ -55,6 +55,6 @@ func (dao *DAO) CountArticlesByCategoryID(cid uint) (int64, error) {
 
 // CreateArticle handle create article
 func (dao *DAO) CreateArticle(article *po.Article) error {
-	result := dao.db.Create(&article)
+	result := dao.db.Create(article)
 	return result.Error
 }
