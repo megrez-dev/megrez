@@ -11,7 +11,7 @@
 
     {% include "component/header.html" %}
     
-    <div class="post-header-thumb  bg-yellow" style="background-image:url({{ article.Thumb }});">
+    <div class="post-header-thumb  bg-{{ global.RandomColor }}" style="background-image:url({{ article.Thumb }});">
         <div class="post-header-thumb-op" style="background-image:url({{ article.Thumb }});"></div>
         <div class="post-header-thumb-cover">
             <div class="post-header-thumb-container">

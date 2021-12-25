@@ -35,7 +35,7 @@
                 <div class="post-onelist-item">
                     <div class="post-onelist-item-container">
                         <a href="/article/{{ article.ID }}">
-                            <div class="onelist-item-thumb bg-yellow" style="background-image:url({{ article.Thumb }});"></div>
+                            <div class="onelist-item-thumb bg-{{ global.RandomColor }}" style="background-image:url({{ article.Thumb }});"></div>
                         </a>
                     <div class="onelist-item-info">
                         <div class="item-title">
@@ -49,7 +49,7 @@
                                 href="/article/{{ article.ID }}#comments">{{article.CommentsNum}}
                                 评论</a>&nbsp;&nbsp; <i class="fa fa-eye" aria-hidden="true"></i> {{ article.Visits }} 浏览
                         </div>
-                        <div class="item-meta-hr  bg-yellow"></div>
+                        <div class="item-meta-hr  bg-{{ global.RandomColor }}"></div>
                         <div class="item-content">
                             <p>{{ article.Summary }}</p>
                         </div>

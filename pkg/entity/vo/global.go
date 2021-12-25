@@ -2,6 +2,7 @@ package vo
 
 import (
 	"fmt"
+	"math/rand"
 	"strconv"
 	"time"
 
@@ -28,6 +29,7 @@ type Global struct {
 	Categories      []*BriefCategory
 	LatestArticles  []*LatestArticl
 	LatestComments  []*LatestComment
+	RandomColor     func() string
 }
 
 type LatestArticl struct {
@@ -200,5 +202,25 @@ func GetGlobalOption() (Global, error) {
 		}
 		global.LatestComments = latestComments
 	}
+	global.RandomColor = randomColor
 	return global, nil
+}
+
+func randomColor() string {
+	i := rand.Intn(6)
+	switch i {
+	case 0:
+		return "blue"
+	case 1:
+		return "purple"
+	case 2:
+		return "green"
+	case 3:
+		return "yellow"
+	case 4:
+		return "red"
+	case 5:
+		return "orange"
+	}
+	return "red"
 }

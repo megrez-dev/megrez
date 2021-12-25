@@ -17,9 +17,9 @@
                 <div class="post-lists-body">
                     {% for article in articles %}
                     <div class="post-list-item">
-                        <div class="post-list-item-container  bg-blue">
+                        <div class="post-list-item-container  bg-{{ global.RandomColor }}">
                             <a href="/article/{{ article.ID }}">
-                                <div class="item-label  bg-yellow">
+                                <div class="item-label bg-{{ global.RandomColor }}">
                                     <div class="item-title">{{ article.Title }}</div>
                                     <div class="item-meta clearfix">
                                         <div class="item-meta-ico bg-ico-game"
