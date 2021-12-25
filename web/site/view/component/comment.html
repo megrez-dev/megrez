@@ -1,59 +1,126 @@
-<ol class="comment-list">
-    {% for comment in comments %}
-    <li id="li-comment-{{ comment.ID }}" class="comment-body comment-parent comment-odd">
-        <div id="comment-{{ comment.ID }}">
-            <div class="comment-view" onclick="">
-                <div class="comment-header">
-                    <img class="avatar" src="{{ comment.Author.Avatar }}" width="80" height="80" />
-                    <span class="comment-author"><a href="{{ comment.Author.Site }}" target="_blank"
-                            rel="external nofollow">{{ comment.Author.Name }}</a> </span>
-                </div>
-                <div class="comment-content">
-                    <p>{{ comment.Content }}</p>
-                </div>
-                <div class="comment-meta">
-                    <time class="comment-time">{{ comment.CreatedAt|date:"2006-01-02 15:04:05" }}</time>&nbsp;&nbsp;
-                    <span class="agent"><i class="fa fa-windows"></i> Windows 10</span>&nbsp;&nbsp;
-                    <span class="agent"><i class="fa fa-chrome"></i> Chrome 95</span>
-                    <span class="comment-reply" data-no-instant><a 
-                        href="javascript:void(0);"
-                        rel="nofollow"
-                        onclick="return replyArticle({{ article.ID }}, {{ comment.ID }}, {{ comment.ID }});">回复</a></span>
-                </div>
-            </div>
+{% comment %} 
+Usage: 
+include "component/comment.html" with comments=comments type="article"|"page" perfix="perfix" pagination=pagination
+{% endcomment %}
+
+<div class="comment-container">
+    <div id="comments" class="clearfix">
+        {% if type == "article" %}
+        <div id="respond-article-{{ article.ID }}" class="zdypl">
+        {% else %}
+        <div id="respond-page-{{ page.ID }}" class="zdypl">
+        {% endif %}
+            <span class="response" data-no-instant>发表评论 <a id="cancel-comment-reply-link" href="javascript:void(0);" rel="nofollow" style="display:none"
+                {% if type == "article" %}
+                onclick="return cancelReplyArticle({{ article.ID }});"> 取消评论</a></span>
+                {% else %}
+                onclick="return cancelReplyPage({{ page.ID }});"> 取消评论</a></span>
+                {% endif %}
+            {% if type == "article" %}
+            <form method="post" action="/article/{{ article.ID }}/comment" id="comment-form" class="comment-form" role="form" onsubmit ="getElementById('misubmit').disabled=true;return true;">
+            {% else %}
+            <form method="post" action="/page/{{ page.ID }}/comment" id="comment-form" class="comment-form" role="form" onsubmit ="getElementById('misubmit').disabled=true;return true;">
+            {% endif %}
+                <input type="text" name="author" maxlength="12" id="author" class="form-control input-control clearfix" placeholder="昵称 (必填哦)" value="" required>
+                <input type="email" name="mail" id="mail" class="form-control input-control clearfix" placeholder="邮箱 (必填哦)" value=""  required>
+                <input type="url" name="url" id="url" class="form-control input-control clearfix" placeholder="博客地址 (https://)" value="" >
+                <textarea name="text" id="textarea" class="form-control" placeholder="来都来了，看都看了，想说点什么吗 0_o" required ></textarea>
+                <button type="submit" class="submit" id="misubmit">提交</button>
+            </form>
         </div>
-        {% if comment.HasChild %}
-        <div class="comment-children">
-            <ol class="comment-list">
-                {% for subComment in comment.SubComments %}
-                <li id="li-comment-{{ subComment.ID }}" class="comment-body comment-child comment-odd">
-                    <div id="comment-{{ subComment.ID }}">
-                        <div class="comment-view" onclick="">
-                            <div class="comment-header">
-                                <img class="avatar" src="{{ subComment.Author.Avatar }}" width="80" height="80" />
-                                <span class="comment-author"><a href="{{ subComment.Author.Site }}" target="_blank"
-                                        rel="external nofollow">{{ subComment.Author.Name }}</a> </span>
-                            </div>
-                            <div class="comment-content">
-                                <span class="comment-author-at"><a href="#comment-{{ subComment.ParentID }}">@{{ subComment.ReplyAuthor.Name }}</a></span>
-                                <p>{{ subComment.Content }}</p>
-                            </div>
-                            <div class="comment-meta">
-                                <time class="comment-time">{{ subComment.CreatedAt|date:"2006-01-02 15:04:05" }}</time>&nbsp;&nbsp;
-                                <span class="agent"><i class="fa fa-windows"></i> Windows 10</span>&nbsp;&nbsp;
-                                <span class="agent"><i class="fa fa-chrome"></i> Chrome 95</span>
-                                <span class="comment-reply" data-no-instant><a
-                                        href="javascript:void(0);"
-                                        rel="nofollow"
-                                        onclick="return replyArticle({{ article.ID }}, {{ subComment.ID }}, {{ comment.ID }});">回复</a></span>
-                            </div>
+
+        <ol class="comment-list">
+            {% for comment in comments %}
+            <li id="li-comment-{{ comment.ID }}" class="comment-body comment-parent comment-odd">
+                <div id="comment-{{ comment.ID }}">
+                    <div class="comment-view" onclick="">
+                        <div class="comment-header">
+                            <img class="avatar" src="{{ comment.Author.Avatar }}" width="80" height="80" />
+                            <span class="comment-author"><a href="{{ comment.Author.Site }}" target="_blank"
+                                    rel="external nofollow">{{ comment.Author.Name }}</a> </span>
+                        </div>
+                        <div class="comment-content">
+                            <p>{{ comment.Content }}</p>
+                        </div>
+                        <div class="comment-meta">
+                            <time class="comment-time">{{ comment.CreatedAt|date:"2006-01-02 15:04:05" }}</time>&nbsp;&nbsp;
+                            <span class="agent"><i class="fa fa-windows"></i> Windows 10</span>&nbsp;&nbsp;
+                            <span class="agent"><i class="fa fa-chrome"></i> Chrome 95</span>
+                            <span class="comment-reply" data-no-instant>
+                                {% if type == "article" %}
+                                <a href="javascript:void(0);" rel="nofollow" onclick="return replyArticle({{ article.ID }}, {{ comment.ID }}, {{ comment.ID }});">回复</a>
+                                {% else %}
+                                <a href="javascript:void(0);" rel="nofollow" onclick="return replyPage({{ page.ID }}, {{ comment.ID }}, {{ comment.ID }});">回复</a>
+                                {% endif %}
+                            </span>
                         </div>
                     </div>
+                </div>
+                {% if comment.HasChild %}
+                <div class="comment-children">
+                    <ol class="comment-list">
+                        {% for subComment in comment.SubComments %}
+                        <li id="li-comment-{{ subComment.ID }}" class="comment-body comment-child comment-odd">
+                            <div id="comment-{{ subComment.ID }}">
+                                <div class="comment-view" onclick="">
+                                    <div class="comment-header">
+                                        <img class="avatar" src="{{ subComment.Author.Avatar }}" width="80" height="80" />
+                                        <span class="comment-author"><a href="{{ subComment.Author.Site }}" target="_blank"
+                                                rel="external nofollow">{{ subComment.Author.Name }}</a> </span>
+                                    </div>
+                                    <div class="comment-content">
+                                        <span class="comment-author-at"><a href="#comment-{{ subComment.ParentID }}">@{{ subComment.ReplyAuthor.Name }}</a></span>
+                                        <p>{{ subComment.Content }}</p>
+                                    </div>
+                                    <div class="comment-meta">
+                                        <time class="comment-time">{{ subComment.CreatedAt|date:"2006-01-02 15:04:05" }}</time>&nbsp;&nbsp;
+                                        <span class="agent"><i class="fa fa-windows"></i> Windows 10</span>&nbsp;&nbsp;
+                                        <span class="agent"><i class="fa fa-chrome"></i> Chrome 95</span>
+                                        <span class="comment-reply" data-no-instant>
+                                            {% if type == "article" %}
+                                            <a href="javascript:void(0);" rel="nofollow" onclick="return replyArticle({{ article.ID }}, {{ subComment.ID }}, {{ comment.ID }});">回复</a>
+                                            {% else %}
+                                            <a href="javascript:void(0);" rel="nofollow" onclick="return replyPage({{ page.ID }}, {{ subComment.ID }}, {{ comment.ID }});">回复</a>
+                                            {% endif %}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ol>
+                </div>
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ol>
+
+        <div class="lists-navigator clearfix">
+            <ol class="page-navigator">
+                {% if pagination.Pre != 0 %}
+                <li class="prev"><a href="/{{ perfix }}/comment-page/{{ pagination.Pre }}#comments"><</a></li>
+                {% endif %}
+                {% if pagination.First != 0 %}
+                <li><a href="/{{ perfix }}/comment-page/{{ pagination.First }}#comments">{{ pagination.First }}</a></li>
+                <li><span>-</span></li>
+                {% endif %}
+                {% for i in pagination.Range %}
+                {% if i == pagination.Current %}
+                <li class="current"><a href="/{{ perfix }}/comment-page/{{ i }}#comments">{{ i }}</a>
                 </li>
+                {% else %}
+                <li><a href="/{{ perfix }}/comment-page/{{ i }}#comments">{{ i }}</a></li>
+                {% endif %}
                 {% endfor %}
+                {% if pagination.Last != 0 %}
+                <li><span>-</span></li>
+                <li><a href="/{{ perfix }}/comment-page/{{ pagination.Last }}#comments">{{ pagination.Last }}</a></li>
+                {% endif %}
+                {% if pagination.Next != 0 %}
+                <li class="next"><a
+                        href="/{{ perfix }}/comment-page/{{ pagination.Next }}#comments">></a></li>
+                {% endif %}
             </ol>
         </div>
-        {% endif %}
-    </li>
-    {% endfor %}
-</ol>
+    </div>
+</div>

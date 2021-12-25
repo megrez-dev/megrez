@@ -9,7 +9,7 @@
 
 <body class="" gtools_scp_screen_capture_injected="true">
 
-    {% include "layout/header.html" %}
+    {% include "component/header.html" %}
 
     <article class="main-content page-page">
         <div class="post-header">
@@ -51,54 +51,9 @@
         </div>
     </article>
 
+    {% include "component/comment.html" with comments=comments type="page" perfix=page.Slug pagination=pagination %}
 
-
-    <div class="comment-container">
-        <div id="comments" class="clearfix">
-            <div id="respond-page-{{ page.ID }}" class="zdypl">
-                <span class="response" data-no-instant>发表评论 <a id="cancel-comment-reply-link" href="javascript:void(0);" rel="nofollow" style="display:none" onclick="return cancelReplyPage({{ page.ID }});"> 取消评论</a></span>
-                <form method="post" action="/page/{{ page.ID }}/comment" id="comment-form" class="comment-form" role="form" onsubmit ="getElementById('misubmit').disabled=true;return true;">
-                    <input type="text" name="author" maxlength="12" id="author" class="form-control input-control clearfix" placeholder="昵称 (必填哦)" value="" required>
-                    <input type="email" name="mail" id="mail" class="form-control input-control clearfix" placeholder="邮箱 (必填哦)" value=""  required>
-                    <input type="url" name="url" id="url" class="form-control input-control clearfix" placeholder="博客地址 (https://)" value="" >
-                    <textarea name="text" id="textarea" class="form-control" placeholder="来都来了，看都看了，想说点什么吗 0_o" required ></textarea>
-                    <button type="submit" class="submit" id="misubmit">提交</button>
-                </form>
-            </div>
-
-            {% include "component/pageComment.html" %}
-
-            <div class="lists-navigator clearfix">
-                <ol class="page-navigator">
-                    {% if pagination.Pre != 0 %}
-                    <li class="prev"><a href="/{{ page.Slug }}/comment-page/{{ pagination.Pre }}#comments"><</a></li>
-                    {% endif %}
-                    {% if pagination.First != 0 %}
-                    <li><a href="/{{ page.Slug }}/comment-page/{{ pagination.First }}#comments">{{ pagination.First }}</a></li>
-                    <li><span>-</span></li>
-                    {% endif %}
-                    {% for i in pagination.Range %}
-                    {% if i == pagination.Current %}
-                    <li class="current"><a href="/{{ page.Slug }}/comment-page/{{ i }}#comments">{{ i }}</a>
-                    </li>
-                    {% else %}
-                    <li><a href="/{{ page.Slug }}/comment-page/{{ i }}#comments">{{ i }}</a></li>
-                    {% endif %}
-                    {% endfor %}
-                    {% if pagination.Last != 0 %}
-                    <li><span>-</span></li>
-                    <li><a href="/{{ page.Slug }}/comment-page/{{ pagination.Last }}#comments">{{ pagination.Last }}</a></li>
-                    {% endif %}
-                    {% if pagination.Next != 0 %}
-                    <li class="next"><a
-                            href="/{{ page.Slug }}/comment-page/{{ pagination.Next }}#comments">></a></li>
-                    {% endif %}
-                </ol>
-            </div>
-        </div>
-    </div>
-
-    {% include "layout/footer.html" %}
+    {% include "component/footer.html" %}
     <a href="#0" class="cd-top">Top</a>
     <script type="text/javascript" src="https://alkaidchen-1257721976.cos.ap-guangzhou.myqcloud.com/blog/static/js/commentTyping.js"></script>
 </body>

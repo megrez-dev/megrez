@@ -9,7 +9,7 @@
 
 <body class="" gtools_scp_screen_capture_injected="true">
 
-    {% include "layout/header.html" %}
+    {% include "component/header.html" %}
     
     <div class="post-header-thumb  bg-yellow" style="background-image:url({{ article.Thumb }});">
         <div class="post-header-thumb-op" style="background-image:url({{ article.Thumb }});"></div>
@@ -113,62 +113,9 @@
         </div>
     </article>
 
-    <div class="comment-container">
-        <div id="comments" class="clearfix">
-            <div id="respond-post-{{ article.ID }}" class="zdypl"><span class="response" data-no-instant>发表评论 <a
-                        id="cancel-comment-reply-link" href="javascript:void(0);"
-                        rel="nofollow" style="display:none" onclick="return cancelReplyArticle({{ article.ID }});">
-                        取消评论</a></span>
-                <form method="post" action="/article/{{ article.ID }}/comment" id="comment-form" class="comment-form"
-                    role="form" onsubmit="getElementById('misubmit').disabled=true;return true;">
-                    <div> <input type="text" name="author" maxlength="12" id="author"
-                            class="form-control input-control clearfix" placeholder="昵称 (必填哦)" value="" required>
-                        <input type="email" name="mail" id="mail" class="form-control input-control clearfix"
-                            placeholder="邮箱 (必填哦)" value="" required>
-                        <input type="url" name="url" id="url" class="form-control input-control clearfix"
-                            placeholder="博客地址 (https://)" value="">
-                    </div>
+    {% include "component/comment.html" with comments=article.Comments type="article" perfix="article/"+article.ID pagination=article.Page %}
 
-                    <textarea name="text" id="textarea" class="form-control" placeholder="来都来了，看都看了，想说点什么吗 0_o"
-                        required></textarea>
-                    <button type="submit" class="submit" id="misubmit">提交</button>
-                </form>
-            </div>
-
-            {% include "component/comment.html" with comments=article.Comments %}
-
-            <div class="lists-navigator clearfix">
-                <ol class="page-navigator">
-                    {% if article.Page.Pre != 0 %}
-                    <li class="prev"><a href="/article/{{ article.ID }}/comment-page/{{ article.Page.Pre }}#comments"><</a></li>
-                    {% endif %}
-                    {% if article.Page.First != 0 %}
-                    <li><a href="/article/{{ article.ID }}/comment-page/{{ article.Page.First }}#comments">{{ article.Page.First }}</a></li>
-                    <li><span>-</span></li>
-                    {% endif %}
-                    {% for i in article.Page.Range %}
-                    {% if i == article.Page.Current %}
-                    <li class="current"><a href="/article/{{ article.ID }}/comment-page/{{ i }}#comments">{{ i }}</a>
-                    </li>
-                    {% else %}
-                    <li><a href="/article/{{ article.ID }}/comment-page/{{ i }}#comments">{{ i }}</a></li>
-                    {% endif %}
-                    {% endfor %}
-                    {% if article.Page.Last != 0 %}
-                    <li><span>-</span></li>
-                    <li><a href="/article/{{ article.ID }}/comment-page/{{ article.Page.Last }}#comments">{{ article.Page.Last }}</a></li>
-                    {% endif %}
-                    {% if article.Page.Next != 0 %}
-                    <li class="next"><a
-                            href="/article/{{ article.ID }}/comment-page/{{ article.Page.Next }}#comments">></a></li>
-                    {% endif %}
-                </ol>
-            </div>
-
-        </div>
-    </div>
-
-    {% include "layout/footer.html" %}
+    {% include "component/footer.html" %}
     <a href="#0" class="cd-top">Top</a>
     <div id="directory-content" class="directory-content">
         <div id="directory"></div>
