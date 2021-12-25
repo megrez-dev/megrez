@@ -6,7 +6,7 @@ include "component/comment.html" with comments=comments type="article"|"page" pe
 <div class="comment-container">
     <div id="comments" class="clearfix">
         {% if type == "article" %}
-        <div id="respond-article-{{ article.ID }}" class="zdypl">
+        <div id="respond-post-{{ article.ID }}" class="zdypl">
         {% else %}
         <div id="respond-page-{{ page.ID }}" class="zdypl">
         {% endif %}
