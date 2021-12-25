@@ -26,17 +26,6 @@
                             <div class="item-meta" style="font-size: 15px">
                                 <p>{{ global.BlogDescription }}</p>
                             </div>
-                            <!-- 
-                                <div class="item-meta" style="font-size: 15px">
-                                    <div class="social-list">
-                                        <a href="https://tv.rawchen.com" target="_blank" style="border:none;">TV </a>丨
-                                        <a href="https://pan.rawchen.com" target="_blank" style="border:none;">PAN </a>丨
-                                        <a href="https://rawchen.com/link" target="_blank" style="border:none;">LINK</a>丨
-                                        <a href="https://java.rawchen.com" target="_blank" style="border:none;">JAVA</a>丨
-                                        <a href="https://rawchen.com/c" target="_blank" style="border:none;">GCC</a>
-                                    </div>
-                                </div>
-                            -->
                         </div>
                     </div>
                 </div>
@@ -45,11 +34,9 @@
                 {% for article in articles %}
                 <div class="post-onelist-item">
                     <div class="post-onelist-item-container">
-                        <a href="/article/{{ article.ID }}"">
-                            <div class=" onelist-item-thumb bg-yellow"
-                            style="background-image:url({{ article.Thumb }});">
-                    </div>
-                    </a>
+                        <a href="/article/{{ article.ID }}">
+                            <div class="onelist-item-thumb bg-yellow" style="background-image:url({{ article.Thumb }});"></div>
+                        </a>
                     <div class="onelist-item-info">
                         <div class="item-title">
                             <a href="/article/{{ article.ID }}"><span style="padding-right:10px"></span>{{ article.Title }}</a>
@@ -65,9 +52,6 @@
                         <div class="item-meta-hr  bg-yellow"></div>
                         <div class="item-content">
                             <p>{{ article.Summary }}</p>
-                        </div>
-                        <div class="item-readmore">
-                            <a href="/article/{{ article.ID }}""> -阅读全文- </a>
                         </div>
                     </div>
                 </div>

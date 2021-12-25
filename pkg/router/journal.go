@@ -60,8 +60,19 @@ func listJournal(c *gin.Context) {
 	if err != nil {
 		c.Redirect(500, "/error")
 	}
+	page := struct {
+		ID     uint
+		Slug   string
+		Name   string
+		Visits int64
+	}{
+		ID:     3,
+		Slug:   "journal",
+		Name:   "日志",
+		Visits: 2311,
+	}
 	pagination := vo.CaculatePagination(pageNum, pageSize, int(journalsNum))
-	c.HTML(200, "journal.html", pongo2.Context{"journals": journals, "pagination": pagination, "global": globalOption})
+	c.HTML(200, "journal.html", pongo2.Context{"page": page, "journals": journals, "pagination": pagination, "global": globalOption})
 }
 
 func createJournal(c *gin.Context) {

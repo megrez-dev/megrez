@@ -3,6 +3,7 @@ package vo
 import (
 	"fmt"
 	"strconv"
+	"time"
 
 	"github.com/megrez/pkg/dao"
 	"github.com/megrez/pkg/entity/po"
@@ -13,12 +14,16 @@ type Global struct {
 	BlogTitle       string
 	BlogDescription string
 	BlogCover       string
+	HeaderLogo      string
+	FooterLogo      string
+	PayQRCode       string
 	IPCRecord       string
 	BlogAge         float64
 	Github          string
 	QQ              string
 	Email           string
 	Telegram        string
+	BlogBirth       time.Time
 	Menus           []*Menu
 	Categories      []*BriefCategory
 	LatestArticles  []*LatestArticl
@@ -39,14 +44,6 @@ func GetLatestArticleFromPO(article *po.Article) (*LatestArticl, error) {
 	latestArticle := &LatestArticl{
 		Title: article.Title,
 	}
-	// dao, err := dao.GetDAO()
-	// if err != nil {
-	// 	return latestArticle, err
-	// }
-	// blogURL, err := dao.GetOptionByKey(OptionKeyBlogURL)
-	// if err != nil {
-	// 	return latestArticle, err
-	// }
 	latestArticle.URL = "/article/" + strconv.Itoa(int(article.ID))
 	return latestArticle, nil
 }
@@ -131,9 +128,29 @@ func GetGlobalOption() (Global, error) {
 	if err == nil {
 		global.BlogCover = blogCover
 	}
+	headerLogo, err := dao.GetOptionByKey(OptionKeyHeaderLogo)
+	if err == nil {
+		global.HeaderLogo = headerLogo
+	}
+	footerLogo, err := dao.GetOptionByKey(OptionKeyFooterLogo)
+	if err == nil {
+		global.FooterLogo = footerLogo
+	}
+	payQRCode, err := dao.GetOptionByKey(OptionKeyPayQRCode)
+	if err == nil {
+		global.PayQRCode = payQRCode
+	}
 	ipcRecord, err := dao.GetOptionByKey(OptionKeyIPCRecord)
 	if err == nil {
 		global.IPCRecord = ipcRecord
+	}
+
+	blogBirthStr, err := dao.GetOptionByKey(OptionKeyBlogBirth)
+	if err == nil {
+		blogBirth, err := time.Parse("2006-01-02 15:04:05", blogBirthStr)
+		if err == nil {
+			global.BlogBirth = blogBirth
+		}
 	}
 
 	// list menus

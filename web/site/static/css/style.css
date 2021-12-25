@@ -71,10 +71,6 @@ html {
 	::-webkit-scrollbar-thumb {
 		background-color: #bbb
 	}
-
-	::-webkit-scrollbar-track {
-		/* background-color: #eee */
-	}
 }
 
 body {
@@ -217,7 +213,7 @@ ol ol,ol ul,ul ol,ul ul {
 }
 
 .footer-icon {
-    font-size: 29px;
+    font-size: 24px !important;
     padding-left: 5px;
     transition: all 0.2s ease-in-out;
     -webkit-transition: all 0.2s ease-in-out;
@@ -234,17 +230,12 @@ ol ol,ol ul,ul ol,ul ul {
     -ms-transform: rotate(-15deg);
 }
 
-i.fa.fa-telegram.footer-icon {
-    font-size: 24px;
-}
-
 pre {
 	position: relative;
 	margin: 20px 0
 }
 
 code {
-	/* font-family: Menlo,Bitstream Vera Sans Mono,DejaVu Sans Mono,Monaco,Consolas,monospace; */
   	font-family: Consolas,'Microsoft YaHei', Monaco, Andale Mono, Ubuntu Mono, monospace;
     word-break: break-all;
     font-size: 16px;
@@ -257,22 +248,6 @@ code {
     -webkit-transition-duration: .15s;
     transition-duration: .15s;
 }
-
-/*code::before {
-    content: "";
-    position: absolute;
-    height: 12px;
-    bottom: 2px;
-    left: -2px;
-    width: 105%;
-    z-index: -1;
-    background-color: #48c6e8;
-    opacity: 0.7;
-    transform: skew(-35deg);
-    transition: opacity .2s ease;
-    border-radius: 3px 8px 10px 6px;
-    transition: 0.1s ease background-color;
-}*/
 
 pre code {
     font-weight: unset;
@@ -295,11 +270,6 @@ pre code {
 }
 
 blockquote {
-  /*
-	padding: 0 10px 0 20px;
-	border: 4px solid #ddd;
-    background: rgb(237, 237, 237);
-  */
     padding: 8px 20px;
     background: linear-gradient(to right,#dceaff, #ededed);
     border-left: 4px solid #70a6ff;
@@ -311,7 +281,6 @@ blockquote:before {
     background: #70a6ff;
     border-radius: 50%;
     color: #fff;
-    /* content: "Ã—"; */
     content: "\0021";
     font-family: Dosis,"Source Sans Pro","Helvetica Neue",Arial,sans-serif;
     font-size: 16px;
@@ -323,17 +292,6 @@ blockquote:before {
     text-align: center;
     width: 21px;
 }
-
-/****************************8
-引用的上下边距
-blockquote>:first-child {
-	margin-top: 0
-}
-
-blockquote>:last-child {
-	margin-bottom: 0
-}
-****************************/
 
 hr {
 	clear: both;
@@ -1478,7 +1436,6 @@ div#navbar-mobile-swith {
 	position: relative;
 	max-width: 700px;
 	margin: 0 auto;
-	/* padding: 70px 20px 65px 去掉阅读全文后压缩空间 */
     padding: 38px 20px 38px;
 }
 
@@ -1510,13 +1467,13 @@ div#navbar-mobile-swith {
 	color: #313131
 }
 
-.post-onelist-item-container .item-content {
+.post-onelist-item-container .item-content {            
 	padding: 0 30px 10px;
 	text-align: center;
 	word-break: break-all
 }
 
-.post-onelist-item-container .item-meta,.post-onelist-item-container .item-readmore {
+.post-onelist-item-container .item-meta {
 	font-size: 12px;
 	text-align: center;
 	color: #5f5f5f
@@ -1538,20 +1495,6 @@ div#navbar-mobile-swith {
     background-size: 100%;
 }
 
-.post-onelist-item-container .item-readmore a {
-	padding: 8px 20px;
-	color: #5f5f5f;
-	border: 1px solid #5f5f5f;
-	/* border-radius: 20px */
-}
-
-.post-onelist-item-container .item-readmore a:hover {
-    -webkit-transition-duration: .3s;
-    transition-duration: .3s;
-    background-color: black;
-    color: white;
-}
-
 .post-onelist-item-container .item-meta-hr {
 	display: block;
 	width: 55px;
@@ -1563,9 +1506,6 @@ div#navbar-mobile-swith {
 	position: relative;
 	width: 100%;
 	height: 255px;
-    /*****************************
-	margin-top: 70px
-    ******************/
 }
 
 .post-header-thumb-op {
@@ -3178,10 +3118,6 @@ article.main-content.post-page iframe {
 	}
 
 	.post-onelist-item-container .item-content {
-		display: none
-	}
-
-	.post-onelist-item-container .item-readmore {
 		display: none
 	}
 

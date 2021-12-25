@@ -3,22 +3,16 @@
 <head>
     {% include "component/head.html" %}
     <meta name="keywords" content="" />
-    <meta name="description" content="日志" />
-    <title>日志 - {{ global.BlogTitle }}</title>
+    <meta name="description" content="{{ page.Name }}" />
+    <title>{{ page.Name }} - {{ global.BlogTitle }}</title>
 </head>
 <body class="" gtools_scp_screen_capture_injected="true">
 
     {% include "layout/header.html" %}
 
     <article class="main-content page-page">
-        <h1 class="post-title" itemprop="name headline">日志</h1>
-        <div class="post-data">
-
-            <time datetime="2020-07-23T10:30:00+08:00" itemprop="datePublished"><i class="fa fa-clock-o"
-                    aria-hidden="true"> </i> 2020年07月23日</time>&nbsp;&nbsp; <i class="fa fa-comments-o"
-                aria-hidden="true"></i> <a href="#comments"> ? 评论</a>&nbsp;&nbsp; <i class="fa fa-eye"
-                aria-hidden="true"></i> 3319 浏览
-        </div>
+        <h1 class="post-title" itemprop="name headline">{{ page.Name }}</h1>
+        <div class="post-data"> <i class="fa fa-eye" aria-hidden="true"></i> {{ page.Visits }} 浏览 </div>
         <p>
     </article>
     <div class="comment-container" style="background-color: #f3f3f3;">
@@ -38,7 +32,6 @@
                                 style="display:block;float:left;margin:0 !important;font-size:12px;"><i
                                     class="fa fa-paper-plane-o" style="margin-right:4px;"></i>来自微信时光机</span>
                             <time class="comment-time" style="font-size: 12px; float:right;">{{ journal.PublishTime|date:"2006-01-02 15:04:05" }}</time>
-                            {% comment %} <time class="comment-time" style="font-size: 12px; float:right;">2021-12-12 13:22</time> {% endcomment %}
                         </div>
                     </div>
                 </li>

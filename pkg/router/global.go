@@ -12,5 +12,5 @@ func routeFavicon(g *gin.Engine, dao *dao.DAO) {
 
 func favicon(c *gin.Context) {
 	// TODO： 这里需要跨域，以后换一种方式
-	c.Redirect(302, "http://139.9.201.209/favicon.ico")
+	c.Redirect(302, "https://alkaidchen-1257721976.cos.ap-guangzhou.myqcloud.com/blog/static/images/favicon.ico")
 }
