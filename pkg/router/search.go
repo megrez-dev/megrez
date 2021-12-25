@@ -13,24 +13,22 @@ func routeSearch(g *gin.Engine, dao *dao.DAO) {
 }
 
 func search(c *gin.Context) {
-
-	// TODO: list tags
-	// tagPOs, err := DAO.ListAllTags()
-	// if err != nil {
-	// 	c.Redirect(500, "/error")
-	// }
-	// var tags []*vo.Tag
-	// for _, tagPO := range tagPOs {
-	// 	tag, err := vo.GetBriefTagFromPO(tagPO)
-	// 	if err != nil {
-	// 		c.Redirect(500, "/error")
-	// 	}
-	// 	tags = append(tags, tag)
-	// }
+	tagPOs, err := DAO.ListAllTags()
+	if err != nil {
+		c.Redirect(500, "/error")
+	}
+	var tags []*vo.TagWithArticlesNum
+	for _, tagPO := range tagPOs {
+		tag, err := vo.GetTagWithArticlesNumFromPO(tagPO)
+		if err != nil {
+			c.Redirect(500, "/error")
+		}
+		tags = append(tags, tag)
+	}
 
 	globalOption, err := vo.GetGlobalOption()
 	if err != nil {
 		c.Redirect(500, "/error")
 	}
-	c.HTML(200, "search.html", pongo2.Context{"global": globalOption})
+	c.HTML(200, "search.html", pongo2.Context{"tags": tags, "global": globalOption})
 }

@@ -53,6 +53,13 @@ func (dao *DAO) CountArticlesByCategoryID(cid uint) (int64, error) {
 	return count, result.Error
 }
 
+// CountArticlesByTagID
+func (dao *DAO) CountArticlesByTagID(tid uint) (int64, error) {
+	var count int64
+	result := dao.db.Model(&po.ArticleTag{}).Where("tag_id = ?", tid).Count(&count)
+	return count, result.Error
+}
+
 // CreateArticle handle create article
 func (dao *DAO) CreateArticle(article *po.Article) error {
 	result := dao.db.Create(article)

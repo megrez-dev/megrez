@@ -11,6 +11,13 @@ func (dao *DAO) GetTagsByArticleID(aid uint) ([]po.Tag, error) {
 	return tags, result.Error
 }
 
+// ListAllTags
+func (dao *DAO) ListAllTags() ([]po.Tag, error) {
+	tags := []po.Tag{}
+	result := dao.db.Find(&tags)
+	return tags, result.Error
+}
+
 func (dao *DAO) CreateTag(tag *po.Tag) error {
 	result := dao.db.Create(tag)
 	return result.Error
