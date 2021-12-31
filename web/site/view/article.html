@@ -120,6 +120,7 @@
     <div id="directory-content" class="directory-content">
         <div id="directory"></div>
     </div>
+    {% include "component/tail.html" %}
     <script>
         var postDirectoryBuild = function () {
             var postChildren = function children(childNodes, reg) {
@@ -246,5 +247,6 @@
             $("#directory").css("display", "none");
         }
     </script>
+    <script type="text/javascript" src="https://alkaidchen-1257721976.cos.ap-guangzhou.myqcloud.com/blog/static/js/commentTyping.js"></script>
 </body>
 </html>
