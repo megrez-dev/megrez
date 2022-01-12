@@ -8,15 +8,16 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/megrez/pkg/dao"
 	"github.com/megrez/pkg/entity/vo"
+	"gorm.io/gorm"
 )
 
-func routeAbout(g *gin.Engine, dao *dao.DAO) {
+func routePage(g *gin.Engine, dao *dao.DAO) {
 	DAO = dao
-	g.GET("/about", about)
-	g.GET("/about/comment-page/:pageNum", about)
+	g.GET("/:slug", page)
+	g.GET("/:slug/comment-page/:pageNum", page)
 }
 
-func about(c *gin.Context) {
+func page(c *gin.Context) {
 	var pageNum, pageSize int
 	var err error
 	if c.Param("pageNum") == "" {
@@ -30,8 +31,16 @@ func about(c *gin.Context) {
 		}
 	}
 	pageSize = 8
+	slug := c.Param("slug")
+	page, err := DAO.GetPageBySlug(slug)
+	if err == gorm.ErrRecordNotFound {
+		c.Redirect(404, "/404")
+	}else {
+		c.Redirect(500, "/error")
+	}
 
-	commentPOs, err := DAO.ListRootCommentsByPageID(1, pageNum, pageSize)
+
+	commentPOs, err := DAO.ListRootCommentsByPageID(page.ID, pageNum, pageSize)
 	if err != nil {
 		c.Redirect(500, "/error")
 	}
@@ -48,23 +57,12 @@ func about(c *gin.Context) {
 	if err != nil {
 		c.Redirect(500, "/error")
 	}
-	page := struct {
-		ID          uint
-		Name        string
-		Slug        string
-		Visits      int64
-		CommentsNum int64
-	}{
-		ID:   1,
-		Name: "关于",
-		Slug: "about",
-		Visits: 10086,
-	}
 	commentsNum, err := DAO.CountRootCommentsByPageID(page.ID)
 	if err != nil {
 		c.Redirect(500, "/error")
 	}
 	page.CommentsNum = commentsNum
 	pagination := vo.CaculatePagination(pageNum, pageSize, int(commentsNum))
-	c.HTML(200, "about.html", pongo2.Context{"page": page, "pagination": pagination, "comments": comments, "global": globalOption})
+	template := page.slug + ".html"
+	c.HTML(200, template, pongo2.Context{"page": page, "pagination": pagination, "comments": comments, "global": globalOption})
 }

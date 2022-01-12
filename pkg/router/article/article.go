@@ -1,4 +1,4 @@
-package router
+package article
 
 import (
 	"log"
@@ -12,10 +12,7 @@ import (
 	"github.com/megrez/pkg/entity/vo"
 )
 
-var DAO *dao.DAO
-
-func routeArticle(g *gin.Engine, dao *dao.DAO) {
-	DAO = dao
+func routeArticle(g *gin.Engine, db *dao.DAO) {
 	g.GET("/", index)
 	g.GET("/index/:pageNum", index)
 	g.GET("/article/:id", articleDetail)
@@ -46,7 +43,7 @@ func index(c *gin.Context) {
 		}
 	}
 
-	articlePOs, err := DAO.ListAllArticles(pageNum, pageSize)
+	articlePOs, err := db.ListAllArticles(pageNum, pageSize)
 	if err != nil {
 		log.Println("get articles from db failed, err:", err)
 		c.Redirect(500, "/error")
