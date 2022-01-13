@@ -1,9 +1,6 @@
 package vo
 
-import (
-	"github.com/megrez/pkg/dao"
-	"github.com/megrez/pkg/entity/po"
-)
+import "github.com/megrez/pkg/model"
 
 type BriefTag struct {
 	Name string
@@ -16,26 +13,22 @@ type TagWithArticlesNum struct {
 	ArticlesNum int64
 }
 
-func GetBriefTagFromPO(po po.Tag) *BriefTag {
+func GetBriefTagFromPO(tag model.Tag) *BriefTag {
 	return &BriefTag{
-		Name: po.Name,
-		Slug: po.Slug,
+		Name: tag.Name,
+		Slug: tag.Slug,
 	}
 }
 
-func GetTagWithArticlesNumFromPO(po po.Tag) (*TagWithArticlesNum, error) {
-	dao, err := dao.GetDAO()
+func GetTagWithArticlesNumFromPO(tag model.Tag) (*TagWithArticlesNum, error) {
+	articlesNum, err := model.CountArticlesByTagID(tag.ID)
 	if err != nil {
 		return nil, err
 	}
-	articlesNum, err := dao.CountArticlesByTagID(po.ID)
-	if err != nil {
-		return nil, err
-	}
-	tag := &TagWithArticlesNum{
-		Name:        po.Name,
-		Slug:        po.Slug,
+	tagWithArticlesNum := &TagWithArticlesNum{
+		Name:        tag.Name,
+		Slug:        tag.Slug,
 		ArticlesNum: articlesNum,
 	}
-	return tag, nil
+	return tagWithArticlesNum, nil
 }

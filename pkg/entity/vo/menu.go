@@ -1,16 +1,15 @@
 package vo
 
-import "github.com/megrez/pkg/entity/po"
+import "github.com/megrez/pkg/model"
 
 type Menu struct {
 	Name string
 	Slug string
 }
 
-func GetMenuFromPO(po po.Menu) *Menu {
-	menu := &Menu{
-		Name: po.Name,
-		Slug: po.Slug,
+func GetMenuFromPO(menu model.Menu) *Menu {
+	return &Menu{
+		Name: menu.Name,
+		Slug: menu.Slug,
 	}
-	return menu
 }

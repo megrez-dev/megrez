@@ -6,15 +6,16 @@ import (
 
 	"github.com/fsnotify/fsnotify"
 	"github.com/gin-gonic/gin"
-	"github.com/megrez/pkg/dao"
+	"github.com/megrez/pkg/model"
 	"github.com/megrez/pkg/router"
 	"github.com/spf13/viper"
+	"gorm.io/gorm"
 )
 
 // Megrez application
 type Megrez struct {
 	config *viper.Viper
-	dao    *dao.DAO
+	db     *gorm.DB
 	server *gin.Engine
 }
 
@@ -78,18 +79,18 @@ func (m *Megrez) initDAO() error {
 	name := dbconfig["database"]
 	user := dbconfig["username"]
 	pwd := dbconfig["password"]
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local&timeout=30s",
 		user, pwd, host, port, name)
-	dao, err := dao.New(dsn)
+	db, err := model.New(dsn)
 	if err != nil {
 		log.Println("connect db failed, ", err)
 		return err
 	}
-	m.dao = dao
+	m.db = db
 	return nil
 }
 
 func (m *Megrez) initRouter() error {
-	m.server = router.NewRouter(m.dao)
+	m.server = router.NewRouter()
 	return nil
 }

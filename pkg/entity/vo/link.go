@@ -1,6 +1,6 @@
 package vo
 
-import "github.com/megrez/pkg/entity/po"
+import "github.com/megrez/pkg/model"
 
 type Link struct {
 	Name string
@@ -8,11 +8,10 @@ type Link struct {
 	Logo string
 }
 
-func GetLinkFromPO(po po.Link) *Link {
-	link := &Link{
-		Name: po.Name,
-		Addr: po.Addr,
-		Logo: po.Logo,
+func GetLinkFromPO(link model.Link) *Link {
+	return &Link{
+		Name: link.Name,
+		Addr: link.Addr,
+		Logo: link.Logo,
 	}
-	return link
 }

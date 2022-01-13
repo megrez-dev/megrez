@@ -2,11 +2,11 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/megrez/pkg/dao"
 	"github.com/megrez/pkg/middleware/pongo2gin"
+	"github.com/megrez/pkg/router/view"
 )
 
-func NewRouter(d *dao.DAO) *gin.Engine {
+func NewRouter() *gin.Engine {
 	g := gin.Default()
 	g.HTMLRender = pongo2gin.TemplatePath("web/site/view")
 	g.Static("/admin", "web/admin")
@@ -14,15 +14,13 @@ func NewRouter(d *dao.DAO) *gin.Engine {
 	g.Static("/js", "web/admin/js")
 	g.Static("/assets", "web/admin/assets")
 	// admin := g.Group("/admin")
-	routeArticle(g, d)
-	routeCategory(g, d)
-	routeComment(g, d)
-	routeAuthor(g, d)
-	routeOption(g, d)
-	routeLink(g, d)
-	routeAbout(g, d)
-	routeJournal(g, d)
-	routeSearch(g, d)
-	routeFavicon(g, d)
+	view.RouteArticle(g)
+	view.RouteCategory(g)
+	view.RouteComment(g)
+	view.RouteOption(g)
+	view.RouteLink(g)
+	view.RouteJournal(g)
+	view.RouteSearch(g)
+	view.RouteFavicon(g)
 	return g
 }

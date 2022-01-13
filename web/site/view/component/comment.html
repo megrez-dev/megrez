@@ -35,9 +35,9 @@ include "component/comment.html" with comments=comments type="article"|"page" pe
                 <div id="comment-{{ comment.ID }}">
                     <div class="comment-view" onclick="">
                         <div class="comment-header">
-                            <img class="avatar" src="{{ comment.Author.Avatar }}" width="80" height="80" />
-                            <span class="comment-author"><a href="{{ comment.Author.Site }}" target="_blank"
-                                    rel="external nofollow">{{ comment.Author.Name }}</a> </span>
+                            <img class="avatar" src="{{ comment.Avatar }}" width="80" height="80" />
+                            <span class="comment-author"><a href="{{ comment.Site }}" target="_blank"
+                                    rel="external nofollow">{{ comment.Author }}</a> </span>
                         </div>
                         <div class="comment-content">
                             <p>{{ comment.Content }}</p>
@@ -64,9 +64,9 @@ include "component/comment.html" with comments=comments type="article"|"page" pe
                             <div id="comment-{{ subComment.ID }}">
                                 <div class="comment-view" onclick="">
                                     <div class="comment-header">
-                                        <img class="avatar" src="{{ subComment.Author.Avatar }}" width="80" height="80" />
-                                        <span class="comment-author"><a href="{{ subComment.Author.Site }}" target="_blank"
-                                                rel="external nofollow">{{ subComment.Author.Name }}</a> </span>
+                                        <img class="avatar" src="{{ subComment.Avatar }}" width="80" height="80" />
+                                        <span class="comment-author"><a href="{{ subComment.Site }}" target="_blank"
+                                                rel="external nofollow">{{ subComment.Author }}</a> </span>
                                     </div>
                                     <div class="comment-content">
                                         <span class="comment-author-at"><a href="#comment-{{ subComment.ParentID }}">@{{ subComment.ReplyAuthor.Name }}</a></span>

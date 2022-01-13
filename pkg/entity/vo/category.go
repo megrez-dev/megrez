@@ -1,17 +1,15 @@
 package vo
 
-import (
-	"github.com/megrez/pkg/entity/po"
-)
+import "github.com/megrez/pkg/model"
 
 type BriefCategory struct {
 	Name string
 	Slug string
 }
 
-func GetBriefCategoryFromPO(po po.Category) *BriefCategory {
+func GetBriefCategoryFromPO(category model.Category) *BriefCategory {
 	return &BriefCategory{
-		Name: po.Name,
-		Slug: po.Slug,
+		Name: category.Name,
+		Slug: category.Slug,
 	}
 }

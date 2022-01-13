@@ -3,9 +3,29 @@ package vo
 import (
 	"time"
 
-	"github.com/megrez/pkg/dao"
-	"github.com/megrez/pkg/entity/po"
+	"github.com/megrez/pkg/model"
 )
+
+type Role int
+
+const (
+	RoleAdmin Role = iota
+	RoleGuest
+	RoleFriend
+)
+
+func (this Role) String() string {
+	switch this {
+	case RoleAdmin:
+		return "admin"
+	case RoleGuest:
+		return "guest"
+	case RoleFriend:
+		return "friend"
+	default:
+		return "unknow"
+	}
+}
 
 type Comment struct {
 	ID          uint
@@ -14,89 +34,85 @@ type Comment struct {
 	PageID      uint
 	Content     string
 	Status      int
-	Author      *Author
 	HasChild    bool
 	SubComments []*SubComment
+	Author      string
+	Avatar      string
+	Role        string
+	Mail        string
+	Site        string
+	Agent       string
 	CreatedAt   time.Time
 }
 
 type SubComment struct {
-	ID          uint
-	ParentID    uint
-	ArticleID   uint
-	PageID      uint
-	Content     string
-	Status      int
-	Author      *Author
-	ReplyAuthor *Author
-	CreatedAt   time.Time
+	ID        uint
+	ParentID  uint
+	ArticleID uint
+	PageID    uint
+	Content   string
+	Status    int
+	Author    string
+	Avatar    string
+	Role      string
+	Mail      string
+	Site      string
+	Agent     string
+	CreatedAt time.Time
 }
 
-func GetCommentFromPO(po po.Comment) (*Comment, error) {
-	comment := &Comment{}
-	comment.ID = po.ID
-	comment.ParentID = po.ParentID
-	comment.ArticleID = po.ArticleID
-	comment.Content = po.Content
-	comment.Status = po.Status
-	comment.CreatedAt = po.CreatedAt
-	dao, err := dao.GetDAO()
+func GetCommentFromPO(comment model.Comment) (*Comment, error) {
+	commentVO := &Comment{}
+	commentVO.ID = comment.ID
+	commentVO.ParentID = comment.ParentID
+	commentVO.ArticleID = comment.ArticleID
+	commentVO.Content = comment.Content
+	commentVO.Status = comment.Status
+	commentVO.CreatedAt = comment.CreatedAt
+	commentVO.Author = comment.Author
+	commentVO.Role = Role(comment.Role).String()
+	commentVO.Mail = comment.Mail
+	commentVO.Site = comment.Site
+	// TODO: 设置头像
+	commentVO.Avatar = "https://cdn.rawchen.com/logo/alkaidchen.jpg"
+	// TODO: 计算Agent的浏览器和内核
+	commentVO.Agent = comment.Agent
+	subCommentPOs, err := model.ListCommentsByRootID(commentVO.ID)
 	if err != nil {
-		return comment, err
-	}
-	author, err := dao.GetAuthorByID(po.AuthorID)
-	if err != nil {
-		return comment, err
-	}
-	comment.Author = GetAuthorFromPO(author)
-	subCommentPOs, err := dao.ListCommentsByRootID(comment.ID)
-	if err != nil {
-		return comment, err
+		return commentVO, err
 	}
 	subComments := []*SubComment{}
 	for _, subCommentPO := range subCommentPOs {
 		subComment, err := GetSubCommentFromPO(subCommentPO)
 		if err != nil {
-			return comment, err
+			return commentVO, err
 		}
 		subComments = append(subComments, subComment)
 	}
-	comment.SubComments = subComments
+	commentVO.SubComments = subComments
 	if len(subComments) == 0 {
-		comment.HasChild = false
+		commentVO.HasChild = false
 	} else {
-		comment.HasChild = true
+		commentVO.HasChild = true
 	}
-	return comment, nil
+	return commentVO, nil
 }
 
-func GetSubCommentFromPO(po po.Comment) (*SubComment, error) {
+func GetSubCommentFromPO(comment model.Comment) (*SubComment, error) {
 	subComment := &SubComment{}
-	subComment.ID = po.ID
-	subComment.ParentID = po.ParentID
-	subComment.ArticleID = po.ArticleID
-	subComment.Content = po.Content
-	subComment.Status = po.Status
-	subComment.CreatedAt = po.CreatedAt
-	dao, err := dao.GetDAO()
-	if err != nil {
-		return subComment, err
-	}
-	author, err := dao.GetAuthorByID(po.AuthorID)
-	if err != nil {
-		return subComment, err
-	}
-	subComment.Author = GetAuthorFromPO(author)
-	// set reply author
-	parent, err := dao.GetCommentByID(po.ParentID)
-	if err != nil {
-		return subComment, err
-	}
-	replyAuthorPO, err := dao.GetAuthorByID(parent.AuthorID)
-	if err != nil {
-		return subComment, err
-	}
-	replyAuthor := GetAuthorFromPO(replyAuthorPO)
-	subComment.ReplyAuthor = replyAuthor
+	subComment.ID = comment.ID
+	subComment.ParentID = comment.ParentID
+	subComment.ArticleID = comment.ArticleID
+	subComment.Content = comment.Content
+	subComment.Status = comment.Status
+	subComment.CreatedAt = comment.CreatedAt
+	subComment.Author = comment.Author
+	subComment.Role = Role(comment.Role).String()
+	subComment.Mail = comment.Mail
+	subComment.Site = comment.Site
+	// TODO: 设置头像
+	subComment.Avatar = "https://cdn.rawchen.com/logo/alkaidchen.jpg"
+	// TODO: 计算Agent的浏览器和内核
+	subComment.Agent = comment.Agent
 	return subComment, nil
 }

@@ -4,32 +4,32 @@ import (
 	"strings"
 	"time"
 
-	"github.com/megrez/pkg/entity/po"
+	"github.com/megrez/pkg/model"
 )
 
 type Journal struct {
 	FormatContent string
 	Images        []string
 	Private       bool
-	Likes         uint
-	Visits        uint
+	Likes         int64
+	Visits        int64
 	Status        int
 	PublishTime   time.Time
 }
 
-func GetJournalFromPO(po po.Journal) Journal {
+func GetJournalFromPO(journal model.Journal) Journal {
 	var images []string
-	if po.Images != "" {
-		images = strings.Split(po.Images, ";")
+	if journal.Images != "" {
+		images = strings.Split(journal.Images, ";")
 	}
-	journal := Journal{
-		FormatContent: po.FormatContent,
+	journalVO := Journal{
+		FormatContent: journal.FormatContent,
 		Images:        images,
-		Private:       po.Private,
-		Likes:         po.Likes,
-		Visits:        po.Visits,
-		Status:        po.Status,
-		PublishTime:   po.CreatedAt,
+		Private:       journal.Private,
+		Likes:         journal.Likes,
+		Visits:        journal.Visits,
+		Status:        journal.Status,
+		PublishTime:   journal.CreatedAt,
 	}
-	return journal
+	return journalVO
 }

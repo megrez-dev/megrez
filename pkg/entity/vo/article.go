@@ -3,8 +3,7 @@ package vo
 import (
 	"time"
 
-	"github.com/megrez/pkg/dao"
-	"github.com/megrez/pkg/entity/po"
+	"github.com/megrez/pkg/model"
 )
 
 type IndexArticle struct {
@@ -16,9 +15,9 @@ type IndexArticle struct {
 	Category    *BriefCategory
 	CommentsNum int64
 	TopPriority uint
-	Visits      uint
-	Likes       uint
-	WordCount   uint
+	Visits      int64
+	Likes       int64
+	WordCount   int64
 	Status      int
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
@@ -43,9 +42,9 @@ type ArticleDetial struct {
 	Tags          []*BriefTag
 	Comments      []*Comment
 	CommentsNum   int64
-	Visits        uint
-	Likes         uint
-	WordCount     uint
+	Visits        int64
+	Likes         int64
+	WordCount     int64
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
 	Pre           *NextPreArticle
@@ -60,29 +59,25 @@ type NextPreArticle struct {
 	Thumb string
 }
 
-func GetIndexArticleFromPO(po *po.Article) (IndexArticle, error) {
+func GetIndexArticleFromPO(article *model.Article) (IndexArticle, error) {
 	vo := IndexArticle{}
-	vo.ID = po.ID
-	vo.Title = po.Title
-	vo.Summary = po.Summary
-	vo.Thumb = po.Thumb
-	vo.Private = po.Private
-	vo.TopPriority = po.TopPriority
-	vo.Visits = po.Visits
-	vo.Status = po.Status
-	vo.CreatedAt = po.CreatedAt
-	vo.UpdatedAt = po.UpdatedAt
+	vo.ID = article.ID
+	vo.Title = article.Title
+	vo.Summary = article.Summary
+	vo.Thumb = article.Thumb
+	vo.Private = article.Private
+	vo.TopPriority = article.TopPriority
+	vo.Visits = article.Visits
+	vo.Status = article.Status
+	vo.CreatedAt = article.CreatedAt
+	vo.UpdatedAt = article.UpdatedAt
 
-	dao, err := dao.GetDAO()
-	if err != nil {
-		return vo, err
-	}
 	// TODO: 默认 CategoryID = 1
-	category, err := dao.GetCategoryByID(po.CategoryID)
+	category, err := model.GetCategoryByID(article.CategoryID)
 	if err != nil {
 		return vo, err
 	}
-	commentsNum, err := dao.CountCommentsByArticleID(po.ID)
+	commentsNum, err := model.CountCommentsByArticleID(article.ID)
 	if err != nil {
 		return vo, err
 	}
@@ -92,51 +87,47 @@ func GetIndexArticleFromPO(po *po.Article) (IndexArticle, error) {
 	return vo, nil
 }
 
-func GetCommonArticleFromPO(po po.Article) *CommonArticle {
-	article := &CommonArticle{
-		ID:        po.ID,
-		Title:     po.Title,
-		Slug:      po.Slug,
-		Status:    po.Status,
-		Private:   po.Private,
-		CreatedAt: po.CreatedAt,
+func GetCommonArticleFromPO(article model.Article) *CommonArticle {
+	commonArticle := &CommonArticle{
+		ID:        article.ID,
+		Title:     article.Title,
+		Slug:      article.Slug,
+		Status:    article.Status,
+		Private:   article.Private,
+		CreatedAt: article.CreatedAt,
 	}
-	return article
+	return commonArticle
 }
 
-func GetArticleDetailFromPO(po po.Article, pageNum, pageSize int) (*ArticleDetial, error) {
+func GetArticleDetailFromPO(article model.Article, pageNum, pageSize int) (*ArticleDetial, error) {
 	vo := &ArticleDetial{}
-	vo.ID = po.ID
-	vo.Title = po.Title
-	vo.FormatContent = po.FormatContent
-	vo.Thumb = po.Thumb
-	vo.Private = po.Private
-	vo.Visits = po.Visits
-	vo.Likes = po.Likes
-	vo.WordCount = po.WordCount
-	vo.CreatedAt = po.CreatedAt
-	vo.UpdatedAt = po.UpdatedAt
-	vo.Status = po.Status
+	vo.ID = article.ID
+	vo.Title = article.Title
+	vo.FormatContent = article.FormatContent
+	vo.Thumb = article.Thumb
+	vo.Private = article.Private
+	vo.Visits = article.Visits
+	vo.Likes = article.Likes
+	vo.WordCount = article.WordCount
+	vo.CreatedAt = article.CreatedAt
+	vo.UpdatedAt = article.UpdatedAt
+	vo.Status = article.Status
 
-	dao, err := dao.GetDAO()
-	if err != nil {
-		return vo, err
-	}
 	// TODO: 默认 CategoryID = 1
-	categoryPO, err := dao.GetCategoryByID(po.CategoryID)
+	categoryPO, err := model.GetCategoryByID(article.CategoryID)
 	if err != nil {
 		return vo, err
 	}
 	category := GetBriefCategoryFromPO(categoryPO)
 	vo.Category = category
-	tagPOs, err := dao.GetTagsByArticleID(po.ID)
+	tagPOs, err := model.GetTagsByArticleID(article.ID)
 	tags := []*BriefTag{}
 	for _, tagPO := range tagPOs {
 		tag := GetBriefTagFromPO(tagPO)
 		tags = append(tags, tag)
 	}
 	vo.Tags = tags
-	commentPOs, err := dao.ListRootCommentsByArticleID(po.ID, pageNum, pageSize)
+	commentPOs, err := model.ListRootCommentsByArticleID(article.ID, pageNum, pageSize)
 	if err != nil {
 		return vo, err
 	}
@@ -149,21 +140,21 @@ func GetArticleDetailFromPO(po po.Article, pageNum, pageSize int) (*ArticleDetia
 		comments = append(comments, comment)
 	}
 	vo.Comments = comments
-	comentsNum, err := dao.CountCommentsByArticleID(po.ID)
+	comentsNum, err := model.CountCommentsByArticleID(article.ID)
 	if err != nil {
 		return vo, err
 	}
 	vo.CommentsNum = comentsNum
 
-	pre, err := dao.GetArticleByID(vo.ID - 1)
+	pre, err := model.GetArticleByID(vo.ID - 1)
 	if err == nil {
 		vo.Pre = GetNextPreArticleFromPO(pre)
 	}
-	next, err := dao.GetArticleByID(vo.ID + 1)
+	next, err := model.GetArticleByID(vo.ID + 1)
 	if err == nil {
 		vo.Next = GetNextPreArticleFromPO(next)
 	}
-	rootCount, err := dao.CountRootCommentsByArticleID(po.ID)
+	rootCount, err := model.CountRootCommentsByArticleID(article.ID)
 	if err == nil {
 		page := CaculatePagination(pageNum, pageSize, int(rootCount))
 		vo.Page = page
@@ -171,10 +162,10 @@ func GetArticleDetailFromPO(po po.Article, pageNum, pageSize int) (*ArticleDetia
 	return vo, nil
 }
 
-func GetNextPreArticleFromPO(po po.Article) *NextPreArticle {
+func GetNextPreArticleFromPO(article model.Article) *NextPreArticle {
 	vo := &NextPreArticle{}
-	vo.ID = po.ID
-	vo.Title = po.Title
-	vo.Thumb = po.Thumb
+	vo.ID = article.ID
+	vo.Title = article.Title
+	vo.Thumb = article.Thumb
 	return vo
 }

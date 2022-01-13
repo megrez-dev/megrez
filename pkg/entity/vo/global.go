@@ -6,8 +6,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/megrez/pkg/dao"
-	"github.com/megrez/pkg/entity/po"
+	"github.com/megrez/pkg/model"
 )
 
 type Global struct {
@@ -42,7 +41,7 @@ type LatestComment struct {
 	URL     string
 }
 
-func GetLatestArticleFromPO(article *po.Article) (*LatestArticl, error) {
+func GetLatestArticleFromPO(article *model.Article) (*LatestArticl, error) {
 	latestArticle := &LatestArticl{
 		Title: article.Title,
 	}
@@ -50,15 +49,11 @@ func GetLatestArticleFromPO(article *po.Article) (*LatestArticl, error) {
 	return latestArticle, nil
 }
 
-func GetLatestCommentFromPO(comment *po.Comment) (*LatestComment, error) {
-	dao, err := dao.GetDAO()
-	if err != nil {
-		return nil, err
-	}
+func GetLatestCommentFromPO(comment *model.Comment) (*LatestComment, error) {
 	latestComment := &LatestComment{
 		Content: comment.Content,
 	}
-	indexPageSizeStr, err := dao.GetOptionByKey(OptionComentsPageSize)
+	indexPageSizeStr, err := model.GetOptionByKey(OptionComentsPageSize)
 	if err != nil {
 		return nil, err
 	}
@@ -66,10 +61,10 @@ func GetLatestCommentFromPO(comment *po.Comment) (*LatestComment, error) {
 	if err != nil {
 		return nil, err
 	}
-	var rootComments []po.Comment
+	var rootComments []model.Comment
 	// comment for article
 	if comment.Type == 1 {
-		rootComments, err = dao.ListRootCommentsByArticleID(comment.ArticleID, 0, 0)
+		rootComments, err = model.ListRootCommentsByArticleID(comment.ArticleID, 0, 0)
 		if err != nil {
 			return nil, err
 		}
@@ -85,7 +80,7 @@ func GetLatestCommentFromPO(comment *po.Comment) (*LatestComment, error) {
 		latestComment.URL = url
 	} else if comment.Type == 2 {
 		// comment for page
-		rootComments, err = dao.ListRootCommentsByPageID(comment.PageID, 0, 0)
+		rootComments, err = model.ListRootCommentsByPageID(comment.PageID, 0, 0)
 		if err != nil {
 			return nil, err
 		}
@@ -97,7 +92,7 @@ func GetLatestCommentFromPO(comment *po.Comment) (*LatestComment, error) {
 			}
 		}
 		pagination := (index + indexPageSize - 1) / indexPageSize
-		page, err := dao.GetPageByID(comment.PageID)
+		page, err := model.GetPageByID(comment.PageID)
 		if err != nil {
 			return nil, err
 		}
@@ -110,44 +105,40 @@ func GetLatestCommentFromPO(comment *po.Comment) (*LatestComment, error) {
 
 func GetGlobalOption() (Global, error) {
 	global := Global{}
-	dao, err := dao.GetDAO()
-	if err != nil {
-		return global, err
-	}
-	blogTitle, err := dao.GetOptionByKey(OptionKeyBlogTitle)
+	blogTitle, err := model.GetOptionByKey(OptionKeyBlogTitle)
 	if err == nil {
 		global.BlogTitle = blogTitle
 	}
-	blogURL, err := dao.GetOptionByKey(OptionKeyBlogURL)
+	blogURL, err := model.GetOptionByKey(OptionKeyBlogURL)
 	if err == nil {
 		global.BlogURL = blogURL
 	}
-	blogDescription, err := dao.GetOptionByKey(OptionKeyBlogDescription)
+	blogDescription, err := model.GetOptionByKey(OptionKeyBlogDescription)
 	if err == nil {
 		global.BlogDescription = blogDescription
 	}
-	blogCover, err := dao.GetOptionByKey(OptionKeyBlogCover)
+	blogCover, err := model.GetOptionByKey(OptionKeyBlogCover)
 	if err == nil {
 		global.BlogCover = blogCover
 	}
-	headerLogo, err := dao.GetOptionByKey(OptionKeyHeaderLogo)
+	headerLogo, err := model.GetOptionByKey(OptionKeyHeaderLogo)
 	if err == nil {
 		global.HeaderLogo = headerLogo
 	}
-	footerLogo, err := dao.GetOptionByKey(OptionKeyFooterLogo)
+	footerLogo, err := model.GetOptionByKey(OptionKeyFooterLogo)
 	if err == nil {
 		global.FooterLogo = footerLogo
 	}
-	payQRCode, err := dao.GetOptionByKey(OptionKeyPayQRCode)
+	payQRCode, err := model.GetOptionByKey(OptionKeyPayQRCode)
 	if err == nil {
 		global.PayQRCode = payQRCode
 	}
-	ipcRecord, err := dao.GetOptionByKey(OptionKeyIPCRecord)
+	ipcRecord, err := model.GetOptionByKey(OptionKeyIPCRecord)
 	if err == nil {
 		global.IPCRecord = ipcRecord
 	}
 
-	blogBirthStr, err := dao.GetOptionByKey(OptionKeyBlogBirth)
+	blogBirthStr, err := model.GetOptionByKey(OptionKeyBlogBirth)
 	if err == nil {
 		blogBirth, err := time.Parse("2006-01-02 15:04:05", blogBirthStr)
 		if err == nil {
@@ -156,7 +147,7 @@ func GetGlobalOption() (Global, error) {
 	}
 
 	// list menus
-	menuPOs, err := dao.ListAllMenus()
+	menuPOs, err := model.ListAllMenus()
 	if err != nil {
 		return global, err
 	}
@@ -167,7 +158,7 @@ func GetGlobalOption() (Global, error) {
 	global.Menus = menus
 
 	// list category
-	categoryPOs, err := dao.ListAllCategories()
+	categoryPOs, err := model.ListAllCategories()
 	if err != nil {
 		return global, err
 	}
@@ -178,7 +169,7 @@ func GetGlobalOption() (Global, error) {
 	global.Categories = categories
 
 	// latest articles
-	articlePOs, err := dao.ListLatestArticles()
+	articlePOs, err := model.ListLatestArticles()
 	if err == nil {
 		latestArticles := []*LatestArticl{}
 		for _, articlePO := range articlePOs {
@@ -191,7 +182,7 @@ func GetGlobalOption() (Global, error) {
 	}
 
 	// latest comments
-	commentPOs, err := dao.ListLatestComments()
+	commentPOs, err := model.ListLatestComments()
 	if err == nil {
 		latestComments := []*LatestComment{}
 		for _, commentPO := range commentPOs {
