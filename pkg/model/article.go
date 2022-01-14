@@ -1,26 +1,24 @@
 package model
 
 import (
-	"log"
-
 	"gorm.io/gorm"
 )
 
 type Article struct {
-	Title           string `gorm:"type:varchar(255)"`
-	OriginalContent string `gorm:"type:longtext"`
-	FormatContent   string `gorm:"type:longtext"`
-	Summary         string `gorm:"type:longtext"`
-	Slug            string `gorm:"type:varchar(255);uniqueIndex"`
-	Password        string `gorm:"type:varchar(255)"`
-	Thumb           string `gorm:"type:varchar(255)"`
-	Private         bool
-	CategoryID      uint  `gorm:"type:int(11)"`
-	TopPriority     uint  `gorm:"type:int(11)"`
-	Visits          int64 `gorm:"type:int(11)"`
-	Likes           int64 `gorm:"type:int(11)"`
-	WordCount       int64 `gorm:"type:int(11)"`
-	Status          int   `gorm:"type:int(11)"`
+	Title           string `gorm:"type:varchar(255)" json:"title"`
+	OriginalContent string `gorm:"type:longtext" json:"originalContent"`
+	FormatContent   string `gorm:"type:longtext" json:"formatContent"`
+	Summary         string `gorm:"type:longtext" json:"summary"`
+	Slug            string `gorm:"type:varchar(255);uniqueIndex" json:"slug"`
+	Password        string `gorm:"type:varchar(255)" json:"password"`
+	Thumb           string `gorm:"type:varchar(255)" json:"thumb"`
+	Private         bool   `json:"private"`
+	CategoryID      uint   `gorm:"type:int(11)" json:"categoryID"`
+	TopPriority     uint   `gorm:"type:int(11)" json:"topPriority"`
+	Visits          int64  `gorm:"type:int(11)" json:"visits"`
+	Likes           int64  `gorm:"type:int(11)" json:"likes"`
+	WordCount       int64  `gorm:"type:int(11)" json:"wordCount"`
+	Status          int    `gorm:"type:int(11)" json:"status"`
 	gorm.Model
 }
 
@@ -33,17 +31,28 @@ func GetArticleByID(id uint) (Article, error) {
 
 // ListArticlesByIDs return articles by ids
 func ListArticlesByIDs(ids []uint) ([]Article, error) {
-	articles := []Article{}
+	var articles []Article
 	result := db.Find(&articles, ids)
 	return articles, result.Error
 }
 
 // ListAllArticles return all articles
 func ListAllArticles(pageNum, pageSize int) ([]Article, error) {
-	articles := []Article{}
-	log.Println("数据库链接 db:", db)
+	var articles []Article
 	result := db.Offset(pageSize * (pageNum - 1)).Limit(pageSize).Find(&articles)
 	return articles, result.Error
+}
+
+// UpdateArticleByID update article by id and data
+func UpdateArticleByID(id uint, article *Article) error {
+	result := db.Model(&article).Where("id= ？", id).Updates(&article)
+	return result.Error
+}
+
+// DeleteArticleByID delete article by id
+func DeleteArticleByID(id uint) error {
+	result := db.Delete(&Article{}, id)
+	return result.Error
 }
 
 // ListLatestArticles return latest articles

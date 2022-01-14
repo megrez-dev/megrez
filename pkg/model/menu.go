@@ -3,17 +3,17 @@ package model
 import "gorm.io/gorm"
 
 type Menu struct {
-	Name     string `gorm:"type:varchar(255)"`
-	Slug     string `gorm:"type:varchar(255)"`
-	PageID   bool
-	Priority uint `gorm:"type:int(11)"`
-	Status   int  `gorm:"type:int(11)"`
+	Name     string `gorm:"type:varchar(255)" json:"name"`
+	Slug     string `gorm:"type:varchar(255)" json:"slug"`
+	PageID   bool `json:"pageID"`
+	Priority uint `gorm:"type:int(11)" json:"priority"`
+	Status   int  `gorm:"type:int(11)" json:"status"`
 	gorm.Model
 }
 
-// GetAuthorByID return author by id
+// ListAllMenus list all menus
 func ListAllMenus() ([]Menu, error) {
-	menus := []Menu{}
+	var menus []Menu
 	result := db.Order("priority").Find(&menus)
 	return menus, result.Error
 }

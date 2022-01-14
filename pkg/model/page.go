@@ -3,14 +3,14 @@ package model
 import "gorm.io/gorm"
 
 type Page struct {
-	Name     string `gorm:"type:varchar(255)"`
-	Slug     string `gorm:"type:varchar(255);uniqueIndex"`
-	Thumb    string `gorm:"type:varchar(1023)"`
-	Password string `gorm:"type:varchar(255)"`
-	Private  bool
-	Visits   int64 `gorm:"type:int(11)"`
-	Likes    int64 `gorm:"type:int(11)"`
-	Status   int  `gorm:"type:int(11)"`
+	Name     string `gorm:"type:varchar(255)" json:"name"`
+	Slug     string `gorm:"type:varchar(255);uniqueIndex" json:"slug"`
+	Thumb    string `gorm:"type:varchar(1023)" json:"thumb"`
+	Password string `gorm:"type:varchar(255)" json:"password"`
+	Private  bool `json:"private"`
+	Visits   int64 `gorm:"type:int(11)" json:"visits"`
+	Likes    int64 `gorm:"type:int(11)" json:"likes"`
+	Status   int  `gorm:"type:int(11)" json:"status"`
 	gorm.Model
 }
 

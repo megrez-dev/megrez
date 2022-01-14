@@ -9,7 +9,7 @@ type Pagination struct {
 	Last    int
 }
 
-func CaculatePagination(current, size, count int) *Pagination {
+func CalculatePagination(current, size, count int) *Pagination {
 	max := count / size
 	if count % size > 0 {
 		max++
@@ -33,7 +33,7 @@ func CaculatePagination(current, size, count int) *Pagination {
 		pagination.Last = max
 		rangeEnd = current + 2
 	}
-	pageRange := []int{}
+	var pageRange []int
 	for i := rangeStart; i <= rangeEnd; i++ {
 		pageRange = append(pageRange, i)
 	}

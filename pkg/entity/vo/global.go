@@ -162,7 +162,7 @@ func GetGlobalOption() (Global, error) {
 	if err != nil {
 		return global, err
 	}
-	categories := []*BriefCategory{}
+	var categories []*BriefCategory
 	for _, categoryPO := range categoryPOs {
 		categories = append(categories, GetBriefCategoryFromPO(categoryPO))
 	}
@@ -171,7 +171,7 @@ func GetGlobalOption() (Global, error) {
 	// latest articles
 	articlePOs, err := model.ListLatestArticles()
 	if err == nil {
-		latestArticles := []*LatestArticl{}
+		var latestArticles []*LatestArticl
 		for _, articlePO := range articlePOs {
 			latestArticle, err := GetLatestArticleFromPO(&articlePO)
 			if err == nil {

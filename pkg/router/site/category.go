@@ -1,4 +1,4 @@
-package view
+package site
 
 import (
 	"log"
@@ -63,7 +63,7 @@ func listArticlesByCategory(c *gin.Context) {
 	if err != nil {
 		c.Redirect(500, "/error")
 	}
-	pagination := vo.CaculatePagination(pageNum, pageSize, int(articlesNum))
+	pagination := vo.CalculatePagination(pageNum, pageSize, int(articlesNum))
 	c.HTML(200, "category.html", pongo2.Context{"category": category, "pagination": pagination, "articles": articles, "global": globalOption})
 }
 

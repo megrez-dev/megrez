@@ -1,4 +1,4 @@
-package view
+package site
 
 import (
 	"log"
@@ -62,7 +62,7 @@ func page(c *gin.Context) {
 		c.Redirect(500, "/error")
 	}
 	pageVO.CommentsNum = commentsNum
-	pagination := vo.CaculatePagination(pageNum, pageSize, int(commentsNum))
+	pagination := vo.CalculatePagination(pageNum, pageSize, int(commentsNum))
 	template := page.Slug + ".html"
 	c.HTML(200, template, pongo2.Context{"page": page, "pagination": pagination, "comments": comments, "global": globalOption})
 }

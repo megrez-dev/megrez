@@ -3,13 +3,13 @@ package model
 import "gorm.io/gorm"
 
 type Journal struct {
-	OriginalContent string `gorm:"type:longtext"`
-	FormatContent   string `gorm:"type:longtext"`
-	Images          string `gorm:"type:varchar(4095)"`
-	Private         bool
-	Visits          int64 `gorm:"type:int(11)"`
-	Likes           int64 `gorm:"type:int(11)"`
-	Status          int  `gorm:"type:int(11)"`
+	OriginalContent string `gorm:"type:longtext" json:"originalContent"`
+	FormatContent   string `gorm:"type:longtext" json:"formatContent"`
+	Images          string `gorm:"type:varchar(4095)" json:"images"`
+	Private         bool `json:"private"`
+	Visits          int64 `gorm:"type:int(11)" json:"visits"`
+	Likes           int64 `gorm:"type:int(11)" json:"likes"`
+	Status          int  `gorm:"type:int(11)" json:"status"`
 	gorm.Model
 }
 

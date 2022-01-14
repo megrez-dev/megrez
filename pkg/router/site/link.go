@@ -1,4 +1,4 @@
-package view
+package site
 
 import (
 	"log"
@@ -80,7 +80,7 @@ func listLinks(c *gin.Context) {
 		c.Redirect(500, "/error")
 	}
 	page.CommentsNum = commentsNum
-	pagination := vo.CaculatePagination(pageNum, pageSize, int(commentsNum))
+	pagination := vo.CalculatePagination(pageNum, pageSize, int(commentsNum))
 	c.HTML(200, "links.html", pongo2.Context{"page": page, "pagination": pagination, "links": links, "comments": comments, "global": globalOption})
 }
 

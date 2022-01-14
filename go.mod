@@ -5,6 +5,7 @@ go 1.15
 require (
 	github.com/flosch/pongo2/v4 v4.0.2
 	github.com/fsnotify/fsnotify v1.5.1
+	github.com/gin-contrib/cors v1.3.1
 	github.com/gin-gonic/gin v1.7.4
 	github.com/go-playground/validator/v10 v10.6.1 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect

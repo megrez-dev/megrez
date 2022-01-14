@@ -156,7 +156,7 @@ func GetArticleDetailFromPO(article model.Article, pageNum, pageSize int) (*Arti
 	}
 	rootCount, err := model.CountRootCommentsByArticleID(article.ID)
 	if err == nil {
-		page := CaculatePagination(pageNum, pageSize, int(rootCount))
+		page := CalculatePagination(pageNum, pageSize, int(rootCount))
 		vo.Page = page
 	}
 	return vo, nil

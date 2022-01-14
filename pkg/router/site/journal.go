@@ -1,4 +1,4 @@
-package view
+package site
 
 import (
 	"log"
@@ -69,7 +69,7 @@ func listJournal(c *gin.Context) {
 		Name:   "日志",
 		Visits: 2311,
 	}
-	pagination := vo.CaculatePagination(pageNum, pageSize, int(journalsNum))
+	pagination := vo.CalculatePagination(pageNum, pageSize, int(journalsNum))
 	c.HTML(200, "journal.html", pongo2.Context{"page": page, "journals": journals, "pagination": pagination, "global": globalOption})
 }
 

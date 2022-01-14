@@ -1,4 +1,4 @@
-package view
+package site
 
 import (
 	"encoding/json"
@@ -9,7 +9,7 @@ import (
 )
 
 func TestCaculatePage(t *testing.T) {
-	page := vo.CaculatePagination(1, 2, 6)
+	page := vo.CalculatePagination(1, 2, 6)
 	b, err := json.Marshal(page)
 	if err != nil {
 		fmt.Println(err)

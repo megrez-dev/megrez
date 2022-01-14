@@ -6,8 +6,8 @@ import (
 )
 
 type Option struct {
-	Key   string `gorm:"type:varchar(255);uniqueIndex"`
-	Value string `gorm:"type:varchar(255)"`
+	Key   string `gorm:"type:varchar(255);uniqueIndex" json:"key"`
+	Value string `gorm:"type:varchar(255)" json:"value"`
 	gorm.Model
 }
 
