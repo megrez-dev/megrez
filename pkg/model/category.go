@@ -1,13 +1,11 @@
 package model
 
-import "gorm.io/gorm"
-
 type Category struct {
+	ID          uint   `gorm:"primarykey" json:"id"`
 	Name        string `gorm:"type:varchar(255)" json:"name"`
 	Slug        string `gorm:"type:varchar(255);uniqueIndex" json:"slug"`
 	Description string `gorm:"type:varchar(255)" json:"description"`
-	Status      int `gorm:"type:int(11)" json:"status"`
-	gorm.Model
+	Status      int    `gorm:"type:int(11)" json:"status"`
 }
 
 // GetCategoryByID return category by id
@@ -35,6 +33,13 @@ func ListAllCategories() ([]Category, error) {
 func ListCategoriesByPage(pageNum int, pageSize int) ([]Category, error) {
 	var categories []Category
 	result := db.Offset(pageSize * (pageNum - 1)).Limit(pageSize).Find(&categories)
+	return categories, result.Error
+}
+
+// ListCategoriesByArticleID return categories by articleID
+func ListCategoriesByArticleID(aid uint) ([]Category, error) {
+	var categories []Category
+	result := db.Where("id in (?)", db.Table("article_categories").Select("category_id").Where("article_id = ?", aid)).Find(&categories)
 	return categories, result.Error
 }
 

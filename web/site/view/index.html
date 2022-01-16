@@ -35,7 +35,7 @@
                 <div class="post-onelist-item">
                     <div class="post-onelist-item-container">
                         <a href="/article/{{ article.ID }}">
-                            <div class="onelist-item-thumb bg-{{ global.RandomColor }}" style="background-image:url({{ article.Thumb }});"></div>
+                            <div class="onelist-item-thumb bg-{{ global.RandomColor }}" style="background-image:url({{ article.Cover }});"></div>
                         </a>
                     <div class="onelist-item-info">
                         <div class="item-title">
@@ -43,7 +43,7 @@
                         </div>
                         <div class="item-meta">
                             <time datetime="2020-11-22T23:00:00+08:00" itemprop="datePublished"><i class="fa fa-clock-o"
-                                    aria-hidden="true"> </i> {{ article.CreatedAt|date:"2006-01-02" }}</time>&nbsp;&nbsp; <i class="fa fa-tags" aria-hidden="true"></i> <a
+                                    aria-hidden="true"> </i> {{ article.CreateTime|date:"2006-01-02" }}</time>&nbsp;&nbsp; <i class="fa fa-tags" aria-hidden="true"></i> <a
                                 href="category/{{ article.Category.Slug }}">{{ article.Category.Name }}</a>&nbsp;&nbsp;
                             <i class="fa fa-comments-o" aria-hidden="true"></i> <a
                                 href="/article/{{ article.ID }}#comments">{{article.CommentsNum}}

@@ -1,31 +1,42 @@
 package model
 
 import (
-	"gorm.io/gorm"
+	"time"
 )
 
 type Article struct {
-	Title           string `gorm:"type:varchar(255)" json:"title"`
-	OriginalContent string `gorm:"type:longtext" json:"originalContent"`
-	FormatContent   string `gorm:"type:longtext" json:"formatContent"`
-	Summary         string `gorm:"type:longtext" json:"summary"`
-	Slug            string `gorm:"type:varchar(255);uniqueIndex" json:"slug"`
-	Password        string `gorm:"type:varchar(255)" json:"password"`
-	Thumb           string `gorm:"type:varchar(255)" json:"thumb"`
-	Private         bool   `json:"private"`
-	CategoryID      uint   `gorm:"type:int(11)" json:"categoryID"`
-	TopPriority     uint   `gorm:"type:int(11)" json:"topPriority"`
-	Visits          int64  `gorm:"type:int(11)" json:"visits"`
-	Likes           int64  `gorm:"type:int(11)" json:"likes"`
-	WordCount       int64  `gorm:"type:int(11)" json:"wordCount"`
-	Status          int    `gorm:"type:int(11)" json:"status"`
-	gorm.Model
+	ID              uint      `gorm:"primarykey" json:"id"`
+	Title           string    `gorm:"type:varchar(255)" json:"title"`
+	OriginalContent string    `gorm:"type:longtext" json:"originalContent"`
+	FormatContent   string    `gorm:"type:longtext" json:"formatContent"`
+	Summary         string    `gorm:"type:longtext" json:"summary"`
+	Slug            string    `gorm:"type:varchar(255);uniqueIndex" json:"slug"`
+	Password        string    `gorm:"type:varchar(255)" json:"password"`
+	Cover           string    `gorm:"type:varchar(255)" json:"cover"`
+	Private         bool      `json:"private"`
+	AllowedComment  bool      `json:"allowedComment"`
+	TopPriority     int       `gorm:"type:int(11)" json:"topPriority"`
+	Visits          int64     `gorm:"type:int(11)" json:"visits"`
+	Likes           int64     `gorm:"type:int(11)" json:"likes"`
+	WordCount       int64     `gorm:"type:int(11)" json:"wordCount"`
+	SeoKeywords     string    `gorm:"type:varchar(255)" json:"seoKeywords"`
+	SeoDescription  string    `gorm:"type:varchar(1023)" json:"seoDescription"`
+	Status          int       `gorm:"type:int(11)" json:"status"`
+	CreateTime      time.Time `json:"createTime"`
+	UpdateTime      time.Time `json:"updateTime"`
 }
 
 // GetArticleByID return article by id
 func GetArticleByID(id uint) (Article, error) {
 	article := Article{}
 	result := db.First(&article, id)
+	return article, result.Error
+}
+
+// GetArticleBySlug return article by slug
+func GetArticleBySlug(slug string) (Article, error) {
+	article := Article{}
+	result := db.First(&article, "`slug` = ?", slug)
 	return article, result.Error
 }
 
@@ -57,15 +68,15 @@ func DeleteArticleByID(id uint) error {
 
 // ListLatestArticles return latest articles
 func ListLatestArticles() ([]Article, error) {
-	articles := []Article{}
-	result := db.Order("created_at desc").Limit(8).Find(&articles)
+	var articles []Article
+	result := db.Limit(8).Find(&articles)
 	return articles, result.Error
 }
 
 // ListArticlesByCategoryID return articles by categoryID
 func ListArticlesByCategoryID(cid uint, pageNum, pageSize int) ([]Article, error) {
-	articles := []Article{}
-	result := db.Order("created_at desc").Where("category_id = ?", cid).Limit(pageSize).Offset((pageNum - 1) * pageSize).Find(&articles)
+	var articles []Article
+	result := db.Where("id in (?)", db.Table("article_categories").Select("article_id").Where("category_id = ?", cid)).Find(&articles)
 	return articles, result.Error
 }
 
@@ -76,14 +87,14 @@ func CountAllArticles() (int64, error) {
 	return count, result.Error
 }
 
-// CountArticlesByCategoryID
+// CountArticlesByCategoryID return count for articles by categoryID
 func CountArticlesByCategoryID(cid uint) (int64, error) {
 	var count int64
-	result := db.Model(&Article{}).Where("category_id = ?", cid).Count(&count)
+	result := db.Model(&ArticleCategory{}).Where("category_id = ?", cid).Count(&count)
 	return count, result.Error
 }
 
-// CountArticlesByTagID
+// CountArticlesByTagID return count for articles by tagID
 func CountArticlesByTagID(tid uint) (int64, error) {
 	var count int64
 	result := db.Model(&ArticleTag{}).Where("tag_id = ?", tid).Count(&count)

@@ -10,17 +10,17 @@ type IndexArticle struct {
 	ID          uint
 	Title       string
 	Summary     string
-	Thumb       string
+	Cover       string
 	Private     bool
 	Category    *BriefCategory
 	CommentsNum int64
-	TopPriority uint
+	TopPriority int
 	Visits      int64
 	Likes       int64
 	WordCount   int64
 	Status      int
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
+	CreateTime   time.Time
+	UpdateTime   time.Time
 }
 
 type CommonArticle struct {
@@ -28,15 +28,15 @@ type CommonArticle struct {
 	Title     string
 	Slug      string
 	Status    int
-	Private   bool
-	CreatedAt time.Time
+	Private    bool
+	CreateTime time.Time
 }
 
-type ArticleDetial struct {
+type ArticleDetail struct {
 	ID            uint
 	Title         string
 	FormatContent string
-	Thumb         string
+	Cover         string
 	Private       bool
 	Category      *BriefCategory
 	Tags          []*BriefTag
@@ -45,8 +45,8 @@ type ArticleDetial struct {
 	Visits        int64
 	Likes         int64
 	WordCount     int64
-	CreatedAt     time.Time
-	UpdatedAt     time.Time
+	CreateTime     time.Time
+	UpdateTime     time.Time
 	Pre           *NextPreArticle
 	Next          *NextPreArticle
 	Page          *Pagination
@@ -56,7 +56,7 @@ type ArticleDetial struct {
 type NextPreArticle struct {
 	ID    uint
 	Title string
-	Thumb string
+	Cover string
 }
 
 func GetIndexArticleFromPO(article *model.Article) (IndexArticle, error) {
@@ -64,62 +64,62 @@ func GetIndexArticleFromPO(article *model.Article) (IndexArticle, error) {
 	vo.ID = article.ID
 	vo.Title = article.Title
 	vo.Summary = article.Summary
-	vo.Thumb = article.Thumb
+	vo.Cover = article.Cover
 	vo.Private = article.Private
 	vo.TopPriority = article.TopPriority
 	vo.Visits = article.Visits
 	vo.Status = article.Status
-	vo.CreatedAt = article.CreatedAt
-	vo.UpdatedAt = article.UpdatedAt
+	vo.CreateTime = article.CreateTime
+	vo.UpdateTime = article.UpdateTime
 
 	// TODO: 默认 CategoryID = 1
-	category, err := model.GetCategoryByID(article.CategoryID)
-	if err != nil {
-		return vo, err
-	}
+	//category, err := model.GetCategoryByID(article.CategoryID)
+	//if err != nil {
+	//	return vo, err
+	//}
 	commentsNum, err := model.CountCommentsByArticleID(article.ID)
 	if err != nil {
 		return vo, err
 	}
 	vo.CommentsNum = commentsNum
-	categoryVO := GetBriefCategoryFromPO(category)
-	vo.Category = categoryVO
+	//categoryVO := GetBriefCategoryFromPO(category)
+	//vo.Category = categoryVO
 	return vo, nil
 }
 
 func GetCommonArticleFromPO(article model.Article) *CommonArticle {
 	commonArticle := &CommonArticle{
-		ID:        article.ID,
-		Title:     article.Title,
-		Slug:      article.Slug,
-		Status:    article.Status,
-		Private:   article.Private,
-		CreatedAt: article.CreatedAt,
+		ID:         article.ID,
+		Title:      article.Title,
+		Slug:       article.Slug,
+		Status:     article.Status,
+		Private:    article.Private,
+		CreateTime: article.CreateTime,
 	}
 	return commonArticle
 }
 
-func GetArticleDetailFromPO(article model.Article, pageNum, pageSize int) (*ArticleDetial, error) {
-	vo := &ArticleDetial{}
+func GetArticleDetailFromPO(article model.Article, pageNum, pageSize int) (*ArticleDetail, error) {
+	vo := &ArticleDetail{}
 	vo.ID = article.ID
 	vo.Title = article.Title
 	vo.FormatContent = article.FormatContent
-	vo.Thumb = article.Thumb
+	vo.Cover = article.Cover
 	vo.Private = article.Private
 	vo.Visits = article.Visits
 	vo.Likes = article.Likes
 	vo.WordCount = article.WordCount
-	vo.CreatedAt = article.CreatedAt
-	vo.UpdatedAt = article.UpdatedAt
+	vo.CreateTime = article.CreateTime
+	vo.UpdateTime = article.UpdateTime
 	vo.Status = article.Status
 
 	// TODO: 默认 CategoryID = 1
-	categoryPO, err := model.GetCategoryByID(article.CategoryID)
-	if err != nil {
-		return vo, err
-	}
-	category := GetBriefCategoryFromPO(categoryPO)
-	vo.Category = category
+	//categoryPO, err := model.GetCategoryByID(article.CategoryID)
+	//if err != nil {
+	//	return vo, err
+	//}
+	//category := GetBriefCategoryFromPO(categoryPO)
+	//vo.Category = category
 	tagPOs, err := model.GetTagsByArticleID(article.ID)
 	tags := []*BriefTag{}
 	for _, tagPO := range tagPOs {
@@ -166,6 +166,6 @@ func GetNextPreArticleFromPO(article model.Article) *NextPreArticle {
 	vo := &NextPreArticle{}
 	vo.ID = article.ID
 	vo.Title = article.Title
-	vo.Thumb = article.Thumb
+	vo.Cover = article.Cover
 	return vo
 }

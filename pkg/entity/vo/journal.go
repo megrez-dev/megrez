@@ -29,7 +29,7 @@ func GetJournalFromPO(journal model.Journal) Journal {
 		Likes:         journal.Likes,
 		Visits:        journal.Visits,
 		Status:        journal.Status,
-		PublishTime:   journal.CreatedAt,
+		PublishTime:   journal.CreateTime,
 	}
 	return journalVO
 }

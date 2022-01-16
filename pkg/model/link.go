@@ -1,19 +1,21 @@
 package model
 
-import "gorm.io/gorm"
+import "time"
 
 type Link struct {
-	Name     string `gorm:"type:varchar(255)" json:"name"`
-	Addr     string `gorm:"type:varchar(255)" json:"addr"`
-	Logo     string `gorm:"type:varchar(255)" json:"logo"`
-	Priority uint   `gorm:"type:int(11)" json:"priority"`
-	Status   int    `gorm:"type:int(11)" json:"status"`
-	gorm.Model
+	ID         uint      `gorm:"primarykey" json:"id"`
+	Name       string    `gorm:"type:varchar(255)" json:"name"`
+	Addr       string    `gorm:"type:varchar(255)" json:"addr"`
+	Logo       string    `gorm:"type:varchar(255)" json:"logo"`
+	Priority   uint      `gorm:"type:int(11)" json:"priority"`
+	Status     int       `gorm:"type:int(11)" json:"status"`
+	CreateTime time.Time `json:"createTime"`
+	UpdateTime time.Time `json:"updateTime"`
 }
 
 // ListAllLinks return all links
 func ListAllLinks() ([]Link, error) {
-	links := []Link{}
+	var links []Link
 	result := db.Find(&links)
 	return links, result.Error
 }

@@ -42,7 +42,7 @@ type Comment struct {
 	Mail        string
 	Site        string
 	Agent       string
-	CreatedAt   time.Time
+	CreateTime   time.Time
 }
 
 type SubComment struct {
@@ -58,7 +58,7 @@ type SubComment struct {
 	Mail      string
 	Site      string
 	Agent     string
-	CreatedAt time.Time
+	CreateTime time.Time
 }
 
 func GetCommentFromPO(comment model.Comment) (*Comment, error) {
@@ -68,7 +68,7 @@ func GetCommentFromPO(comment model.Comment) (*Comment, error) {
 	commentVO.ArticleID = comment.ArticleID
 	commentVO.Content = comment.Content
 	commentVO.Status = comment.Status
-	commentVO.CreatedAt = comment.CreatedAt
+	commentVO.CreateTime = comment.CreateTime
 	commentVO.Author = comment.Author
 	commentVO.Role = Role(comment.Role).String()
 	commentVO.Mail = comment.Mail
@@ -105,7 +105,7 @@ func GetSubCommentFromPO(comment model.Comment) (*SubComment, error) {
 	subComment.ArticleID = comment.ArticleID
 	subComment.Content = comment.Content
 	subComment.Status = comment.Status
-	subComment.CreatedAt = comment.CreatedAt
+	subComment.CreateTime = comment.CreateTime
 	subComment.Author = comment.Author
 	subComment.Role = Role(comment.Role).String()
 	subComment.Mail = comment.Mail

@@ -43,7 +43,7 @@ include "component/comment.html" with comments=comments type="article"|"page" pe
                             <p>{{ comment.Content }}</p>
                         </div>
                         <div class="comment-meta">
-                            <time class="comment-time">{{ comment.CreatedAt|date:"2006-01-02 15:04:05" }}</time>&nbsp;&nbsp;
+                            <time class="comment-time">{{ comment.CreateTime|date:"2006-01-02 15:04:05" }}</time>&nbsp;&nbsp;
                             <span class="agent"><i class="fa fa-windows"></i> Windows 10</span>&nbsp;&nbsp;
                             <span class="agent"><i class="fa fa-chrome"></i> Chrome 95</span>
                             <span class="comment-reply" data-no-instant>
@@ -73,7 +73,7 @@ include "component/comment.html" with comments=comments type="article"|"page" pe
                                         <p>{{ subComment.Content }}</p>
                                     </div>
                                     <div class="comment-meta">
-                                        <time class="comment-time">{{ subComment.CreatedAt|date:"2006-01-02 15:04:05" }}</time>&nbsp;&nbsp;
+                                        <time class="comment-time">{{ subComment.CreateTime|date:"2006-01-02 15:04:05" }}</time>&nbsp;&nbsp;
                                         <span class="agent"><i class="fa fa-windows"></i> Windows 10</span>&nbsp;&nbsp;
                                         <span class="agent"><i class="fa fa-chrome"></i> Chrome 95</span>
                                         <span class="comment-reply" data-no-instant>

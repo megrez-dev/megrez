@@ -11,15 +11,15 @@
 
     {% include "component/header.html" %}
     
-    <div class="post-header-thumb  bg-{{ global.RandomColor }}" style="background-image:url({{ article.Thumb }});">
-        <div class="post-header-thumb-op" style="background-image:url({{ article.Thumb }});"></div>
+    <div class="post-header-thumb  bg-{{ global.RandomColor }}" style="background-image:url({{ article.Cover }});">
+        <div class="post-header-thumb-op" style="background-image:url({{ article.Cover }});"></div>
         <div class="post-header-thumb-cover">
             <div class="post-header-thumb-container">
                 <div class="post-header-thumb-title">
                     {{ article.Title }} </div>
                 <div class="post-header-thumb-meta">
-                    <time datetime="{{ article.CreatedAt|date:"2006-01-02T15:04:05" }}+08:00" itemprop="datePublished"><i class="fa fa-clock-o"
-                            aria-hidden="true"> </i> {{ article.CreatedAt|date:"2006-01-02" }} </time>&nbsp;&nbsp; <i class="fa fa-tags"
+                    <time datetime="{{ article.CreateTime|date:"2006-01-02T15:04:05" }}+08:00" itemprop="datePublished"><i class="fa fa-clock-o"
+                            aria-hidden="true"> </i> {{ article.CreateTime|date:"2006-01-02" }} </time>&nbsp;&nbsp; <i class="fa fa-tags"
                         aria-hidden="true"></i> <a href="/category/{{ article.Category.Slug }}/">{{ article.Category.Name }}</a>&nbsp;&nbsp; <i class="fa fa-comments-o" aria-hidden="true"></i> <a
                         href="#comments"> {{ article.CommentsNum }} 评论</a>&nbsp;&nbsp; <i class="fa fa-eye"
                         aria-hidden="true"></i> {{ article.Visits }} 浏览
@@ -38,8 +38,8 @@
             <h1 class="post-title" itemprop="name headline">
                 {{ article.Title }} </h1>
             <div class="post-data">
-                <time datetime="{{ article.CreatedAt|date:"2006-01-02T15:04:05" }}+08:00" itemprop="datePublished"><i class="fa fa-clock-o"
-                        aria-hidden="true"> </i> {{ article.CreatedAt|date:"2006-01-02" }} </time>&nbsp;&nbsp; <i class="fa fa-tags"
+                <time datetime="{{ article.CreateTime|date:"2006-01-02T15:04:05" }}+08:00" itemprop="datePublished"><i class="fa fa-clock-o"
+                        aria-hidden="true"> </i> {{ article.CreateTime|date:"2006-01-02" }} </time>&nbsp;&nbsp; <i class="fa fa-tags"
                     aria-hidden="true"></i> <a href="/category/{{ article.Category.Slug }}">{{ article.Category.Name }}</a>&nbsp;&nbsp; <i class="fa fa-comments-o" aria-hidden="true"></i> <a
                     href="#comments"> {{ article.CommentsNum }} 评论</a>&nbsp;&nbsp; <i class="fa fa-eye" aria-hidden="true"></i> {{ article.Visits }} 浏览
             </div>
@@ -75,7 +75,7 @@
                     <a href="/article/{{ article.Pre.ID }}" title="{{ article.Pre.Title }}">
                         <div class="card">
                             <div class="card-img">
-                                <img src="{{ article.Pre.Thumb }}" alt="{{ article.Pre.Title }}">
+                                <img src="{{ article.Pre.Cover }}" alt="{{ article.Pre.Title }}">
                                 <div class="overlay"></div>
                             </div>
                             <div class="card-body">
@@ -95,7 +95,7 @@
                     <a href="/article/{{ article.Next.ID }}" title="{{ article.Next.Title }}">
                         <div class="card">
                             <div class="card-img">
-                                <img src="{{ article.Next.Thumb }}" alt="{{ article.Next.Title }}">
+                                <img src="{{ article.Next.Cover }}" alt="{{ article.Next.Title }}">
                                 <div class="overlay"></div>
                             </div>
                             <div class="card-body">

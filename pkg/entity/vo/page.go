@@ -6,7 +6,7 @@ type Page struct {
 	ID          uint
 	Name        string
 	Slug        string
-	Thumb       string
+	Cover       string
 	Password    string
 	Private     bool
 	Visits      int64
@@ -19,7 +19,7 @@ func GetPageFromPO(page model.Page) *Page {
 	return &Page{
 		Name:     page.Name,
 		Slug:     page.Slug,
-		Thumb:    page.Thumb,
+		Cover:    page.Cover,
 		Password: page.Password,
 		Private:  page.Private,
 		Visits:   page.Visits,

@@ -32,10 +32,10 @@ func RouteAdmin(g *gin.Engine) {
 	auth.GET("category/:id", admin.GetCategory)
 
 	// // api for tag
-	// auth.POST("tag", admin.CreateTag)
+	auth.POST("tag", admin.CreateTag)
 	// auth.PUT("tag/:id", admin.UpdateTag)
 	// auth.DELETE("tag/:id", admin.DeleteTag)
-	// auth.GET("tag", admin.ListTag)
+	auth.GET("tags", admin.ListTags)
 	// auth.GET("tag/:id", admin.GetTag)
 
 	// // api for link

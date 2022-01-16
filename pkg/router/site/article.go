@@ -44,7 +44,7 @@ func index(c *gin.Context) {
 		log.Println("get articles from db failed, err:", err)
 		c.Redirect(500, "/error")
 	}
-	articleVOs := []vo.IndexArticle{}
+	var articleVOs []vo.IndexArticle
 	for _, articlePO := range articlePOs {
 		articleVO, err := vo.GetIndexArticleFromPO(&articlePO)
 		if err != nil {

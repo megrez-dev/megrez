@@ -1,14 +1,13 @@
 package model
 
 import (
-	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
 
 type Option struct {
+	ID    uint   `gorm:"primarykey" json:"id"`
 	Key   string `gorm:"type:varchar(255);uniqueIndex" json:"key"`
 	Value string `gorm:"type:varchar(255)" json:"value"`
-	gorm.Model
 }
 
 // GetOptionByKey return option by key

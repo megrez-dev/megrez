@@ -1,22 +1,27 @@
 package model
 
-import "gorm.io/gorm"
+import (
+	"gorm.io/gorm"
+	"time"
+)
 
 type Comment struct {
-	ArticleID  uint   `gorm:"type:int(11)" json:"articleID"`
-	PageID     uint   `gorm:"type:int(11)" json:"pageID"`
-	Content    string `gorm:"type:longtext" json:"content"`
-	RootID     uint   `gorm:"type:int(11)" json:"rootID"`
-	ParentID   uint   `gorm:"type:int(11)" json:"parentID"`
-	Type       int    `gorm:"type:int(11)" json:"type"`
-	Author string `gorm:"type:varchar(63)" json:"author"`
-	Role       int    `gorm:"type:int(11)" json:"role"`
-	Mail       string `gorm:"type:varchar(63)" json:"mail"`
-	Site       string `gorm:"type:varchar(63)" json:"site"`
-	Agent      string `gorm:"type:varchar(1023)" json:"agent"`
-	IP         string `gorm:"type:varchar(20)" json:"ip"`
-	Status     int    `gorm:"type:int(11)" json:"status"`
-	gorm.Model
+	ID         uint      `gorm:"primarykey" json:"id"`
+	ArticleID  uint      `gorm:"type:int(11)" json:"articleID"`
+	PageID     uint      `gorm:"type:int(11)" json:"pageID"`
+	Content    string    `gorm:"type:longtext" json:"content"`
+	RootID     uint      `gorm:"type:int(11)" json:"rootID"`
+	ParentID   uint      `gorm:"type:int(11)" json:"parentID"`
+	Type       int       `gorm:"type:int(11)" json:"type"`
+	Author     string    `gorm:"type:varchar(63)" json:"author"`
+	Role       int       `gorm:"type:int(11)" json:"role"`
+	Mail       string    `gorm:"type:varchar(63)" json:"mail"`
+	Site       string    `gorm:"type:varchar(63)" json:"site"`
+	Agent      string    `gorm:"type:varchar(1023)" json:"agent"`
+	IP         string    `gorm:"type:varchar(20)" json:"ip"`
+	Status     int       `gorm:"type:int(11)" json:"status"`
+	CreateTime time.Time `json:"createTime"`
+	UpdateTime time.Time `json:"updateTime"`
 }
 
 // GetCommentByID return comment by ID
@@ -38,9 +43,9 @@ func ListRootCommentsByArticleID(aid uint, pageNum, pageSize int) ([]Comment, er
 	var comments []Comment
 	var result *gorm.DB
 	if pageNum == 0 && pageSize == 0 {
-		result = db.Order("created_at desc").Where("article_id = ? AND root_id = ?", aid, 0).Find(&comments)
+		result = db.Where("article_id = ? AND root_id = ?", aid, 0).Find(&comments)
 	} else {
-		result = db.Order("created_at desc").Where("article_id = ? AND root_id = ?", aid, 0).
+		result = db.Where("article_id = ? AND root_id = ?", aid, 0).
 			Limit(pageSize).Offset((pageNum - 1) * pageSize).Find(&comments)
 	}
 	return comments, result.Error
@@ -51,9 +56,9 @@ func ListRootCommentsByPageID(pid uint, pageNum, pageSize int) ([]Comment, error
 	var comments []Comment
 	var result *gorm.DB
 	if pageNum == 0 && pageSize == 0 {
-		result = db.Order("created_at desc").Where("page_id = ? AND root_id = ?", pid, 0).Find(&comments)
+		result = db.Where("page_id = ? AND root_id = ?", pid, 0).Find(&comments)
 	} else {
-		result = db.Order("created_at desc").Where("page_id = ? AND root_id = ?", pid, 0).
+		result = db.Where("page_id = ? AND root_id = ?", pid, 0).
 			Limit(pageSize).Offset((pageNum - 1) * pageSize).Find(&comments)
 	}
 	return comments, result.Error
@@ -62,7 +67,7 @@ func ListRootCommentsByPageID(pid uint, pageNum, pageSize int) ([]Comment, error
 // ListLatestComments return latest comments
 func ListLatestComments() ([]Comment, error) {
 	var comments []Comment
-	result := db.Order("created_at desc").Limit(8).Find(&comments)
+	result := db.Limit(8).Find(&comments)
 	return comments, result.Error
 }
 

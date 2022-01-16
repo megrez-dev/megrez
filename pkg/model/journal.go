@@ -1,8 +1,9 @@
 package model
 
-import "gorm.io/gorm"
+import "time"
 
 type Journal struct {
+	ID              uint      `gorm:"primarykey" json:"id"`
 	OriginalContent string `gorm:"type:longtext" json:"originalContent"`
 	FormatContent   string `gorm:"type:longtext" json:"formatContent"`
 	Images          string `gorm:"type:varchar(4095)" json:"images"`
@@ -10,12 +11,13 @@ type Journal struct {
 	Visits          int64 `gorm:"type:int(11)" json:"visits"`
 	Likes           int64 `gorm:"type:int(11)" json:"likes"`
 	Status          int  `gorm:"type:int(11)" json:"status"`
-	gorm.Model
+	CreateTime      time.Time `json:"createTime"`
+	UpdateTime      time.Time `json:"updateTime"`
 }
 
 // ListAllJournals return all journals
 func ListAllJournals(pageNum, pageSize int) ([]Journal, error) {
-	journals := []Journal{}
+	var journals []Journal
 	result := db.Offset(pageSize * (pageNum - 1)).Limit(pageSize).Find(&journals)
 	return journals, result.Error
 }
