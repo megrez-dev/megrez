@@ -14,8 +14,8 @@ const (
 	RoleFriend
 )
 
-func (this Role) String() string {
-	switch this {
+func (role Role) String() string {
+	switch role {
 	case RoleAdmin:
 		return "admin"
 	case RoleGuest:
@@ -23,7 +23,7 @@ func (this Role) String() string {
 	case RoleFriend:
 		return "friend"
 	default:
-		return "unknow"
+		return "unknown"
 	}
 }
 
@@ -42,22 +42,22 @@ type Comment struct {
 	Mail        string
 	Site        string
 	Agent       string
-	CreateTime   time.Time
+	CreateTime  time.Time
 }
 
 type SubComment struct {
-	ID        uint
-	ParentID  uint
-	ArticleID uint
-	PageID    uint
-	Content   string
-	Status    int
-	Author    string
-	Avatar    string
-	Role      string
-	Mail      string
-	Site      string
-	Agent     string
+	ID         uint
+	ParentID   uint
+	ArticleID  uint
+	PageID     uint
+	Content    string
+	Status     int
+	Author     string
+	Avatar     string
+	Role       string
+	Mail       string
+	Site       string
+	Agent      string
 	CreateTime time.Time
 }
 
@@ -81,7 +81,7 @@ func GetCommentFromPO(comment model.Comment) (*Comment, error) {
 	if err != nil {
 		return commentVO, err
 	}
-	subComments := []*SubComment{}
+	var subComments []*SubComment
 	for _, subCommentPO := range subCommentPOs {
 		subComment, err := GetSubCommentFromPO(subCommentPO)
 		if err != nil {

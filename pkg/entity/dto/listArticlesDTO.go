@@ -2,7 +2,7 @@ package dto
 
 import (
 	"github.com/megrez/pkg/model"
-	"strings"
+	"log"
 	"time"
 )
 
@@ -23,11 +23,9 @@ type ListArticlesDTO struct {
 	Visits          int64            `json:"visits"`
 	Likes           int64            `json:"likes"`
 	WordCount       int64            `json:"wordCount"`
-	SeoKeywords     []string         `json:"seoKeywords"`
-	SeoDescription  string           `json:"seoDescription"`
 	Status          int              `json:"status"`
 	PublishTime     time.Time        `json:"publishTime"`
-	Total           int64            `json:"total"`
+	EditTime        time.Time        `json:"editTime"`
 }
 
 func LoadFromModel(article model.Article) (ListArticlesDTO, error) {
@@ -45,8 +43,6 @@ func LoadFromModel(article model.Article) (ListArticlesDTO, error) {
 		Visits:          article.Visits,
 		Likes:           article.Likes,
 		WordCount:       article.WordCount,
-		SeoKeywords:     strings.Split(article.SeoKeywords, ","),
-		SeoDescription:  article.SeoDescription,
 		// TODO: 0:正常 1:草稿 2:回收站 ...
 		Status:      article.Status,
 		PublishTime: article.PublishTime,
@@ -56,19 +52,16 @@ func LoadFromModel(article model.Article) (ListArticlesDTO, error) {
 	// categories
 	categories, err := model.ListCategoriesByArticleID(article.ID)
 	if err != nil {
+		log.Println(err.Error())
 		return dto, err
 	}
 	dto.Categories = categories
 	// tags
 	tags, err := model.ListTagsByArticleID(article.ID)
 	if err != nil {
+		log.Println(err.Error())
 		return dto, err
 	}
 	dto.Tags = tags
-	total, err := model.CountAllArticles()
-	if err != nil {
-		return dto, err
-	}
-	dto.Total = total
 	return dto, nil
 }

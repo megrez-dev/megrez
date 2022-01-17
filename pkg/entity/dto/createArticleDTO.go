@@ -50,7 +50,11 @@ func (dto CreateArticleDTO) Transfer2Model() model.Article {
 	// seo tags
 	seoKeywords := ""
 	for _, seoKeyword := range dto.SeoKeywords {
-		seoKeywords = seoKeywords + ";" + seoKeyword
+		if seoKeywords == "" {
+			seoKeywords = seoKeyword
+		} else {
+			seoKeywords = seoKeywords + ";" + seoKeyword
+		}
 	}
 	article.SeoKeywords = seoKeywords
 	return article

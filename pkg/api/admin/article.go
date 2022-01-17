@@ -25,7 +25,7 @@ func CreateArticle(c *gin.Context) {
 		return
 	}
 	article := data.Transfer2Model()
-	article.CreateTime = time.Now()
+	article.PublishTime = time.Now()
 
 	// check and generate slug
 	if article.Slug == "" {
@@ -63,7 +63,11 @@ func CreateArticle(c *gin.Context) {
 				c.JSON(http.StatusOK, errmsg.Error())
 				return
 			}
-			article.SeoKeywords = article.SeoKeywords + ";" + tag.Name
+			if article.SeoKeywords == "" {
+				article.SeoKeywords = tag.Name
+			}else {
+				article.SeoKeywords = article.SeoKeywords + ";" + tag.Name
+			}
 		}
 	}
 	// check to generate seo description
@@ -174,5 +178,16 @@ func ListArticles(c *gin.Context) {
 		}
 		articleDTOs = append(articleDTOs, articleDTO)
 	}
-	c.JSON(http.StatusOK, errmsg.Success(articles))
+	total, err := model.CountAllArticles()
+	if err != nil {
+		log.Println(err.Error())
+		c.JSON(http.StatusOK, errmsg.Error())
+	}
+	pagination := dto.Pagination{
+		List: articleDTOs,
+		Current: pageNum,
+		PageSize: pageSize,
+		Total: total,
+	}
+	c.JSON(http.StatusOK, errmsg.Success(pagination))
 }

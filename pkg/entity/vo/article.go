@@ -19,17 +19,17 @@ type IndexArticle struct {
 	Likes       int64
 	WordCount   int64
 	Status      int
-	CreateTime   time.Time
-	UpdateTime   time.Time
+	PublishTime time.Time
+	EditTime    time.Time
 }
 
 type CommonArticle struct {
-	ID        uint
-	Title     string
-	Slug      string
-	Status    int
-	Private    bool
-	CreateTime time.Time
+	ID          uint
+	Title       string
+	Slug        string
+	Status      int
+	Private     bool
+	PublishTime time.Time
 }
 
 type ArticleDetail struct {
@@ -45,8 +45,8 @@ type ArticleDetail struct {
 	Visits        int64
 	Likes         int64
 	WordCount     int64
-	CreateTime     time.Time
-	UpdateTime     time.Time
+	PublishTime   time.Time
+	EditTime      time.Time
 	Pre           *NextPreArticle
 	Next          *NextPreArticle
 	Page          *Pagination
@@ -69,8 +69,8 @@ func GetIndexArticleFromPO(article *model.Article) (IndexArticle, error) {
 	vo.TopPriority = article.TopPriority
 	vo.Visits = article.Visits
 	vo.Status = article.Status
-	vo.CreateTime = article.CreateTime
-	vo.UpdateTime = article.UpdateTime
+	vo.PublishTime = article.PublishTime
+	vo.EditTime = article.EditTime
 
 	// TODO: 默认 CategoryID = 1
 	//category, err := model.GetCategoryByID(article.CategoryID)
@@ -89,12 +89,12 @@ func GetIndexArticleFromPO(article *model.Article) (IndexArticle, error) {
 
 func GetCommonArticleFromPO(article model.Article) *CommonArticle {
 	commonArticle := &CommonArticle{
-		ID:         article.ID,
-		Title:      article.Title,
-		Slug:       article.Slug,
-		Status:     article.Status,
-		Private:    article.Private,
-		CreateTime: article.CreateTime,
+		ID:          article.ID,
+		Title:       article.Title,
+		Slug:        article.Slug,
+		Status:      article.Status,
+		Private:     article.Private,
+		PublishTime: article.PublishTime,
 	}
 	return commonArticle
 }
@@ -109,8 +109,8 @@ func GetArticleDetailFromPO(article model.Article, pageNum, pageSize int) (*Arti
 	vo.Visits = article.Visits
 	vo.Likes = article.Likes
 	vo.WordCount = article.WordCount
-	vo.CreateTime = article.CreateTime
-	vo.UpdateTime = article.UpdateTime
+	vo.PublishTime = article.PublishTime
+	vo.EditTime = article.EditTime
 	vo.Status = article.Status
 
 	// TODO: 默认 CategoryID = 1
@@ -121,7 +121,7 @@ func GetArticleDetailFromPO(article model.Article, pageNum, pageSize int) (*Arti
 	//category := GetBriefCategoryFromPO(categoryPO)
 	//vo.Category = category
 	tagPOs, err := model.GetTagsByArticleID(article.ID)
-	tags := []*BriefTag{}
+	var tags []*BriefTag
 	for _, tagPO := range tagPOs {
 		tag := GetBriefTagFromPO(tagPO)
 		tags = append(tags, tag)
@@ -131,9 +131,9 @@ func GetArticleDetailFromPO(article model.Article, pageNum, pageSize int) (*Arti
 	if err != nil {
 		return vo, err
 	}
-	comments := []*Comment{}
-	for _, commmentPO := range commentPOs {
-		comment, err := GetCommentFromPO(commmentPO)
+	var comments []*Comment
+	for _, commentPO := range commentPOs {
+		comment, err := GetCommentFromPO(commentPO)
 		if err != nil {
 			return vo, err
 		}
