@@ -3,6 +3,7 @@ package dto
 import (
 	"github.com/megrez/pkg/model"
 	"strings"
+	"time"
 )
 
 type ListArticlesDTO struct {
@@ -25,6 +26,8 @@ type ListArticlesDTO struct {
 	SeoKeywords     []string         `json:"seoKeywords"`
 	SeoDescription  string           `json:"seoDescription"`
 	Status          int              `json:"status"`
+	PublishTime     time.Time        `json:"publishTime"`
+	Total           int64            `json:"total"`
 }
 
 func LoadFromModel(article model.Article) (ListArticlesDTO, error) {
@@ -45,7 +48,8 @@ func LoadFromModel(article model.Article) (ListArticlesDTO, error) {
 		SeoKeywords:     strings.Split(article.SeoKeywords, ","),
 		SeoDescription:  article.SeoDescription,
 		// TODO: 0:正常 1:草稿 2:回收站 ...
-		Status: article.Status,
+		Status:      article.Status,
+		PublishTime: article.PublishTime,
 	}
 	// isTop
 	dto.IsTop = article.TopPriority == 0
@@ -61,5 +65,10 @@ func LoadFromModel(article model.Article) (ListArticlesDTO, error) {
 		return dto, err
 	}
 	dto.Tags = tags
+	total, err := model.CountAllArticles()
+	if err != nil {
+		return dto, err
+	}
+	dto.Total = total
 	return dto, nil
 }
