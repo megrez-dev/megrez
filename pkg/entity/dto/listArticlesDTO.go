@@ -19,6 +19,7 @@ type ListArticlesDTO struct {
 	AllowedComment  bool             `json:"allowedComment"`
 	Categories      []model.Category `json:"categories"`
 	Tags            []model.Tag      `json:"tags"`
+	CommentsNum     int64            `json:"commentsNum"`
 	IsTop           bool             `json:"isTop"`
 	Visits          int64            `json:"visits"`
 	Likes           int64            `json:"likes"`
@@ -63,5 +64,12 @@ func LoadFromModel(article model.Article) (ListArticlesDTO, error) {
 		return dto, err
 	}
 	dto.Tags = tags
+	// commentsNum
+	commentsNum, err := model.CountCommentsByArticleID(article.ID)
+	if err != nil {
+		log.Println(err.Error())
+		return dto, err
+	}
+	dto.CommentsNum = commentsNum
 	return dto, nil
 }
