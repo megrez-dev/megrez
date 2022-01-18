@@ -33,10 +33,12 @@ func page(c *gin.Context) {
 	pageSize = 8
 	slug := c.Param("slug")
 	page, err := model.GetPageBySlug(slug)
-	if err == gorm.ErrRecordNotFound {
-		c.Redirect(404, "/404")
-	} else {
-		c.Redirect(500, "/error")
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			c.Redirect(404, "/404")
+		} else {
+			c.Redirect(500, "/error")
+		}
 	}
 	pageVO := vo.GetPageFromPO(page)
 

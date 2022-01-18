@@ -151,7 +151,7 @@ func GetGlobalOption() (Global, error) {
 	if err != nil {
 		return global, err
 	}
-	menus := []*Menu{}
+	var menus []*Menu
 	for _, mensPO := range menuPOs {
 		menus = append(menus, GetMenuFromPO(mensPO))
 	}
@@ -184,7 +184,7 @@ func GetGlobalOption() (Global, error) {
 	// latest comments
 	commentPOs, err := model.ListLatestComments()
 	if err == nil {
-		latestComments := []*LatestComment{}
+		var latestComments []*LatestComment
 		for _, commentPO := range commentPOs {
 			latestComment, err := GetLatestCommentFromPO(&commentPO)
 			if err == nil {

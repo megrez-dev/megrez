@@ -22,8 +22,8 @@ type Article struct {
 	SeoKeywords     string    `gorm:"type:varchar(255)" json:"seoKeywords"`
 	SeoDescription  string    `gorm:"type:varchar(1023)" json:"seoDescription"`
 	Status          int       `gorm:"type:int(11)" json:"status"`
-	PublishTime     time.Time `json:"publishTime"`
-	EditTime        time.Time `json:"editTime"`
+	PublishTime     time.Time `gorm:"default:NULL" json:"publishTime"`
+	EditTime        time.Time `gorm:"default:NULL" json:"editTime"`
 }
 
 // GetArticleByID return article by id

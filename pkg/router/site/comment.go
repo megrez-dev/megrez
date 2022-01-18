@@ -55,7 +55,7 @@ func createCommentForArticle(c *gin.Context) {
 		log.Println("create comment failed, err: ", err)
 		c.Redirect(500, "/error")
 	}
-	// caculate pagination
+	// calculate pagination
 	pageSizeStr, err := model.GetOptionByKey(vo.OptionComentsPageSize)
 	if err != nil {
 		c.Redirect(500, "/error")
@@ -114,21 +114,23 @@ func createCommentForPage(c *gin.Context) {
 	}
 	page, err := model.GetPageByID(uint(pageID))
 	if err != nil {
-		log.Println("get page failed, err: ", err)
+		log.Println("get page failed, err: ", err.Error())
 		c.Redirect(500, "/error")
 	}
 	err = model.CreateComment(comment)
 	if err != nil {
-		log.Println("create comment failed, err: ", err)
+		log.Println("create comment failed, err: ", err.Error())
 		c.Redirect(500, "/error")
 	}
-	// caculate pagination
+	// calculate pagination
 	pageSizeStr, err := model.GetOptionByKey(vo.OptionComentsPageSize)
 	if err != nil {
+		log.Println("get option pageSize failed, err: ", err.Error())
 		c.Redirect(500, "/error")
 	}
 	pageSize, err := strconv.Atoi(pageSizeStr)
 	if err != nil {
+		log.Println(err.Error())
 		c.Redirect(500, "/error")
 	}
 	rootComments, err := model.ListRootCommentsByPageID(comment.PageID, 0, 0)

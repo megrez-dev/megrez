@@ -10,5 +10,6 @@ func RouteSite(g *gin.Engine) {
 	RouteLink(g)
 	RouteJournal(g)
 	RouteSearch(g)
+	RoutePage(g)
 	RouteFavicon(g)
 }

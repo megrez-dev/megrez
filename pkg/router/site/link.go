@@ -60,6 +60,7 @@ func listLinks(c *gin.Context) {
 
 	globalOption, err := vo.GetGlobalOption()
 	if err != nil {
+		log.Println("get global option failed, err:", err.Error())
 		c.Redirect(500, "/error")
 	}
 

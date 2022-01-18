@@ -62,7 +62,6 @@ func index(c *gin.Context) {
 		c.Redirect(500, "/error")
 	}
 	page := vo.CalculatePagination(pageNum, pageSize, int(count))
-	// TODO: 过滤器格式化时间
 	c.HTML(200, "index.html", pongo2.Context{"articles": articleVOs, "global": globalOption, "page": page})
 }
 

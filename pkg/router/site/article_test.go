@@ -8,7 +8,7 @@ import (
 	"github.com/megrez/pkg/entity/vo"
 )
 
-func TestCaculatePage(t *testing.T) {
+func TestCalculatePage(t *testing.T) {
 	page := vo.CalculatePagination(1, 2, 6)
 	b, err := json.Marshal(page)
 	if err != nil {
