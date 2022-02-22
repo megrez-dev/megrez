@@ -15,9 +15,76 @@ import (
 
 func Install(c *gin.Context) {
 	// create default category
+	category := model.Category{
+		Name:        "默认分类",
+		Slug:        "default",
+		Description: "默认分类",
+	}
+	err := model.CreateCategory(&category)
+	if err != nil {
+		log.Println("create default category failed:", err.Error())
+	}
 	// publish hello world article
+	article := model.Article{
+		Title: "Hello Megrez",
+		Slug:  slug.Make("hello-megrez"),
+		// TODO: init hallo world article
+		Summary:         "Hello Megrez",
+		OriginalContent: "Hello Megrez",
+		FormatContent:   "Hello Megrez",
+		AllowedComment:  true,
+	}
+	err = model.CreateArticle(&article)
+	if err != nil {
+		log.Println("create hello world article failed:", err.Error())
+	}
+
+	err = model.CreateArticleCategory(article.ID, category.ID)
+	if err != nil {
+		log.Println("create articleCategory failed:", err.Error())
+	}
 	// publish hello world comment
+	comment := model.Comment{
+		ArticleID: article.ID,
+		Content:   "Welcome to Megrez!",
+		Type:      1,
+		Site:      "https://megrez.run",
+		Mail:      "admin@megrez.run",
+		Author:    "MEGREZ",
+	}
+	err = model.CreateComment(&comment)
+	if err != nil {
+		log.Println("create hello world comment failed:", err.Error())
+	}
+	// create page for journal, link, about
+	pages := []model.Page{
+		{
+			Name:    "关于",
+			Slug:    "about",
+			Cover:   "关于",
+			Content: "关于",
+		},
+		{
+			Name:        "日志",
+			Slug:        "journal",
+			Description: "日志",
+			Content:     "日志",
+		},
+		{
+			Title:       "友链",
+			Slug:        "link",
+			Description: "友链",
+			Content:     "友链",
+		},
+	}
 	// create default menu for journal,link,about
+	menuAbout := model.Menu{
+		Name:        "关于",
+		Slug:        "about",
+		Description: "关于",
+		ParentID:    0,
+		Order:       0,
+	}
 	// create default page for journal,link,about
 	//
 	var data dto.CreateArticleDTO
@@ -68,7 +135,7 @@ func Install(c *gin.Context) {
 			}
 			if article.SeoKeywords == "" {
 				article.SeoKeywords = tag.Name
-			}else {
+			} else {
 				article.SeoKeywords = article.SeoKeywords + ";" + tag.Name
 			}
 		}
