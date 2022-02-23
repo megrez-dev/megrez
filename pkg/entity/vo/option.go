@@ -1,6 +1,7 @@
 package vo
 
 var (
+	OptionKeyIsInstalled     = "is_installed"
 	OptionKeyBlogURL         = "blog_url"
 	OptionKeyBlogTitle       = "blog_title"
 	OptionKeyBlogDescription = "blog_description"

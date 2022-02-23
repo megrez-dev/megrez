@@ -21,7 +21,7 @@ func CreateArticle(c *gin.Context) {
 	err := c.ShouldBindJSON(&data)
 	if err != nil {
 		log.Println(err.Error())
-		c.JSON(http.StatusOK, errmsg.ERROR_INVALID_PARAM)
+		c.JSON(http.StatusOK, errmsg.ErrorInvalidParam)
 		return
 	}
 	article := data.Transfer2Model()
@@ -39,7 +39,7 @@ func CreateArticle(c *gin.Context) {
 			}
 		}
 		if exist.ID != 0 {
-			c.JSON(http.StatusOK, errmsg.Fail(errmsg.ERROR_ARTICLE_SLUG_EXIST))
+			c.JSON(http.StatusOK, errmsg.Fail(errmsg.ErrorArticleSlugExist))
 			return
 		}
 	}
@@ -65,7 +65,7 @@ func CreateArticle(c *gin.Context) {
 			}
 			if article.SeoKeywords == "" {
 				article.SeoKeywords = tag.Name
-			}else {
+			} else {
 				article.SeoKeywords = article.SeoKeywords + ";" + tag.Name
 			}
 		}
@@ -184,10 +184,10 @@ func ListArticles(c *gin.Context) {
 		c.JSON(http.StatusOK, errmsg.Error())
 	}
 	pagination := dto.Pagination{
-		List: articleDTOs,
-		Current: pageNum,
+		List:     articleDTOs,
+		Current:  pageNum,
 		PageSize: pageSize,
-		Total: total,
+		Total:    total,
 	}
 	c.JSON(http.StatusOK, errmsg.Success(pagination))
 }

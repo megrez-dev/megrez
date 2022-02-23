@@ -15,13 +15,13 @@ func CreateCategory(c *gin.Context) {
 	err := c.ShouldBindJSON(&data)
 	if err != nil {
 		log.Println(err.Error())
-		c.JSON(http.StatusOK, errmsg.Fail(errmsg.ERROR_INVALID_PARAM))
+		c.JSON(http.StatusOK, errmsg.Fail(errmsg.ErrorInvalidParam))
 		return
 	}
 
 	category, err := model.GetCategoryBySlug(data.Slug)
 	if category.ID != 0 {
-		c.JSON(http.StatusOK, errmsg.Fail(errmsg.ERROR_CATENAME_SLUG_EXIST))
+		c.JSON(http.StatusOK, errmsg.Fail(errmsg.ErrorCategorySlugExist))
 		return
 	}
 
@@ -45,7 +45,7 @@ func UpdateCategory(c *gin.Context) {
 	err = c.ShouldBindJSON(&data)
 	if err != nil {
 		log.Println(err.Error())
-		c.JSON(http.StatusOK, errmsg.Fail(errmsg.ERROR_INVALID_PARAM))
+		c.JSON(http.StatusOK, errmsg.Fail(errmsg.ErrorInvalidParam))
 	}
 
 	err = model.UpdateCategoryByID(uint(id), &data)
@@ -105,7 +105,7 @@ func ListCategories(c *gin.Context) {
 		pageSize, err := strconv.Atoi(c.Query("pageSize"))
 		if err != nil {
 			log.Println(err.Error())
-			c.JSON(http.StatusOK, errmsg.Fail(errmsg.ERROR_INVALID_PARAM))
+			c.JSON(http.StatusOK, errmsg.Fail(errmsg.ErrorInvalidParam))
 			return
 		}
 		categories, err := model.ListCategoriesByPage(pageNum, pageSize)

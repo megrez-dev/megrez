@@ -52,7 +52,7 @@ func (m *Megrez) Init() error {
 func (m *Megrez) initConfig() error {
 	v := viper.New()
 	// TODO: 通过 NewMegrez 传递 flag 作为配置文件路径
-	v.SetConfigFile("./config.yaml")
+	v.SetConfigFile("config.yaml")
 
 	if err := v.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {

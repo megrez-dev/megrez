@@ -2,6 +2,7 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/megrez/pkg/middleware/checkinstall"
 	"github.com/megrez/pkg/middleware/cros"
 	"github.com/megrez/pkg/middleware/pongo2gin"
 	"github.com/megrez/pkg/router/admin"
@@ -11,6 +12,7 @@ import (
 func NewRouter() *gin.Engine {
 	g := gin.Default()
 	g.Use(cros.Cors())
+	g.Use(checkinstall.CheckInstall())
 	// load pongo2 for gin
 	g.HTMLRender = pongo2gin.TemplatePath("web/site/view")
 	// load admin static files

@@ -2,6 +2,7 @@ package site
 
 import (
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 func RouteFavicon(g *gin.Engine) {
@@ -10,5 +11,5 @@ func RouteFavicon(g *gin.Engine) {
 
 func favicon(c *gin.Context) {
 	// TODO： 这里需要跨域，以后换一种方式
-	c.Redirect(302, "https://alkaidchen-1257721976.cos.ap-guangzhou.myqcloud.com/blog/static/images/favicon.ico")
+	c.Redirect(http.StatusFound, "https://alkaidchen-1257721976.cos.ap-guangzhou.myqcloud.com/blog/static/images/favicon.ico")
 }

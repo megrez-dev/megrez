@@ -3,6 +3,7 @@ package site
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/megrez/pkg/model"
+	"net/http"
 )
 
 func RouteTag(g *gin.Engine) {
@@ -24,5 +25,5 @@ func createTag(c *gin.Context) {
 		c.JSON(500, "failed to create link")
 		return
 	}
-	c.JSON(200, "success")
+	c.JSON(http.StatusOK, "success")
 }

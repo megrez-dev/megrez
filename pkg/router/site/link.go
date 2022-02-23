@@ -2,6 +2,7 @@ package site
 
 import (
 	"log"
+	"net/http"
 	"strconv"
 
 	"github.com/flosch/pongo2/v4"
@@ -26,7 +27,7 @@ func listLinks(c *gin.Context) {
 		if err != nil {
 			log.Println("incorrect param pageNum, err:", err)
 			// TODO: 应该是 4XX?
-			c.Redirect(500, "/error")
+			c.Redirect(http.StatusInternalServerError, "/error")
 		}
 	}
 	if c.Param("pageSize") == "" {
@@ -35,7 +36,7 @@ func listLinks(c *gin.Context) {
 		pageSize, err = strconv.Atoi(c.Param("pageSize"))
 		if err != nil {
 			log.Println("incorrect param pageSize, err:", err)
-			c.Redirect(500, "/error")
+			c.Redirect(http.StatusInternalServerError, "/error")
 		}
 	}
 
@@ -47,13 +48,13 @@ func listLinks(c *gin.Context) {
 
 	commentPOs, err := model.ListRootCommentsByPageID(2, pageNum, pageSize)
 	if err != nil {
-		c.Redirect(500, "/error")
+		c.Redirect(http.StatusInternalServerError, "/error")
 	}
 	var comments []*vo.Comment
 	for _, commentPO := range commentPOs {
 		comment, err := vo.GetCommentFromPO(commentPO)
 		if err != nil {
-			c.Redirect(500, "/error")
+			c.Redirect(http.StatusInternalServerError, "/error")
 		}
 		comments = append(comments, comment)
 	}
@@ -61,7 +62,7 @@ func listLinks(c *gin.Context) {
 	globalOption, err := vo.GetGlobalOption()
 	if err != nil {
 		log.Println("get global option failed, err:", err.Error())
-		c.Redirect(500, "/error")
+		c.Redirect(http.StatusInternalServerError, "/error")
 	}
 
 	page := struct {
@@ -78,11 +79,11 @@ func listLinks(c *gin.Context) {
 	}
 	commentsNum, err := model.CountRootCommentsByPageID(page.ID)
 	if err != nil {
-		c.Redirect(500, "/error")
+		c.Redirect(http.StatusInternalServerError, "/error")
 	}
 	page.CommentsNum = commentsNum
 	pagination := vo.CalculatePagination(pageNum, pageSize, int(commentsNum))
-	c.HTML(200, "links.html", pongo2.Context{"page": page, "pagination": pagination, "links": links, "comments": comments, "global": globalOption})
+	c.HTML(http.StatusOK, "links.html", pongo2.Context{"page": page, "pagination": pagination, "links": links, "comments": comments, "global": globalOption})
 }
 
 func createLink(c *gin.Context) {
@@ -91,7 +92,7 @@ func createLink(c *gin.Context) {
 	logo := c.PostForm("logo")
 
 	if name == "" || addr == "" || logo == "" {
-		c.JSON(500, "invalid parameter")
+		c.JSON(http.StatusInternalServerError, "invalid parameter")
 		return
 	}
 	link := &model.Link{
@@ -101,8 +102,8 @@ func createLink(c *gin.Context) {
 	}
 	err := model.CreateLink(link)
 	if err != nil {
-		c.JSON(500, "failed to create link")
+		c.JSON(http.StatusInternalServerError, "failed to create link")
 		return
 	}
-	c.JSON(200, "success")
+	c.JSON(http.StatusOK, "success")
 }

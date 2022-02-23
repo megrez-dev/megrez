@@ -2,6 +2,7 @@ package site
 
 import (
 	"log"
+	"net/http"
 	"strconv"
 
 	"github.com/flosch/pongo2/v4"
@@ -26,7 +27,7 @@ func listArticlesByCategory(c *gin.Context) {
 		if err != nil {
 			log.Println("incorrect param pageNum, err:", err)
 			// TODO: 应该是 4XX?
-			c.Redirect(500, "/error")
+			c.Redirect(http.StatusInternalServerError, "/error")
 		}
 	}
 	if c.Param("pageSize") == "" {
@@ -35,7 +36,7 @@ func listArticlesByCategory(c *gin.Context) {
 		pageSize, err = strconv.Atoi(c.Param("pageSize"))
 		if err != nil {
 			log.Println("incorrect param pageSize, err:", err)
-			c.Redirect(500, "/error")
+			c.Redirect(http.StatusInternalServerError, "/error")
 		}
 	}
 	categorySlug := c.Param("slug")
@@ -44,11 +45,11 @@ func listArticlesByCategory(c *gin.Context) {
 	}
 	category, err := model.GetCategoryBySlug(categorySlug)
 	if err != nil {
-		c.Redirect(500, "/error")
+		c.Redirect(http.StatusInternalServerError, "/error")
 	}
 	articlePOs, err := model.ListArticlesByCategoryID(category.ID, pageNum, pageSize)
 	if err != nil {
-		c.Redirect(500, "/error")
+		c.Redirect(http.StatusInternalServerError, "/error")
 	}
 	articles := []*vo.CommonArticle{}
 	for _, articlePO := range articlePOs {
@@ -57,14 +58,14 @@ func listArticlesByCategory(c *gin.Context) {
 	}
 	globalOption, err := vo.GetGlobalOption()
 	if err != nil {
-		c.Redirect(500, "/error")
+		c.Redirect(http.StatusInternalServerError, "/error")
 	}
 	articlesNum, err := model.CountArticlesByCategoryID(category.ID)
 	if err != nil {
-		c.Redirect(500, "/error")
+		c.Redirect(http.StatusInternalServerError, "/error")
 	}
 	pagination := vo.CalculatePagination(pageNum, pageSize, int(articlesNum))
-	c.HTML(200, "category.html", pongo2.Context{"category": category, "pagination": pagination, "articles": articles, "global": globalOption})
+	c.HTML(http.StatusOK, "category.html", pongo2.Context{"category": category, "pagination": pagination, "articles": articles, "global": globalOption})
 }
 
 func createCategory(c *gin.Context) {
@@ -76,7 +77,7 @@ func createCategory(c *gin.Context) {
 	err := model.CreateCategory(category)
 	if err != nil {
 		log.Println("create category failed, err: ", err)
-		c.JSON(500, "failed")
+		c.JSON(http.StatusInternalServerError, "failed")
 	}
-	c.JSON(200, "success")
+	c.JSON(http.StatusOK, "success")
 }

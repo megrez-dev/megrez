@@ -2,6 +2,7 @@ package site
 
 import (
 	"log"
+	"net/http"
 	"strconv"
 
 	"github.com/flosch/pongo2/v4"
@@ -27,7 +28,7 @@ func index(c *gin.Context) {
 		if err != nil {
 			log.Println("incorrect param pageNum, err:", err)
 			// TODO: 应该是 4XX?
-			c.Redirect(500, "/error")
+			c.Redirect(http.StatusInternalServerError, "/error")
 		}
 	}
 	if c.Param("pageSize") == "" {
@@ -36,33 +37,33 @@ func index(c *gin.Context) {
 		pageSize, err = strconv.Atoi(c.Param("pageSize"))
 		if err != nil {
 			log.Println("incorrect param pageSize, err:", err)
-			c.Redirect(500, "/error")
+			c.Redirect(http.StatusInternalServerError, "/error")
 		}
 	}
 	articlePOs, err := model.ListAllArticles(pageNum, pageSize)
 	if err != nil {
 		log.Println("get articles from db failed, err:", err)
-		c.Redirect(500, "/error")
+		c.Redirect(http.StatusInternalServerError, "/error")
 	}
 	var articleVOs []vo.IndexArticle
 	for _, articlePO := range articlePOs {
 		articleVO, err := vo.GetIndexArticleFromPO(&articlePO)
 		if err != nil {
-			c.Redirect(500, "/error")
+			c.Redirect(http.StatusInternalServerError, "/error")
 		}
 		articleVOs = append(articleVOs, articleVO)
 	}
 	globalOption, err := vo.GetGlobalOption()
 	if err != nil {
-		c.Redirect(500, "/error")
+		c.Redirect(http.StatusInternalServerError, "/error")
 	}
 	// pageInfo
 	count, err := model.CountAllArticles()
 	if err != nil {
-		c.Redirect(500, "/error")
+		c.Redirect(http.StatusInternalServerError, "/error")
 	}
 	page := vo.CalculatePagination(pageNum, pageSize, int(count))
-	c.HTML(200, "index.html", pongo2.Context{"articles": articleVOs, "global": globalOption, "page": page})
+	c.HTML(http.StatusOK, "index.html", pongo2.Context{"articles": articleVOs, "global": globalOption, "page": page})
 }
 
 func articleDetail(c *gin.Context) {
@@ -75,7 +76,7 @@ func articleDetail(c *gin.Context) {
 		if err != nil {
 			log.Println("incorrect param pageNum, err:", err)
 			// TODO: 应该是 4XX?
-			c.Redirect(500, "/error")
+			c.Redirect(http.StatusInternalServerError, "/error")
 		}
 	}
 
@@ -85,14 +86,14 @@ func articleDetail(c *gin.Context) {
 		pageSize, err = strconv.Atoi(c.Param("pageSize"))
 		if err != nil {
 			log.Println("incorrect param pageSize, err:", err)
-			c.Redirect(500, "/error")
+			c.Redirect(http.StatusInternalServerError, "/error")
 		}
 	}
 
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		log.Println("incorrect param id, err:", err)
-		c.Redirect(500, "/error")
+		c.Redirect(http.StatusInternalServerError, "/error")
 	}
 	articlePO, err := model.GetArticleByID(uint(id))
 	if err != nil {
@@ -101,11 +102,11 @@ func articleDetail(c *gin.Context) {
 	articleDetial, err := vo.GetArticleDetailFromPO(articlePO, pageNum, pageSize)
 	if err != nil {
 		log.Println("get article detail failed, err:", err)
-		c.Redirect(500, "/error")
+		c.Redirect(http.StatusInternalServerError, "/error")
 	}
 	globalOption, err := vo.GetGlobalOption()
 	if err != nil {
-		c.Redirect(500, "/error")
+		c.Redirect(http.StatusInternalServerError, "/error")
 	}
-	c.HTML(200, "article.html", pongo2.Context{"article": articleDetial, "global": globalOption})
+	c.HTML(http.StatusOK, "article.html", pongo2.Context{"article": articleDetial, "global": globalOption})
 }

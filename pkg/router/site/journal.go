@@ -2,6 +2,7 @@ package site
 
 import (
 	"log"
+	"net/http"
 	"strconv"
 
 	"github.com/flosch/pongo2/v4"
@@ -26,7 +27,7 @@ func listJournal(c *gin.Context) {
 		if err != nil {
 			log.Println("incorrect param pageNum, err:", err)
 			// TODO: 应该是 4XX?
-			c.Redirect(500, "/error")
+			c.Redirect(http.StatusInternalServerError, "/error")
 		}
 	}
 	if c.Param("pageSize") == "" {
@@ -35,13 +36,13 @@ func listJournal(c *gin.Context) {
 		pageSize, err = strconv.Atoi(c.Param("pageSize"))
 		if err != nil {
 			log.Println("incorrect param pageSize, err:", err)
-			c.Redirect(500, "/error")
+			c.Redirect(http.StatusInternalServerError, "/error")
 		}
 	}
 
 	journalPOs, err := model.ListAllJournals(pageNum, pageSize)
 	if err != nil {
-		c.Redirect(500, "/error")
+		c.Redirect(http.StatusInternalServerError, "/error")
 	}
 	var journals []*vo.Journal
 	for _, journalPO := range journalPOs {
@@ -51,12 +52,12 @@ func listJournal(c *gin.Context) {
 
 	globalOption, err := vo.GetGlobalOption()
 	if err != nil {
-		c.Redirect(500, "/error")
+		c.Redirect(http.StatusInternalServerError, "/error")
 	}
 
 	journalsNum, err := model.CountAllJournals()
 	if err != nil {
-		c.Redirect(500, "/error")
+		c.Redirect(http.StatusInternalServerError, "/error")
 	}
 	page := struct {
 		ID     uint
@@ -70,7 +71,7 @@ func listJournal(c *gin.Context) {
 		Visits: 2311,
 	}
 	pagination := vo.CalculatePagination(pageNum, pageSize, int(journalsNum))
-	c.HTML(200, "journal.html", pongo2.Context{"page": page, "journals": journals, "pagination": pagination, "global": globalOption})
+	c.HTML(http.StatusOK, "journal.html", pongo2.Context{"page": page, "journals": journals, "pagination": pagination, "global": globalOption})
 }
 
 func createJournal(c *gin.Context) {
@@ -84,8 +85,8 @@ func createJournal(c *gin.Context) {
 	}
 	err := model.CreateJournal(journal)
 	if err != nil {
-		c.JSON(500, "create journal failed")
+		c.JSON(http.StatusInternalServerError, "create journal failed")
 		return
 	}
-	c.JSON(200, "success")
+	c.JSON(http.StatusOK, "success")
 }

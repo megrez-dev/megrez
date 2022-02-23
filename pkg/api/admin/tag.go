@@ -13,7 +13,7 @@ func CreateTag(c *gin.Context) {
 	var data model.Tag
 	err := c.ShouldBindJSON(&data)
 	if err != nil {
-		c.JSON(http.StatusOK, errmsg.Fail(errmsg.ERROR_INVALID_PARAM))
+		c.JSON(http.StatusOK, errmsg.Fail(errmsg.ErrorInvalidParam))
 		return
 	}
 
@@ -46,7 +46,7 @@ func ListTags(c *gin.Context) {
 		pageNum, err := strconv.Atoi(c.Query("pageNum"))
 		pageSize, err := strconv.Atoi(c.Query("pageSize"))
 		if err != nil {
-			c.JSON(http.StatusOK, errmsg.Fail(errmsg.ERROR_INVALID_PARAM))
+			c.JSON(http.StatusOK, errmsg.Fail(errmsg.ErrorInvalidParam))
 			return
 		}
 		tags, err := model.ListTagsByPage(pageNum, pageSize)
