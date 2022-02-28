@@ -9,8 +9,8 @@ type Link struct {
 	Logo       string    `gorm:"type:varchar(255)" json:"logo"`
 	Priority   uint      `gorm:"type:int(11)" json:"priority"`
 	Status     int       `gorm:"type:int(11)" json:"status"`
-	CreateTime time.Time `json:"createTime"`
-	UpdateTime time.Time `json:"updateTime"`
+	CreateTime time.Time `gorm:"default:NULL" json:"createTime"`
+	UpdateTime time.Time `gorm:"default:NULL" json:"updateTime"`
 }
 
 // ListAllLinks return all links

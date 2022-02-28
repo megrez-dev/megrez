@@ -14,8 +14,8 @@ type Page struct {
 	Status          int       `gorm:"type:int(11)" json:"status"`
 	OriginalContent string    `gorm:"type:longtext" json:"originalContent"`
 	FormatContent   string    `gorm:"type:longtext" json:"formatContent"`
-	CreateTime      time.Time `json:"createTime"`
-	UpdateTime      time.Time `json:"updateTime"`
+	CreateTime      time.Time `gorm:"default:NULL" json:"createTime"`
+	UpdateTime      time.Time `gorm:"default:NULL" json:"updateTime"`
 }
 
 // GetPageByID return page by pageID

@@ -10,6 +10,9 @@ func RouteAdmin(g *gin.Engine) {
 	// TODO: Jwt middleware
 	// admin.Use(middleware.JwtToken())
 
+	//api for install
+	auth.POST("install", admin.Install)
+
 	// api for article
 	auth.POST("article", admin.CreateArticle)
 	auth.PUT("article/:id", admin.UpdateArticle)

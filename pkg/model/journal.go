@@ -4,15 +4,15 @@ import "time"
 
 type Journal struct {
 	ID              uint      `gorm:"primarykey" json:"id"`
-	OriginalContent string `gorm:"type:longtext" json:"originalContent"`
-	FormatContent   string `gorm:"type:longtext" json:"formatContent"`
-	Images          string `gorm:"type:varchar(4095)" json:"images"`
-	Private         bool `json:"private"`
-	Visits          int64 `gorm:"type:int(11)" json:"visits"`
-	Likes           int64 `gorm:"type:int(11)" json:"likes"`
-	Status          int  `gorm:"type:int(11)" json:"status"`
-	CreateTime      time.Time `json:"createTime"`
-	UpdateTime      time.Time `json:"updateTime"`
+	OriginalContent string    `gorm:"type:longtext" json:"originalContent"`
+	FormatContent   string    `gorm:"type:longtext" json:"formatContent"`
+	Images          string    `gorm:"type:varchar(4095)" json:"images"`
+	Private         bool      `json:"private"`
+	Visits          int64     `gorm:"type:int(11)" json:"visits"`
+	Likes           int64     `gorm:"type:int(11)" json:"likes"`
+	Status          int       `gorm:"type:int(11)" json:"status"`
+	CreateTime      time.Time `gorm:"default:NULL" json:"createTime"`
+	UpdateTime      time.Time `gorm:"default:NULL" json:"updateTime"`
 }
 
 // ListAllJournals return all journals

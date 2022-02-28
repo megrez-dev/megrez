@@ -13,6 +13,10 @@ import (
 
 func CheckInstall() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		// exclude api for install
+		if c.Request.URL.Path == "/api/admin/install" {
+			c.Next()
+		}
 		isInstalledStr, err := model.GetOptionByKey(vo.OptionKeyIsInstalled)
 		if err == gorm.ErrRecordNotFound {
 			if strings.HasPrefix(c.Request.URL.Path, "/api") {

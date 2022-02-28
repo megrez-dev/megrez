@@ -1,4 +1,4 @@
-package api
+package admin
 
 import (
 	"github.com/gin-gonic/gin"
@@ -50,13 +50,7 @@ func Install(c *gin.Context) {
 		return
 	}
 
-	// set option blog description
-	err = model.SetOption(vo.OptionKeyBlogDescription, "平凡的日子里，也要闪闪发光✨")
-	if err != nil {
-		log.Println("set option blog description failed:", err.Error())
-		c.JSON(http.StatusOK, errmsg.Error())
-		return
-	}
+	// TODO: create admin user
 
 	// create default category
 	category := model.Category{
@@ -79,6 +73,7 @@ func Install(c *gin.Context) {
 		OriginalContent: "Hello Megrez",
 		FormatContent:   "Hello Megrez",
 		AllowedComment:  true,
+		PublishTime:     time.Now(),
 	}
 	err = model.CreateArticle(&article)
 	if err != nil {
@@ -95,12 +90,13 @@ func Install(c *gin.Context) {
 	}
 	// publish hello world comment
 	comment := model.Comment{
-		ArticleID: article.ID,
-		Content:   "Welcome to Megrez!",
-		Type:      1,
-		Site:      "https://megrez.run",
-		Mail:      "admin@megrez.run",
-		Author:    "MEGREZ",
+		ArticleID:  article.ID,
+		Content:    "Welcome to Megrez!",
+		Type:       1,
+		Site:       "https://megrez.run",
+		Mail:       "admin@megrez.run",
+		Author:     "MEGREZ",
+		CreateTime: time.Now(),
 	}
 	err = model.CreateComment(&comment)
 	if err != nil {
@@ -115,16 +111,19 @@ func Install(c *gin.Context) {
 		Slug:            "about",
 		FormatContent:   "这是一个默认的关于页面，您可以在后台编辑。",
 		OriginalContent: "这是一个默认的关于页面，您可以在后台编辑。",
+		CreateTime:      time.Now(),
 	}
 	pages["link"] = model.Page{
 		Name:            "友链",
 		Slug:            "links",
 		FormatContent:   "这是一个默认的友链页面，您应当写下添加友链的条件，以及申请方式、申请格式等说明，您可以在后台编辑。",
 		OriginalContent: "这是一个默认的友链页面，您应当写下添加友链的条件，以及申请方式、申请格式等说明，您可以在后台编辑。",
+		CreateTime:      time.Now(),
 	}
 	pages["journal"] = model.Page{
-		Name: "日志",
-		Slug: "journal",
+		Name:       "日志",
+		Slug:       "journal",
+		CreateTime: time.Now(),
 	}
 	for _, page := range pages {
 		err := model.CreatePage(&page)
@@ -173,5 +172,5 @@ func Install(c *gin.Context) {
 		}
 	}
 
-	c.JSON(http.StatusOK, errmsg.Success(article))
+	c.JSON(http.StatusOK, errmsg.Success(nil))
 }

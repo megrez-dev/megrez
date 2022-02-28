@@ -20,8 +20,8 @@ type Comment struct {
 	Agent      string    `gorm:"type:varchar(1023)" json:"agent"`
 	IP         string    `gorm:"type:varchar(20)" json:"ip"`
 	Status     int       `gorm:"type:int(11)" json:"status"`
-	CreateTime time.Time `json:"createTime"`
-	UpdateTime time.Time `json:"updateTime"`
+	CreateTime time.Time `gorm:"default:NULL" json:"createTime"`
+	UpdateTime time.Time `gorm:"default:NULL" json:"updateTime"`
 }
 
 // GetCommentByID return comment by ID

@@ -54,7 +54,7 @@ func GetErrMsg(code int) string {
 
 func Success(data interface{}) gin.H {
 	return gin.H{
-		"status": Success,
+		"status": SUCCESS,
 		"msg":    GetErrMsg(SUCCESS),
 		"data":   data,
 	}
@@ -69,7 +69,7 @@ func Fail(status int) gin.H {
 
 func Error() gin.H {
 	return gin.H{
-		"status": Error,
+		"status": ERROR,
 		"msg":    GetErrMsg(ERROR),
 	}
 }
