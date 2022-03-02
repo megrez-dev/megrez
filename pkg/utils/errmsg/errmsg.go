@@ -30,8 +30,8 @@ const (
 var codeMsg = map[int]string{
 	SUCCESS:             "OK",
 	ERROR:               "服务端发生未知错误",
-	ErrorInvalidParam:   "参数错误",
-	ErrorNotInstalled:   "未安装,跳转到安装页面",
+	ErrorInvalidParam:   "请求参数错误",
+	ErrorNotInstalled:   "博客未安装,请先完成安装程序",
 	ErrorUsernameExist:  "用户名已存在！",
 	ErrorPasswordWrong:  "密码错误",
 	ErrorUserNotExist:   "用户不存在",

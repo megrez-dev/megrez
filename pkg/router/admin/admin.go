@@ -13,6 +13,9 @@ func RouteAdmin(g *gin.Engine) {
 	//api for install
 	auth.POST("install", admin.Install)
 
+	//api for admin
+	auth.POST("login", admin.Login)
+
 	// api for article
 	auth.POST("article", admin.CreateArticle)
 	auth.PUT("article/:id", admin.UpdateArticle)

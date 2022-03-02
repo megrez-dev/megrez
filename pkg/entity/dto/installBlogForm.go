@@ -1,6 +1,6 @@
 package dto
 
-type InstallBlogDTO struct {
+type InstallBlogForm struct {
 	BlogTitle       string `json:"blogTitle"`
 	BlogURL         string `json:"blogURL"`
 	Username        string `json:"username"`

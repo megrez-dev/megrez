@@ -13,11 +13,11 @@ import (
 )
 
 func Install(c *gin.Context) {
-	var data dto.InstallBlogDTO
+	var data dto.InstallBlogForm
 	err := c.ShouldBindJSON(&data)
 	if err != nil {
-		log.Println("decode install json data failed, ", err.Error())
-		c.JSON(http.StatusOK, errmsg.ErrorInvalidParam)
+		log.Println("decode json data failed, ", err.Error())
+		c.JSON(http.StatusOK, errmsg.Fail(errmsg.ErrorInvalidParam))
 		return
 	}
 	// set option blog birth
