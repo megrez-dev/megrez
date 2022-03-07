@@ -50,7 +50,23 @@ func Install(c *gin.Context) {
 		return
 	}
 
-	// TODO: create admin user
+	admin := model.User{
+		ID:       1,
+		Username: data.Username,
+		Nickname: data.Nickname,
+		// TODO: 默认 Avatar
+		Avatar:      "https://avatars0.githubusercontent.com/u/8186664?s=460&v=4",
+		Description: "平凡的日子里，也要闪闪发光✨",
+		Email:       data.Email,
+		Password:    data.Password,
+		Status:      0,
+	}
+	err = model.CreateUser(&admin)
+	if err != nil {
+		log.Println("create admin user failed:", err.Error())
+		c.JSON(http.StatusOK, errmsg.Error())
+		return
+	}
 
 	// create default category
 	category := model.Category{

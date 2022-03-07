@@ -17,6 +17,7 @@ func New(dsn string) (*gorm.DB, error) {
 		return nil, err
 	}
 	err = db.AutoMigrate(
+		&User{},
 		&Article{},
 		&Category{},
 		&Comment{},
