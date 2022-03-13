@@ -1,4 +1,4 @@
-package site
+package view
 
 import (
 	"fmt"
@@ -12,7 +12,6 @@ import (
 )
 
 func RouteComment(g *gin.Engine) {
-	g.POST("/admin/comment", createCommentForAdmin)
 	g.POST("/article/:articleID/comment", createCommentForArticle)
 	g.POST("/page/:pageID/comment", createCommentForPage)
 }
@@ -148,51 +147,4 @@ func createCommentForPage(c *gin.Context) {
 	pagination := (index + pageSize - 1) / pageSize
 	url := fmt.Sprintf("/%s/comment-page/%d#comment-%d", page.Slug, pagination, comment.ID)
 	c.Redirect(http.StatusFound, url)
-}
-
-func createCommentForAdmin(c *gin.Context) {
-	tp, err := strconv.Atoi(c.PostForm("type"))
-	if err != nil {
-		c.Redirect(http.StatusInternalServerError, "/error")
-	}
-	var articleID, pageID int
-	if tp == 1 {
-		articleID, err = strconv.Atoi(c.Param("articleID"))
-		if err != nil {
-			c.Redirect(http.StatusInternalServerError, "/error")
-		}
-	} else if tp == 2 {
-		pageID, err = strconv.Atoi(c.Param("pageID"))
-		if err != nil {
-			c.Redirect(http.StatusInternalServerError, "/error")
-		}
-	}
-	if err != nil {
-		c.Redirect(http.StatusInternalServerError, "/error")
-	}
-	parentID, err := strconv.Atoi(c.PostForm("parent"))
-	if err != nil {
-		c.Redirect(http.StatusInternalServerError, "/error")
-	}
-	rootID, err := strconv.Atoi(c.PostForm("root"))
-	if err != nil {
-		c.Redirect(http.StatusInternalServerError, "/error")
-	}
-	text := c.PostForm("text")
-	// TODO: create author
-	comment := &model.Comment{
-		ArticleID: uint(articleID),
-		PageID:    uint(pageID),
-		Content:   text,
-		RootID:    uint(rootID),
-		ParentID:  uint(parentID),
-		Type:      1,
-		Status:    0,
-	}
-	err = model.CreateComment(comment)
-	if err != nil {
-		log.Println("create comment failed, err: ", err)
-		c.JSON(http.StatusInternalServerError, "failed")
-	}
-	c.JSON(http.StatusOK, "success")
 }

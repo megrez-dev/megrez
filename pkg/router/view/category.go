@@ -1,4 +1,4 @@
-package site
+package view
 
 import (
 	"log"
@@ -14,7 +14,6 @@ import (
 func RouteCategory(g *gin.Engine) {
 	g.GET("/category/:slug", listArticlesByCategory)
 	g.GET("/category/:slug/:pageNum", listArticlesByCategory)
-	g.POST("/admin/category", createCategory)
 }
 
 func listArticlesByCategory(c *gin.Context) {
@@ -66,18 +65,4 @@ func listArticlesByCategory(c *gin.Context) {
 	}
 	pagination := vo.CalculatePagination(pageNum, pageSize, int(articlesNum))
 	c.HTML(http.StatusOK, "category.html", pongo2.Context{"category": category, "pagination": pagination, "articles": articles, "global": globalOption})
-}
-
-func createCategory(c *gin.Context) {
-	category := &model.Category{
-		Name:   "默认分类",
-		Slug:   "default",
-		Status: 0,
-	}
-	err := model.CreateCategory(category)
-	if err != nil {
-		log.Println("create category failed, err: ", err)
-		c.JSON(http.StatusInternalServerError, "failed")
-	}
-	c.JSON(http.StatusOK, "success")
 }

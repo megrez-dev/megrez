@@ -1,4 +1,4 @@
-package site
+package view
 
 import (
 	"github.com/flosch/pongo2/v4"

@@ -1,14 +1,20 @@
 package admin
 
 import (
+	"bytes"
 	"github.com/gin-gonic/gin"
 	"github.com/gosimple/slug"
+	themeAssets "github.com/megrez/assets/theme"
 	"github.com/megrez/pkg/entity/dto"
 	"github.com/megrez/pkg/entity/vo"
 	"github.com/megrez/pkg/model"
+	dirUtils "github.com/megrez/pkg/utils/dir"
 	"github.com/megrez/pkg/utils/errmsg"
+	"io"
 	"log"
 	"net/http"
+	"os"
+	"path"
 	"time"
 )
 
@@ -48,6 +54,63 @@ func Install(c *gin.Context) {
 		log.Println("set option blog description failed:", err.Error())
 		c.JSON(http.StatusOK, errmsg.Error())
 		return
+	}
+
+	// set option blog theme
+	err = model.SetOption(vo.OptionKeyBlogTheme, "default")
+	if err != nil {
+		log.Println("set option blog theme failed:", err.Error())
+		c.JSON(http.StatusOK, errmsg.Error())
+		return
+	}
+
+	// check themes dir
+	megrezHome, err := dirUtils.GetOrCreateMegrezHome()
+	if err != nil {
+		log.Println("get megrez home dir failed:", err.Error())
+		c.JSON(http.StatusOK, errmsg.Error())
+		return
+	}
+	themesPath := path.Join(megrezHome, "themes")
+	stat, err := os.Stat(themesPath)
+	if err != nil {
+		if os.IsNotExist(err) {
+			err = os.Mkdir(themesPath, os.ModePerm)
+			if err != nil {
+				log.Println("create themes dir failed:", err.Error())
+				c.JSON(http.StatusOK, errmsg.Error())
+				return
+			}
+		}
+	} else {
+		if !stat.IsDir() {
+			log.Println("themes dir is not dir")
+			c.JSON(http.StatusOK, errmsg.Error())
+			return
+		}
+	}
+
+	// copy default theme template to megrez home dir
+	dirs, err := themeAssets.Static.ReadDir("default")
+	if err != nil {
+		log.Println("read default theme template failed:", err.Error())
+		c.JSON(http.StatusOK, errmsg.Error())
+		return
+	}
+	dest, err := os.Open(themesPath)
+	if err != nil {
+		log.Println("open themes dir failed:", err.Error())
+		c.JSON(http.StatusOK, errmsg.Error())
+		return
+	}
+	defer dest.Close()
+	for _, dir := range dirs {
+		_, err = io.Copy(dest, bytes.NewReader(dir))
+		if err != nil {
+			log.Println("copy default theme template failed:", err.Error())
+			c.JSON(http.StatusOK, errmsg.Error())
+			return
+		}
 	}
 
 	admin := model.User{

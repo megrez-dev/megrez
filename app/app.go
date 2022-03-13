@@ -3,11 +3,13 @@ package app
 import (
 	"fmt"
 	"log"
+	"path"
 
 	"github.com/fsnotify/fsnotify"
 	"github.com/gin-gonic/gin"
 	"github.com/megrez/pkg/model"
 	"github.com/megrez/pkg/router"
+	dirUtils "github.com/megrez/pkg/utils/dir"
 	"github.com/spf13/viper"
 	"gorm.io/gorm"
 )
@@ -17,10 +19,11 @@ type Megrez struct {
 	config *viper.Viper
 	db     *gorm.DB
 	server *gin.Engine
+	home   string
 }
 
-// NewMegrez create an instance of Megrez
-func NewMegrez() *Megrez {
+// New create an instance of Megrez
+func New() *Megrez {
 	return &Megrez{}
 }
 
@@ -38,6 +41,7 @@ func (m *Megrez) Init() error {
 	log.SetPrefix("[MEGREZ-debug] ")
 	log.SetFlags(log.Flags() &^ (log.Ldate | log.Ltime))
 	for _, f := range []func() error{
+		m.initDir,
 		m.initConfig,
 		m.initDAO,
 		m.initRouter,
@@ -49,10 +53,18 @@ func (m *Megrez) Init() error {
 	return nil
 }
 
+func (m *Megrez) initDir() error {
+	megrezHome, err := dirUtils.GetOrCreateMegrezHome()
+	if err != nil {
+		return err
+	}
+	m.home = megrezHome
+	return nil
+}
+
 func (m *Megrez) initConfig() error {
 	v := viper.New()
-	// TODO: 通过 NewMegrez 传递 flag 作为配置文件路径
-	v.SetConfigFile("config.yaml")
+	v.SetConfigFile(path.Join(m.home, "config.yaml"))
 
 	if err := v.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
@@ -91,6 +103,11 @@ func (m *Megrez) initDAO() error {
 }
 
 func (m *Megrez) initRouter() error {
-	m.server = router.NewRouter()
+	server, err := router.NewRouter(m.home)
+	if err != nil {
+		log.Println("init router failed, ", err)
+		return err
+	}
+	m.server = server
 	return nil
 }

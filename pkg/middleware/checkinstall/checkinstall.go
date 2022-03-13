@@ -16,9 +16,16 @@ func CheckInstall() gin.HandlerFunc {
 		// exclude api for install
 		if c.Request.URL.Path == "/api/admin/install" {
 			c.Next()
+			return
+		}
+		// exclude page for install
+		if c.Request.URL.Path == "/admin/install" {
+			c.Next()
+			return
 		}
 		isInstalledStr, err := model.GetOptionByKey(vo.OptionKeyIsInstalled)
 		if err == gorm.ErrRecordNotFound {
+			// TODO: 判断完之后，后续 err 判空处理可能有 bug，所有 ErrRecordNotFound 都会有这个问题。
 			if strings.HasPrefix(c.Request.URL.Path, "/api") {
 				fmt.Println("need redirect to install page")
 				c.AbortWithStatusJSON(http.StatusOK, errmsg.Fail(errmsg.ErrorNotInstalled))

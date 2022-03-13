@@ -14,7 +14,7 @@ func Jwt() gin.HandlerFunc {
 		if c.Request.URL.Path == "/api/admin/install" || c.Request.URL.Path == "/api/admin/login" {
 			c.Next()
 		} else {
-			token := c.Request.Header.Get("Megrez-Token")
+			token := c.Request.Header.Get("Authorization")
 			if token == "" {
 				c.AbortWithStatusJSON(http.StatusOK, errmsg.Fail(errmsg.ErrorTokenNotExist))
 				return

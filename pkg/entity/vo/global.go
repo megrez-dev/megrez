@@ -26,12 +26,12 @@ type Global struct {
 	BlogBirth       time.Time
 	Menus           []*Menu
 	Categories      []*BriefCategory
-	LatestArticles  []*LatestArticl
+	LatestArticles  []*LatestArticle
 	LatestComments  []*LatestComment
 	RandomColor     func() string
 }
 
-type LatestArticl struct {
+type LatestArticle struct {
 	Title string
 	URL   string
 }
@@ -41,8 +41,8 @@ type LatestComment struct {
 	URL     string
 }
 
-func GetLatestArticleFromPO(article *model.Article) (*LatestArticl, error) {
-	latestArticle := &LatestArticl{
+func GetLatestArticleFromPO(article *model.Article) (*LatestArticle, error) {
+	latestArticle := &LatestArticle{
 		Title: article.Title,
 	}
 	latestArticle.URL = "/article/" + strconv.Itoa(int(article.ID))
@@ -121,18 +121,6 @@ func GetGlobalOption() (Global, error) {
 	if err == nil {
 		global.BlogCover = blogCover
 	}
-	headerLogo, err := model.GetOptionByKey(OptionKeyHeaderLogo)
-	if err == nil {
-		global.HeaderLogo = headerLogo
-	}
-	footerLogo, err := model.GetOptionByKey(OptionKeyFooterLogo)
-	if err == nil {
-		global.FooterLogo = footerLogo
-	}
-	payQRCode, err := model.GetOptionByKey(OptionKeyPayQRCode)
-	if err == nil {
-		global.PayQRCode = payQRCode
-	}
 	ipcRecord, err := model.GetOptionByKey(OptionKeyIPCRecord)
 	if err == nil {
 		global.IPCRecord = ipcRecord
@@ -171,7 +159,7 @@ func GetGlobalOption() (Global, error) {
 	// latest articles
 	articlePOs, err := model.ListLatestArticles()
 	if err == nil {
-		var latestArticles []*LatestArticl
+		var latestArticles []*LatestArticle
 		for _, articlePO := range articlePOs {
 			latestArticle, err := GetLatestArticleFromPO(&articlePO)
 			if err == nil {

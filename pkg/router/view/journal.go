@@ -1,4 +1,4 @@
-package site
+package view
 
 import (
 	"log"
@@ -14,7 +14,6 @@ import (
 func RouteJournal(g *gin.Engine) {
 	g.GET("/journal", listJournal)
 	g.GET("/journal/:pageNum", listJournal)
-	g.POST("/admin/journal", createJournal)
 }
 
 func listJournal(c *gin.Context) {
@@ -72,21 +71,4 @@ func listJournal(c *gin.Context) {
 	}
 	pagination := vo.CalculatePagination(pageNum, pageSize, int(journalsNum))
 	c.HTML(http.StatusOK, "journal.html", pongo2.Context{"page": page, "journals": journals, "pagination": pagination, "global": globalOption})
-}
-
-func createJournal(c *gin.Context) {
-	journal := &model.Journal{
-		FormatContent: "测试journal测试journal测试journal测试journal",
-		// Images:        "https://rawchen.com/sgjpic/23468945914666148.jpg;https://rawchen.com/sgjpic/23468945914666148.jpg;https://rawchen.com/sgjpic/23468945914666148.jpg;https://rawchen.com/sgjpic/23468945914666148.jpg",
-		Private: false,
-		Visits:  0,
-		Likes:   0,
-		Status:  0,
-	}
-	err := model.CreateJournal(journal)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, "create journal failed")
-		return
-	}
-	c.JSON(http.StatusOK, "success")
 }

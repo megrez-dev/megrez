@@ -3,12 +3,12 @@ package admin
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/megrez/pkg/api/admin"
+	"github.com/megrez/pkg/middleware/jwt"
 )
 
-func RouteAdmin(g *gin.Engine) {
+func RouteAdminAPI(g *gin.Engine) {
 	auth := g.Group("api/admin")
-	// TODO: Jwt middleware
-	// admin.Use(middleware.JwtToken())
+	auth.Use(jwt.Jwt())
 
 	//api for install
 	auth.POST("install", admin.Install)
