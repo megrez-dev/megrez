@@ -6,7 +6,8 @@ var Logger *zap.Logger
 var Sugar *zap.SugaredLogger
 
 func New() (*zap.Logger, error) {
-	Logger, err := zap.NewProduction()
+	//Logger, err := zap.NewProduction()
+	Logger, err := zap.NewDevelopment()
 	Sugar = Logger.WithOptions(zap.AddCallerSkip(1)).Sugar()
 	if err != nil {
 		return nil, err

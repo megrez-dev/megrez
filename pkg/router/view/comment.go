@@ -2,6 +2,7 @@ package view
 
 import (
 	"fmt"
+	"gorm.io/gorm"
 	"log"
 	"net/http"
 	"strconv"
@@ -56,11 +57,15 @@ func createCommentForArticle(c *gin.Context) {
 		c.Redirect(http.StatusInternalServerError, "/error")
 	}
 	// calculate pagination
-	pageSizeStr, err := model.GetOptionByKey(vo.OptionComentsPageSize)
+	commentsPageSizeStr, err := model.GetOptionByKey(vo.OptionComentsPageSize)
 	if err != nil {
-		c.Redirect(http.StatusInternalServerError, "/error")
+		if err == gorm.ErrRecordNotFound {
+			commentsPageSizeStr = "10"
+		} else {
+			c.Redirect(http.StatusInternalServerError, "/error")
+		}
 	}
-	pageSize, err := strconv.Atoi(pageSizeStr)
+	commentPageSize, err := strconv.Atoi(commentsPageSizeStr)
 	if err != nil {
 		c.Redirect(http.StatusInternalServerError, "/error")
 	}
@@ -75,7 +80,7 @@ func createCommentForArticle(c *gin.Context) {
 			break
 		}
 	}
-	pagination := (index + pageSize - 1) / pageSize
+	pagination := (index + commentPageSize - 1) / commentPageSize
 	url := fmt.Sprintf("/article/%d/comment-page/%d#comment-%d", comment.ArticleID, pagination, comment.ID)
 	c.Redirect(http.StatusFound, url)
 }
@@ -123,12 +128,15 @@ func createCommentForPage(c *gin.Context) {
 		c.Redirect(http.StatusInternalServerError, "/error")
 	}
 	// calculate pagination
-	pageSizeStr, err := model.GetOptionByKey(vo.OptionComentsPageSize)
+	commentsPageSizeStr, err := model.GetOptionByKey(vo.OptionComentsPageSize)
 	if err != nil {
-		log.Println("get option pageSize failed, err: ", err.Error())
-		c.Redirect(http.StatusInternalServerError, "/error")
+		if err == gorm.ErrRecordNotFound {
+			commentsPageSizeStr = "10"
+		} else {
+			c.Redirect(http.StatusInternalServerError, "/error")
+		}
 	}
-	pageSize, err := strconv.Atoi(pageSizeStr)
+	commentsPageSize, err := strconv.Atoi(commentsPageSizeStr)
 	if err != nil {
 		log.Println(err.Error())
 		c.Redirect(http.StatusInternalServerError, "/error")
@@ -144,7 +152,7 @@ func createCommentForPage(c *gin.Context) {
 			break
 		}
 	}
-	pagination := (index + pageSize - 1) / pageSize
+	pagination := (index + commentsPageSize - 1) / commentsPageSize
 	url := fmt.Sprintf("/%s/comment-page/%d#comment-%d", page.Slug, pagination, comment.ID)
 	c.Redirect(http.StatusFound, url)
 }

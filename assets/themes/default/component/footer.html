@@ -12,7 +12,8 @@
             <div class="meta-item meta-copyright">
                 <div class="meta-copyright-info">
                     <a href="/" class="info-logo">
-                        <img src="{{ global.FooterLogo }}" alt="{{ global.BlogTitle }}" />
+<!--                        <img src="{{ global.FooterLogo }}" alt="{{ global.BlogTitle }}" />-->
+                        {{ global.BlogTitle }}
                     </a>
                     <div class="info-text">
                         <p id="yephy"></p>
@@ -23,13 +24,10 @@
 
                         <p><a href="http://beian.miit.gov.cn/" id="beian" target="_blank" rel="nofollow">{{ global.IPCRecord }}</a></p>
                         <p>已在世界的角落里存活了<b>
-                                <script language="JavaScript"
-                                    type="text/javascript"> var urodz = new Date('{{ global.BlogBirth|date:"02/01/2006" }}'); var now = new Date(); var ile = now.getTime() - urodz.getTime(); var dni = (Math.floor(ile / (1000 * 60 * 60 * 24)) / 365).toFixed(2); document.write(+ dni)</script>
+                                <script> var urodz = new Date('{{ global.BlogBirth|date:"2006,01,02" }}'); var now = new Date(); var ile = now.getTime() - urodz.getTime(); var dni = (Math.floor(ile / (1000 * 60 * 60 * 24))/365).toFixed(2); document.write( + dni)</script>
                             </b> 年
                         </p>
-                        <p>博主共写了<b> 123</b> 篇文章</p>
 
-                        <p>网站已经被<b> 657998</b> 人踩踏</p>
                         <p style="padding-top: 5px;">
                             <a href="https://github.com/alkaidchan" title="GitHub" target="blank"><i
                                     class="fa fa-github-alt footer-icon" style="padding-left: 0px;"

@@ -9,6 +9,7 @@ func RouteView(g *gin.Engine) {
 	RouteLink(g)
 	RouteJournal(g)
 	RouteSearch(g)
+	RouteAbout(g)
 	RoutePage(g)
 	RouteFavicon(g)
 }

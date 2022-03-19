@@ -17,6 +17,18 @@ func RouteLink(g *gin.Engine) {
 }
 
 func listLinks(c *gin.Context) {
+	page := struct {
+		ID          uint
+		Name        string
+		Slug        string
+		CommentsNum int64
+		Visits      int64
+	}{
+		ID:     2,
+		Name:   "友链",
+		Slug:   "links",
+		Visits: 10086,
+	}
 	var pageNum, pageSize int
 	var err error
 	if c.Param("pageNum") == "" {
@@ -25,12 +37,11 @@ func listLinks(c *gin.Context) {
 		pageNum, err = strconv.Atoi(c.Param("pageNum"))
 		if err != nil {
 			log.Println("incorrect param pageNum, err:", err)
-			// TODO: 应该是 4XX?
 			c.Redirect(http.StatusInternalServerError, "/error")
 		}
 	}
 	if c.Param("pageSize") == "" {
-		pageSize = 8
+		pageSize = 10
 	} else {
 		pageSize, err = strconv.Atoi(c.Param("pageSize"))
 		if err != nil {
@@ -45,7 +56,7 @@ func listLinks(c *gin.Context) {
 		links = append(links, vo.GetLinkFromPO(linkPO))
 	}
 
-	commentPOs, err := model.ListRootCommentsByPageID(2, pageNum, pageSize)
+	commentPOs, err := model.ListRootCommentsByPageID(page.ID, pageNum, pageSize)
 	if err != nil {
 		c.Redirect(http.StatusInternalServerError, "/error")
 	}
@@ -63,24 +74,11 @@ func listLinks(c *gin.Context) {
 		log.Println("get global option failed, err:", err.Error())
 		c.Redirect(http.StatusInternalServerError, "/error")
 	}
-
-	page := struct {
-		ID          uint
-		Name        string
-		Slug        string
-		CommentsNum int64
-		Visits      int64
-	}{
-		ID:     2,
-		Name:   "友链",
-		Slug:   "links",
-		Visits: 10086,
-	}
 	commentsNum, err := model.CountRootCommentsByPageID(page.ID)
 	if err != nil {
 		c.Redirect(http.StatusInternalServerError, "/error")
 	}
 	page.CommentsNum = commentsNum
 	pagination := vo.CalculatePagination(pageNum, pageSize, int(commentsNum))
-	c.HTML(http.StatusOK, "links.html", pongo2.Context{"page": page, "pagination": pagination, "links": links, "comments": comments, "global": globalOption})
+	c.HTML(http.StatusOK, "links.html", pongo2.Context{"page": page, "links": links, "comments": comments, "pagination": pagination, "global": globalOption})
 }

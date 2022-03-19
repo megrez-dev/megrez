@@ -1,24 +1,33 @@
 package view
 
 import (
+	"github.com/flosch/pongo2/v4"
+	"github.com/gin-gonic/gin"
+	"github.com/megrez/pkg/entity/vo"
+	"github.com/megrez/pkg/model"
 	"log"
 	"net/http"
 	"strconv"
-
-	"github.com/flosch/pongo2/v4"
-	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
-
-	"github.com/megrez/pkg/entity/vo"
-	"github.com/megrez/pkg/model"
 )
 
-func RoutePage(g *gin.Engine) {
-	g.GET("page/:slug", page)
-	g.GET("page/:slug/comment-page/:pageNum", page)
+func RouteAbout(g *gin.Engine) {
+	g.GET("/about", about)
+	g.GET("/about/comment-page/:pageNum", about)
 }
 
-func page(c *gin.Context) {
+func about(c *gin.Context) {
+	page := struct {
+		ID          uint
+		Slug        string
+		Name        string
+		CommentsNum int64
+		Visits      int64
+	}{
+		ID:     1,
+		Slug:   "about",
+		Name:   "关于",
+		Visits: 2311,
+	}
 	var pageNum, pageSize int
 	var err error
 	if c.Param("pageNum") == "" {
@@ -30,18 +39,15 @@ func page(c *gin.Context) {
 			c.Redirect(http.StatusInternalServerError, "/error")
 		}
 	}
-	pageSize = 10
-	slug := c.Param("slug")
-	page, err := model.GetPageBySlug(slug)
-	if err != nil {
-		if err == gorm.ErrRecordNotFound {
-			c.Redirect(404, "/404")
-		} else {
+	if c.Param("pageSize") == "" {
+		pageSize = 10
+	} else {
+		pageSize, err = strconv.Atoi(c.Param("pageSize"))
+		if err != nil {
+			log.Println("incorrect param pageSize, err:", err)
 			c.Redirect(http.StatusInternalServerError, "/error")
 		}
 	}
-	pageVO := vo.GetPageFromPO(page)
-
 	commentPOs, err := model.ListRootCommentsByPageID(page.ID, pageNum, pageSize)
 	if err != nil {
 		c.Redirect(http.StatusInternalServerError, "/error")
@@ -54,7 +60,6 @@ func page(c *gin.Context) {
 		}
 		comments = append(comments, comment)
 	}
-
 	globalOption, err := vo.GetGlobalOption()
 	if err != nil {
 		c.Redirect(http.StatusInternalServerError, "/error")
@@ -63,8 +68,7 @@ func page(c *gin.Context) {
 	if err != nil {
 		c.Redirect(http.StatusInternalServerError, "/error")
 	}
-	pageVO.CommentsNum = commentsNum
+	page.CommentsNum = commentsNum
 	pagination := vo.CalculatePagination(pageNum, pageSize, int(commentsNum))
-	template := page.Slug + ".html"
-	c.HTML(http.StatusOK, template, pongo2.Context{"page": page, "pagination": pagination, "comments": comments, "global": globalOption})
+	c.HTML(http.StatusOK, "about.html", pongo2.Context{"page": page, "comments": comments, "pagination": pagination, "global": globalOption})
 }

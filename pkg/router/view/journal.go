@@ -25,7 +25,6 @@ func listJournal(c *gin.Context) {
 		pageNum, err = strconv.Atoi(c.Param("pageNum"))
 		if err != nil {
 			log.Println("incorrect param pageNum, err:", err)
-			// TODO: 应该是 4XX?
 			c.Redirect(http.StatusInternalServerError, "/error")
 		}
 	}
