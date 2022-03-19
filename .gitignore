@@ -1,4 +1,2 @@
 /vendor
-/web/admin
-
-config.yaml
+.idea
