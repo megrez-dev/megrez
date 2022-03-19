@@ -2,11 +2,12 @@ package app
 
 import (
 	"fmt"
-	"log"
+	"go.uber.org/zap"
 	"path"
 
 	"github.com/fsnotify/fsnotify"
 	"github.com/gin-gonic/gin"
+	"github.com/megrez/pkg/log"
 	"github.com/megrez/pkg/model"
 	"github.com/megrez/pkg/router"
 	dirUtils "github.com/megrez/pkg/utils/dir"
@@ -19,7 +20,8 @@ type Megrez struct {
 	config *viper.Viper
 	db     *gorm.DB
 	server *gin.Engine
-	home   string
+	Home   string
+	Logger *zap.Logger
 }
 
 // New create an instance of Megrez
@@ -38,10 +40,9 @@ func (m *Megrez) Run() error {
 
 // Init init application
 func (m *Megrez) Init() error {
-	log.SetPrefix("[MEGREZ-debug] ")
-	log.SetFlags(log.Flags() &^ (log.Ldate | log.Ltime))
 	for _, f := range []func() error{
 		m.initDir,
+		m.initLogger,
 		m.initConfig,
 		m.initDAO,
 		m.initRouter,
@@ -58,27 +59,36 @@ func (m *Megrez) initDir() error {
 	if err != nil {
 		return err
 	}
-	m.home = megrezHome
+	m.Home = megrezHome
+	return nil
+}
+
+func (m *Megrez) initLogger() error {
+	logger, err := log.New()
+	if err != nil {
+		return err
+	}
+	m.Logger = logger
 	return nil
 }
 
 func (m *Megrez) initConfig() error {
 	v := viper.New()
-	v.SetConfigFile(path.Join(m.home, "config.yaml"))
+	v.SetConfigFile(path.Join(m.Home, "config.yaml"))
 
 	if err := v.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
-			log.Println("Config file not found; ignore error if desired")
+			log.Error("Config file not found; ignore error if desired")
 			return err
 		}
-		log.Println("Config file was found but another error was produced")
+		log.Error("Config file was found but another error was produced")
 		return err
 	}
 
 	v.WatchConfig()
 
 	v.OnConfigChange(func(e fsnotify.Event) {
-		log.Println("Config file changed:", e.Name, " | ", e.Op.String())
+		log.Info("Config file changed:", e.Name, " | ", e.Op.String())
 	})
 	m.config = v
 	return nil
@@ -95,7 +105,7 @@ func (m *Megrez) initDAO() error {
 		user, pwd, host, port, name)
 	db, err := model.New(dsn)
 	if err != nil {
-		log.Println("connect db failed, ", err)
+		log.Error("connect db failed, ", err)
 		return err
 	}
 	m.db = db
@@ -103,9 +113,9 @@ func (m *Megrez) initDAO() error {
 }
 
 func (m *Megrez) initRouter() error {
-	server, err := router.NewRouter(m.home)
+	server, err := router.NewRouter(m.Logger)
 	if err != nil {
-		log.Println("init router failed, ", err)
+		log.Error("init router failed, ", err)
 		return err
 	}
 	m.server = server

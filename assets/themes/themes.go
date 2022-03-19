@@ -1,4 +1,4 @@
-package admin
+package themes
 
 import "embed"
 

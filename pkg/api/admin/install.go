@@ -1,17 +1,15 @@
 package admin
 
 import (
-	"bytes"
 	"github.com/gin-gonic/gin"
 	"github.com/gosimple/slug"
-	themeAssets "github.com/megrez/assets/theme"
+	themesAssets "github.com/megrez/assets/themes"
 	"github.com/megrez/pkg/entity/dto"
 	"github.com/megrez/pkg/entity/vo"
+	"github.com/megrez/pkg/log"
 	"github.com/megrez/pkg/model"
 	dirUtils "github.com/megrez/pkg/utils/dir"
 	"github.com/megrez/pkg/utils/errmsg"
-	"io"
-	"log"
 	"net/http"
 	"os"
 	"path"
@@ -22,28 +20,28 @@ func Install(c *gin.Context) {
 	var data dto.InstallBlogForm
 	err := c.ShouldBindJSON(&data)
 	if err != nil {
-		log.Println("decode json data failed, ", err.Error())
+		log.Error("decode json data failed, ", err.Error())
 		c.JSON(http.StatusOK, errmsg.Fail(errmsg.ErrorInvalidParam))
 		return
 	}
 	// set option blog birth
 	err = model.SetOption(vo.OptionKeyBlogBirth, time.Now().Format("2006-01-02 15:04:05"))
 	if err != nil {
-		log.Println("set option blog birth failed:", err.Error())
+		log.Error("set option blog birth failed:", err.Error())
 		c.JSON(http.StatusOK, errmsg.Error())
 		return
 	}
 	// set option blog title
 	err = model.SetOption(vo.OptionKeyBlogTitle, data.BlogTitle)
 	if err != nil {
-		log.Println("set option blog title failed:", err.Error())
+		log.Error("set option blog title failed:", err.Error())
 		c.JSON(http.StatusOK, errmsg.Error())
 		return
 	}
 	// set option blog url
 	err = model.SetOption(vo.OptionKeyBlogURL, data.BlogURL)
 	if err != nil {
-		log.Println("set option blog url failed:", err.Error())
+		log.Error("set option blog url failed:", err.Error())
 		c.JSON(http.StatusOK, errmsg.Error())
 		return
 	}
@@ -51,15 +49,15 @@ func Install(c *gin.Context) {
 	// set option blog description
 	err = model.SetOption(vo.OptionKeyBlogDescription, "平凡的日子里，也要闪闪发光✨")
 	if err != nil {
-		log.Println("set option blog description failed:", err.Error())
+		log.Error("set option blog description failed:", err.Error())
 		c.JSON(http.StatusOK, errmsg.Error())
 		return
 	}
 
-	// set option blog theme
+	// set option blog themes
 	err = model.SetOption(vo.OptionKeyBlogTheme, "default")
 	if err != nil {
-		log.Println("set option blog theme failed:", err.Error())
+		log.Error("set option blog themes failed:", err.Error())
 		c.JSON(http.StatusOK, errmsg.Error())
 		return
 	}
@@ -67,7 +65,7 @@ func Install(c *gin.Context) {
 	// check themes dir
 	megrezHome, err := dirUtils.GetOrCreateMegrezHome()
 	if err != nil {
-		log.Println("get megrez home dir failed:", err.Error())
+		log.Error("get megrez home dir failed:", err.Error())
 		c.JSON(http.StatusOK, errmsg.Error())
 		return
 	}
@@ -77,40 +75,23 @@ func Install(c *gin.Context) {
 		if os.IsNotExist(err) {
 			err = os.Mkdir(themesPath, os.ModePerm)
 			if err != nil {
-				log.Println("create themes dir failed:", err.Error())
+				log.Error("create themes dir failed:", err.Error())
 				c.JSON(http.StatusOK, errmsg.Error())
 				return
 			}
 		}
 	} else {
 		if !stat.IsDir() {
-			log.Println("themes dir is not dir")
+			log.Error("themes dir is not dir")
 			c.JSON(http.StatusOK, errmsg.Error())
 			return
 		}
 	}
-
-	// copy default theme template to megrez home dir
-	dirs, err := themeAssets.Static.ReadDir("default")
+	err = dirUtils.CopyDirFromFS(themesAssets.Static, "default", themesPath)
 	if err != nil {
-		log.Println("read default theme template failed:", err.Error())
+		log.Error("copy themes dir failed:", err.Error())
 		c.JSON(http.StatusOK, errmsg.Error())
 		return
-	}
-	dest, err := os.Open(themesPath)
-	if err != nil {
-		log.Println("open themes dir failed:", err.Error())
-		c.JSON(http.StatusOK, errmsg.Error())
-		return
-	}
-	defer dest.Close()
-	for _, dir := range dirs {
-		_, err = io.Copy(dest, bytes.NewReader(dir))
-		if err != nil {
-			log.Println("copy default theme template failed:", err.Error())
-			c.JSON(http.StatusOK, errmsg.Error())
-			return
-		}
 	}
 
 	admin := model.User{
@@ -126,7 +107,7 @@ func Install(c *gin.Context) {
 	}
 	err = model.CreateUser(&admin)
 	if err != nil {
-		log.Println("create admin user failed:", err.Error())
+		log.Error("create admin user failed:", err.Error())
 		c.JSON(http.StatusOK, errmsg.Error())
 		return
 	}
@@ -139,7 +120,7 @@ func Install(c *gin.Context) {
 	}
 	err = model.CreateCategory(&category)
 	if err != nil {
-		log.Println("create default category failed:", err.Error())
+		log.Error("create default category failed:", err.Error())
 		c.JSON(http.StatusOK, errmsg.Error())
 		return
 	}
@@ -156,14 +137,14 @@ func Install(c *gin.Context) {
 	}
 	err = model.CreateArticle(&article)
 	if err != nil {
-		log.Println("create hello world article failed:", err.Error())
+		log.Error("create hello world article failed:", err.Error())
 		c.JSON(http.StatusOK, errmsg.Error())
 		return
 	}
 
 	err = model.CreateArticleCategory(article.ID, category.ID)
 	if err != nil {
-		log.Println("create articleCategory failed:", err.Error())
+		log.Error("create articleCategory failed:", err.Error())
 		c.JSON(http.StatusOK, errmsg.Error())
 		return
 	}
@@ -179,7 +160,7 @@ func Install(c *gin.Context) {
 	}
 	err = model.CreateComment(&comment)
 	if err != nil {
-		log.Println("create hello world comment failed:", err.Error())
+		log.Error("create hello world comment failed:", err.Error())
 		c.JSON(http.StatusOK, errmsg.Error())
 		return
 	}
@@ -207,7 +188,7 @@ func Install(c *gin.Context) {
 	for _, page := range pages {
 		err := model.CreatePage(&page)
 		if err != nil {
-			log.Printf("create page %s failed: %s\n", page.Name, err.Error())
+			log.Errorf("create page %s failed: %s\n", page.Name, err.Error())
 			c.JSON(http.StatusOK, errmsg.Error())
 			return
 		}
@@ -235,7 +216,7 @@ func Install(c *gin.Context) {
 	for _, menu := range menus {
 		err := model.CreateMenu(&menu)
 		if err != nil {
-			log.Printf("create menu %s failed: %s\n", menu.Name, err.Error())
+			log.Errorf("create menu %s failed: %s\n", menu.Name, err.Error())
 			c.JSON(http.StatusOK, errmsg.Error())
 			return
 		}
@@ -244,11 +225,9 @@ func Install(c *gin.Context) {
 	// set option installed
 	err = model.SetOption(vo.OptionKeyIsInstalled, "true")
 	if err != nil {
-		if err != nil {
-			log.Println("set option is installed failed, ", err.Error())
-			c.JSON(http.StatusOK, errmsg.Error())
-			return
-		}
+		log.Error("set option is installed failed, ", err.Error())
+		c.JSON(http.StatusOK, errmsg.Error())
+		return
 	}
 
 	c.JSON(http.StatusOK, errmsg.Success(nil))

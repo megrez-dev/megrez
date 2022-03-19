@@ -7,6 +7,7 @@ import (
 	"github.com/megrez/pkg/model"
 	"github.com/megrez/pkg/utils/errmsg"
 	"gorm.io/gorm"
+	"log"
 	"net/http"
 	"strings"
 )
@@ -23,10 +24,16 @@ func CheckInstall() gin.HandlerFunc {
 			c.Next()
 			return
 		}
+		// exclude statics for admin
+		if strings.HasPrefix(c.Request.URL.Path, "/admin/css") || strings.HasPrefix(c.Request.URL.Path, "/admin/js") {
+			c.Next()
+			return
+		}
 		isInstalledStr, err := model.GetOptionByKey(vo.OptionKeyIsInstalled)
 		if err == gorm.ErrRecordNotFound {
+			log.Println("redirect to install page, origin path:", c.Request.URL.Path)
 			// TODO: 判断完之后，后续 err 判空处理可能有 bug，所有 ErrRecordNotFound 都会有这个问题。
-			if strings.HasPrefix(c.Request.URL.Path, "/api") {
+			if strings.HasPrefix(c.Request.URL.Path, "/api/admin") {
 				fmt.Println("need redirect to install page")
 				c.AbortWithStatusJSON(http.StatusOK, errmsg.Fail(errmsg.ErrorNotInstalled))
 				return
@@ -35,7 +42,7 @@ func CheckInstall() gin.HandlerFunc {
 				return
 			}
 		} else if err != nil {
-			if strings.HasPrefix(c.Request.URL.Path, "/api") {
+			if strings.HasPrefix(c.Request.URL.Path, "/api/admin") {
 				c.AbortWithStatusJSON(http.StatusOK, errmsg.Error())
 				return
 			} else {
@@ -46,7 +53,7 @@ func CheckInstall() gin.HandlerFunc {
 		if isInstalledStr == "true" {
 			c.Next()
 		} else {
-			if strings.HasPrefix(c.Request.URL.Path, "/api") {
+			if strings.HasPrefix(c.Request.URL.Path, "/api/admin") {
 				c.AbortWithStatusJSON(http.StatusOK, errmsg.Error())
 				return
 			} else {
