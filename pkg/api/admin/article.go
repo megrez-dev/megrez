@@ -17,7 +17,7 @@ import (
 )
 
 func CreateArticle(c *gin.Context) {
-	var data dto.CreateArticleDTO
+	var data dto.ArticleDTO
 	err := c.ShouldBindJSON(&data)
 	if err != nil {
 		log.Println(err.Error())
@@ -26,6 +26,7 @@ func CreateArticle(c *gin.Context) {
 	}
 	article := data.Transfer2Model()
 	article.PublishTime = time.Now()
+	article.EditTime = time.Now()
 
 	// check and generate slug
 	if article.Slug == "" {
@@ -105,25 +106,149 @@ func CreateArticle(c *gin.Context) {
 }
 
 func UpdateArticle(c *gin.Context) {
-	var data model.Article
-	id, err := strconv.Atoi(c.Param("id"))
+	var data dto.ArticleDTO
+	err := c.ShouldBindJSON(&data)
+	if err != nil {
+		log.Println(err.Error())
+		c.JSON(http.StatusOK, errmsg.ErrorInvalidParam)
+		return
+	}
+	article := data.Transfer2Model()
+	article.EditTime = time.Now()
+	// check and generate slug
+	if article.Slug == "" {
+		article.Slug = slug.Make(article.Title)
+		// ensure slug unique
+		exist, err := model.GetArticleBySlug(article.Slug)
+		if err != nil {
+			if err != gorm.ErrRecordNotFound {
+				log.Println(err.Error())
+				c.JSON(http.StatusOK, errmsg.Error())
+			}
+		}
+		if exist.ID != 0 {
+			c.JSON(http.StatusOK, errmsg.Fail(errmsg.ErrorArticleSlugExist))
+			return
+		}
+	}
+	// check and generate summary
+	if article.Summary == "" {
+		l := lute.New()
+		length := len([]rune(l.HTML2Text(article.FormatContent)))
+		if length > 500 {
+			article.Summary = string([]rune(l.HTML2Text(article.FormatContent))[:500])
+		} else {
+			article.Summary = l.HTML2Text(article.FormatContent)
+		}
+	}
+
+	// check to generate seo keywords
+	if article.SeoKeywords == "" {
+		for _, tagID := range data.Tags {
+			tag, err := model.GetTagByID(tagID)
+			if err != nil {
+				log.Println(err.Error())
+				c.JSON(http.StatusOK, errmsg.Error())
+				return
+			}
+			if article.SeoKeywords == "" {
+				article.SeoKeywords = tag.Name
+			} else {
+				article.SeoKeywords = article.SeoKeywords + ";" + tag.Name
+			}
+		}
+	}
+	// check to generate seo description
+	if article.SeoDescription == "" {
+		article.SeoDescription = article.Summary
+	}
+
+	// create article
+	err = model.UpdateArticleByID(&article)
 	if err != nil {
 		log.Println(err.Error())
 		c.JSON(http.StatusOK, errmsg.Error())
-	}
-	err = c.ShouldBindJSON(&data)
-	if err != nil {
-		log.Println(err.Error())
-		c.JSON(http.StatusOK, gin.H{})
+		return
 	}
 
-	err = model.UpdateArticleByID(uint(id), &data)
-	if err != nil {
-		log.Println(err.Error())
-		c.JSON(http.StatusOK, errmsg.Error())
+	// list old categories and compare with new categories
+	// delete old categories
+	oldCategories, err := model.ListCategoriesByArticleID(article.ID)
+	for _, oldCategory := range oldCategories {
+		exist := false
+		for _, newCategoryID := range data.Categories {
+			if newCategoryID == oldCategory.ID {
+				exist = true
+				break
+			}
+		}
+		if !exist {
+			err := model.DeleteArticleCategory(article.ID, oldCategory.ID)
+			if err != nil {
+				log.Println(err.Error())
+				c.JSON(http.StatusOK, errmsg.Error())
+				return
+			}
+		}
+	}
+	// add new categories
+	for _, newCategoryID := range data.Categories {
+		exist := false
+		for _, oldCategory := range oldCategories {
+			if oldCategory.ID == newCategoryID {
+				exist = true
+				break
+			}
+		}
+		if !exist {
+			err := model.CreateArticleCategory(article.ID, newCategoryID)
+			if err != nil {
+				log.Println(err.Error())
+				c.JSON(http.StatusOK, errmsg.Error())
+				return
+			}
+		}
 	}
 
-	c.JSON(http.StatusOK, errmsg.Success(nil))
+	// list old tags and compare with new tags
+	// delete old tags
+	oldTags, err := model.ListTagsByArticleID(article.ID)
+	for _, oldTag := range oldTags {
+		exist := false
+		for _, newTagID := range data.Tags {
+			if newTagID == oldTag.ID {
+				exist = true
+				break
+			}
+		}
+		if !exist {
+			err := model.DeleteArticleTag(article.ID, oldTag.ID)
+			if err != nil {
+				log.Println(err.Error())
+				c.JSON(http.StatusOK, errmsg.Error())
+				return
+			}
+		}
+	}
+	// add new tags
+	for _, newTagID := range data.Tags {
+		exist := false
+		for _, oldTag := range oldTags {
+			if oldTag.ID == newTagID {
+				exist = true
+				break
+			}
+		}
+		if !exist {
+			err := model.CreateArticleTag(article.ID, newTagID)
+			if err != nil {
+				log.Println(err.Error())
+				c.JSON(http.StatusOK, errmsg.Error())
+				return
+			}
+		}
+	}
+	c.JSON(http.StatusOK, errmsg.Success(article))
 }
 
 func DeleteArticle(c *gin.Context) {
@@ -134,6 +259,16 @@ func DeleteArticle(c *gin.Context) {
 	}
 
 	err = model.DeleteArticleByID(uint(id))
+	if err != nil {
+		log.Println(err.Error())
+		c.JSON(http.StatusOK, errmsg.Error())
+	}
+	err = model.DeleteArticleCategoriesByArticleID(uint(id))
+	if err != nil {
+		log.Println(err.Error())
+		c.JSON(http.StatusOK, errmsg.Error())
+	}
+	err = model.DeleteArticleTagsByArticleID(uint(id))
 	if err != nil {
 		log.Println(err.Error())
 		c.JSON(http.StatusOK, errmsg.Error())
@@ -149,12 +284,14 @@ func GetArticle(c *gin.Context) {
 		c.JSON(http.StatusOK, errmsg.Error())
 	}
 	article, err := model.GetArticleByID(uint(id))
+	articleDTO := dto.ArticleDTO{}
+	err = articleDTO.LoadFromModel(article)
 	if err != nil {
 		log.Println(err.Error())
 		c.JSON(http.StatusOK, errmsg.Error())
 	}
 
-	c.JSON(http.StatusOK, errmsg.Success(article))
+	c.JSON(http.StatusOK, errmsg.Success(articleDTO))
 }
 
 func ListArticles(c *gin.Context) {
@@ -169,9 +306,10 @@ func ListArticles(c *gin.Context) {
 		log.Println(err.Error())
 		c.JSON(http.StatusOK, errmsg.Error())
 	}
-	var articleDTOs []dto.ListArticlesDTO
+	var articleDTOs []dto.ArticlesListDTO
 	for _, article := range articles {
-		articleDTO, err := dto.LoadFromModel(article)
+		articleDTO := dto.ArticlesListDTO{}
+		err := articleDTO.LoadFromModel(article)
 		if err != nil {
 			log.Println(err.Error())
 			c.JSON(http.StatusOK, errmsg.Error())

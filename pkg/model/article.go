@@ -55,8 +55,8 @@ func ListAllArticles(pageNum, pageSize int) ([]Article, error) {
 }
 
 // UpdateArticleByID update article by id and data
-func UpdateArticleByID(id uint, article *Article) error {
-	result := db.Model(&article).Where("id= ？", id).Updates(&article)
+func UpdateArticleByID(article *Article) error {
+	result := db.Model(&article).Select("*").Omit("publish_time").Updates(article)
 	return result.Error
 }
 

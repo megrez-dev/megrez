@@ -1,15 +1,15 @@
 package model
 
 type ArticleTag struct {
-	ID         uint   `gorm:"primarykey" json:"id"`
-	ArticleID  uint `gorm:"type:int(11)" json:"articleID"`
-	TagID      uint `gorm:"type:int(11)" json:"tagID"`
+	ID        uint `gorm:"primarykey" json:"id"`
+	ArticleID uint `gorm:"type:int(11)" json:"articleID"`
+	TagID     uint `gorm:"type:int(11)" json:"tagID"`
 }
 
 func CreateArticleTag(aid, tid uint) error {
 	articleTag := ArticleTag{
-		ArticleID:  aid,
-		TagID: tid,
+		ArticleID: aid,
+		TagID:     tid,
 	}
 	result := db.Create(&articleTag)
 	return result.Error
@@ -17,5 +17,11 @@ func CreateArticleTag(aid, tid uint) error {
 
 func DeleteArticleTag(aid, tid uint) error {
 	result := db.Where("article_id = ? AND tag_id = ?", aid, tid).Delete(&ArticleTag{})
+	return result.Error
+}
+
+// DeleteArticleTagsByArticleID deletes all article tags by article id
+func DeleteArticleTagsByArticleID(aid uint) error {
+	result := db.Where("article_id = ?", aid).Delete(&ArticleTag{})
 	return result.Error
 }

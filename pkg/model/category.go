@@ -60,3 +60,9 @@ func DeleteCategoryByID(id uint) error {
 	result := db.Delete(&Category{}, id)
 	return result.Error
 }
+
+// DeleteArticleCategoriesByArticleID delete article categories by articleID
+func DeleteArticleCategoriesByArticleID(aid uint) error {
+	result := db.Delete(&ArticleCategory{}, "article_id = ?", aid)
+	return result.Error
+}
