@@ -9,9 +9,11 @@ require (
 	github.com/gin-contrib/zap v0.0.2
 	github.com/gin-gonic/gin v1.7.7
 	github.com/golang-jwt/jwt/v4 v4.3.0
+	github.com/google/uuid v1.3.0
 	github.com/gosimple/slug v1.12.0
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/spf13/viper v1.9.0
+	go.uber.org/zap v1.21.0
 	gorm.io/driver/mysql v1.2.0
 	gorm.io/gorm v1.22.4
 )
@@ -21,7 +23,6 @@ require (
 	github.com/danwakefield/fnmatch v0.0.0-20160403171240-cbb64ac3d964 // indirect
 	github.com/dlclark/regexp2 v1.4.0 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
-	github.com/gin-contrib/static v0.0.1 // indirect
 	github.com/go-playground/locales v0.13.0 // indirect
 	github.com/go-playground/universal-translator v0.17.0 // indirect
 	github.com/go-playground/validator/v10 v10.6.1 // indirect
@@ -48,7 +49,6 @@ require (
 	github.com/ugorji/go/codec v1.2.6 // indirect
 	go.uber.org/atomic v1.7.0 // indirect
 	go.uber.org/multierr v1.6.0 // indirect
-	go.uber.org/zap v1.21.0 // indirect
 	golang.org/x/crypto v0.0.0-20210817164053-32db794688a5 // indirect
 	golang.org/x/sys v0.0.0-20210823070655-63515b42dcdf // indirect
 	golang.org/x/text v0.3.6 // indirect

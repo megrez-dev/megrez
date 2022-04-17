@@ -2,7 +2,6 @@ package admin
 
 import (
 	"gorm.io/gorm"
-	"log"
 	"net/http"
 	"strconv"
 	"time"
@@ -12,6 +11,7 @@ import (
 	"github.com/gosimple/slug"
 
 	"github.com/megrez/pkg/entity/dto"
+	"github.com/megrez/pkg/log"
 	"github.com/megrez/pkg/model"
 	"github.com/megrez/pkg/utils/errmsg"
 )
@@ -20,7 +20,7 @@ func CreateArticle(c *gin.Context) {
 	var data dto.ArticleDTO
 	err := c.ShouldBindJSON(&data)
 	if err != nil {
-		log.Println(err.Error())
+		log.Error(err.Error())
 		c.JSON(http.StatusOK, errmsg.ErrorInvalidParam)
 		return
 	}
@@ -35,8 +35,9 @@ func CreateArticle(c *gin.Context) {
 		exist, err := model.GetArticleBySlug(article.Slug)
 		if err != nil {
 			if err != gorm.ErrRecordNotFound {
-				log.Println(err.Error())
+				log.Error(err)
 				c.JSON(http.StatusOK, errmsg.Error())
+				return
 			}
 		}
 		if exist.ID != 0 {
@@ -60,7 +61,7 @@ func CreateArticle(c *gin.Context) {
 		for _, tagID := range data.Tags {
 			tag, err := model.GetTagByID(tagID)
 			if err != nil {
-				log.Println(err.Error())
+				log.Error(err)
 				c.JSON(http.StatusOK, errmsg.Error())
 				return
 			}
@@ -79,7 +80,7 @@ func CreateArticle(c *gin.Context) {
 	// create article
 	err = model.CreateArticle(&article)
 	if err != nil {
-		log.Println(err.Error())
+		log.Error(err)
 		c.JSON(http.StatusOK, errmsg.Error())
 		return
 	}
@@ -88,7 +89,7 @@ func CreateArticle(c *gin.Context) {
 	for _, categoryID := range data.Categories {
 		err := model.CreateArticleCategory(article.ID, categoryID)
 		if err != nil {
-			log.Println(err.Error())
+			log.Error(err)
 			c.JSON(http.StatusOK, errmsg.Error())
 			return
 		}
@@ -97,7 +98,7 @@ func CreateArticle(c *gin.Context) {
 	for _, tagID := range data.Tags {
 		err := model.CreateArticleTag(article.ID, tagID)
 		if err != nil {
-			log.Println(err.Error())
+			log.Error(err)
 			c.JSON(http.StatusOK, errmsg.Error())
 			return
 		}
@@ -109,7 +110,7 @@ func UpdateArticle(c *gin.Context) {
 	var data dto.ArticleDTO
 	err := c.ShouldBindJSON(&data)
 	if err != nil {
-		log.Println(err.Error())
+		log.Error(err)
 		c.JSON(http.StatusOK, errmsg.ErrorInvalidParam)
 		return
 	}
@@ -122,8 +123,9 @@ func UpdateArticle(c *gin.Context) {
 		exist, err := model.GetArticleBySlug(article.Slug)
 		if err != nil {
 			if err != gorm.ErrRecordNotFound {
-				log.Println(err.Error())
+				log.Error(err)
 				c.JSON(http.StatusOK, errmsg.Error())
+				return
 			}
 		}
 		if exist.ID != 0 {
@@ -147,7 +149,7 @@ func UpdateArticle(c *gin.Context) {
 		for _, tagID := range data.Tags {
 			tag, err := model.GetTagByID(tagID)
 			if err != nil {
-				log.Println(err.Error())
+				log.Error(err)
 				c.JSON(http.StatusOK, errmsg.Error())
 				return
 			}
@@ -166,7 +168,7 @@ func UpdateArticle(c *gin.Context) {
 	// create article
 	err = model.UpdateArticleByID(&article)
 	if err != nil {
-		log.Println(err.Error())
+		log.Error(err)
 		c.JSON(http.StatusOK, errmsg.Error())
 		return
 	}
@@ -185,7 +187,7 @@ func UpdateArticle(c *gin.Context) {
 		if !exist {
 			err := model.DeleteArticleCategory(article.ID, oldCategory.ID)
 			if err != nil {
-				log.Println(err.Error())
+				log.Error(err)
 				c.JSON(http.StatusOK, errmsg.Error())
 				return
 			}
@@ -203,7 +205,7 @@ func UpdateArticle(c *gin.Context) {
 		if !exist {
 			err := model.CreateArticleCategory(article.ID, newCategoryID)
 			if err != nil {
-				log.Println(err.Error())
+				log.Error(err)
 				c.JSON(http.StatusOK, errmsg.Error())
 				return
 			}
@@ -224,7 +226,7 @@ func UpdateArticle(c *gin.Context) {
 		if !exist {
 			err := model.DeleteArticleTag(article.ID, oldTag.ID)
 			if err != nil {
-				log.Println(err.Error())
+				log.Error(err)
 				c.JSON(http.StatusOK, errmsg.Error())
 				return
 			}
@@ -242,7 +244,7 @@ func UpdateArticle(c *gin.Context) {
 		if !exist {
 			err := model.CreateArticleTag(article.ID, newTagID)
 			if err != nil {
-				log.Println(err.Error())
+				log.Error(err)
 				c.JSON(http.StatusOK, errmsg.Error())
 				return
 			}
@@ -254,24 +256,28 @@ func UpdateArticle(c *gin.Context) {
 func DeleteArticle(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		log.Println(err.Error())
+		log.Error(err)
 		c.JSON(http.StatusOK, errmsg.Error())
+		return
 	}
 
 	err = model.DeleteArticleByID(uint(id))
 	if err != nil {
-		log.Println(err.Error())
+		log.Error(err)
 		c.JSON(http.StatusOK, errmsg.Error())
+		return
 	}
 	err = model.DeleteArticleCategoriesByArticleID(uint(id))
 	if err != nil {
-		log.Println(err.Error())
+		log.Error(err)
 		c.JSON(http.StatusOK, errmsg.Error())
+		return
 	}
 	err = model.DeleteArticleTagsByArticleID(uint(id))
 	if err != nil {
-		log.Println(err.Error())
+		log.Error(err)
 		c.JSON(http.StatusOK, errmsg.Error())
+		return
 	}
 
 	c.JSON(http.StatusOK, errmsg.Success(nil))
@@ -280,46 +286,67 @@ func DeleteArticle(c *gin.Context) {
 func GetArticle(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		log.Println(err.Error())
+		log.Error(err)
 		c.JSON(http.StatusOK, errmsg.Error())
+		return
 	}
 	article, err := model.GetArticleByID(uint(id))
 	articleDTO := dto.ArticleDTO{}
 	err = articleDTO.LoadFromModel(article)
 	if err != nil {
-		log.Println(err.Error())
+		log.Error(err)
 		c.JSON(http.StatusOK, errmsg.Error())
+		return
 	}
 
 	c.JSON(http.StatusOK, errmsg.Success(articleDTO))
 }
 
 func ListArticles(c *gin.Context) {
-	pageNum, err := strconv.Atoi(c.Query("pageNum"))
-	pageSize, err := strconv.Atoi(c.Query("pageSize"))
-	if err != nil {
-		log.Println(err.Error())
-		c.JSON(http.StatusOK, errmsg.Error())
+	var pageNum, pageSize int
+	var err error
+	if c.Query("pageNum") == "" {
+		pageNum = 1
+	} else {
+		pageNum, err = strconv.Atoi(c.Query("pageNum"))
+		if err != nil {
+			log.Error(err)
+			c.JSON(http.StatusOK, errmsg.Fail(errmsg.ErrorInvalidParam))
+			return
+		}
+	}
+	if c.Query("pageSize") == "" {
+		pageSize = 10
+	} else {
+		pageSize, err = strconv.Atoi(c.Query("pageSize"))
+		if err != nil {
+			log.Error(err)
+			c.JSON(http.StatusOK, errmsg.Fail(errmsg.ErrorInvalidParam))
+			return
+		}
 	}
 	articles, err := model.ListAllArticles(pageNum, pageSize)
 	if err != nil {
-		log.Println(err.Error())
+		log.Error(err)
 		c.JSON(http.StatusOK, errmsg.Error())
+		return
 	}
 	var articleDTOs []dto.ArticlesListDTO
 	for _, article := range articles {
 		articleDTO := dto.ArticlesListDTO{}
 		err := articleDTO.LoadFromModel(article)
 		if err != nil {
-			log.Println(err.Error())
+			log.Error(err)
 			c.JSON(http.StatusOK, errmsg.Error())
+			return
 		}
 		articleDTOs = append(articleDTOs, articleDTO)
 	}
 	total, err := model.CountAllArticles()
 	if err != nil {
-		log.Println(err.Error())
+		log.Error(err)
 		c.JSON(http.StatusOK, errmsg.Error())
+		return
 	}
 	pagination := dto.Pagination{
 		List:     articleDTOs,

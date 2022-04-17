@@ -7,6 +7,7 @@ var (
 	OptionKeyBlogDescription = "blog_description"
 	OptionKeyBlogBirth       = "blog_birth"
 	OptionKeyBlogTheme       = "blog_theme"
+	OptionKeyUploadType      = "upload_type"
 	OptionKeyEmailSSLPort    = "email_ssl_port"
 	OptionKeyEmailProtocol   = "email_protocol"
 	OptionKeyIPCRecord       = "ipc_record"

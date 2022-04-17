@@ -8,6 +8,7 @@ import (
 	"io/fs"
 	"os"
 	"path"
+	"strings"
 )
 
 const MegrezDir = ".megrez"
@@ -34,6 +35,28 @@ func GetOrCreateMegrezHome() (string, error) {
 	return megrezHome, nil
 }
 
+func GetOrCreateUploadHome() (string, error) {
+	megrezHome, err := GetOrCreateMegrezHome()
+	if err != nil {
+		log.Error(err)
+		return "", err
+	}
+	uploadDir := path.Join(megrezHome, "upload")
+	_, err = os.Stat(uploadDir)
+	if err != nil {
+		if os.IsNotExist(err) {
+			if err := os.Mkdir(uploadDir, os.ModePerm); err != nil {
+				log.Error(err)
+				return "", err
+			}
+		} else {
+			log.Error(err)
+			return "", err
+		}
+	}
+	return uploadDir, nil
+}
+
 // CopyDirFromFS
 // @param static: static/default/css/xxx.css
 // @src: default
@@ -41,7 +64,7 @@ func GetOrCreateMegrezHome() (string, error) {
 // @return: relative path
 func CopyDirFromFS(static fs.FS, src string, dst string) error {
 	// dirs: default/...
-	err := CreateDir(path.Join(dst, src))
+	err := CreateDir(dst, src)
 	if err != nil {
 		log.Error(err)
 		return err
@@ -84,14 +107,28 @@ func CopyDirFromFS(static fs.FS, src string, dst string) error {
 	return nil
 }
 
-func CreateDir(dir string) error {
-	_, err := os.Stat(dir)
+// CreateDir create dir if not exists
+// @param dir: relative path to base
+// @param base: absolute path
+func CreateDir(base, dir string) error {
+	_, err := os.Stat(base)
 	if err != nil {
-		if os.IsNotExist(err) {
-			return os.Mkdir(dir, os.ModePerm)
-		} else {
-			log.Error(err)
-			return err
+		return err
+	}
+	subDirs := strings.Split(dir, "/")
+	for _, subDir := range subDirs {
+		base = path.Join(base, subDir)
+		_, err := os.Stat(base)
+		if err != nil {
+			if os.IsNotExist(err) {
+				if err := os.Mkdir(base, os.ModePerm); err != nil {
+					log.Error(err)
+					return err
+				}
+			} else {
+				log.Error(err)
+				return err
+			}
 		}
 	}
 	return nil

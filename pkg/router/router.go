@@ -45,6 +45,12 @@ func NewRouter(logger *zap.Logger) (*gin.Engine, error) {
 	admin.RouteAdminAPI(g)
 	// route for admin ui
 	g.StaticFS("/admin", http.FS(adminAssets.Static))
+	// route for upload attachments
+	uploadHome, err := dirUtils.GetOrCreateUploadHome()
+	if err != nil {
+		return nil, err
+	}
+	g.Static("/upload", uploadHome)
 	g.NoRoute(func(c *gin.Context) {
 		if strings.HasPrefix(c.Request.URL.Path, "/admin") {
 			//设置响应状态

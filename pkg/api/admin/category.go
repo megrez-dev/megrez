@@ -41,17 +41,20 @@ func UpdateCategory(c *gin.Context) {
 	if err != nil {
 		log.Println(err.Error())
 		c.JSON(http.StatusOK, errmsg.Error())
+		return
 	}
 	err = c.ShouldBindJSON(&data)
 	if err != nil {
 		log.Println(err.Error())
 		c.JSON(http.StatusOK, errmsg.Fail(errmsg.ErrorInvalidParam))
+		return
 	}
 
 	err = model.UpdateCategoryByID(uint(id), &data)
 	if err != nil {
 		log.Println(err.Error())
 		c.JSON(http.StatusOK, errmsg.Error())
+		return
 	}
 
 	c.JSON(http.StatusOK, errmsg.Success(data))
@@ -62,12 +65,14 @@ func DeleteCategory(c *gin.Context) {
 	if err != nil {
 		log.Println(err.Error())
 		c.JSON(http.StatusOK, errmsg.Error())
+		return
 	}
 
 	err = model.DeleteCategoryByID(uint(id))
 	if err != nil {
 		log.Println(err.Error())
 		c.JSON(http.StatusOK, errmsg.Error())
+		return
 	}
 
 	c.JSON(http.StatusOK, errmsg.Success(nil))
@@ -78,11 +83,13 @@ func GetCategory(c *gin.Context) {
 	if err != nil {
 		log.Println(err.Error())
 		c.JSON(http.StatusOK, errmsg.Error())
+		return
 	}
 	category, err := model.GetCategoryByID(uint(id))
 	if err != nil {
 		log.Println(err.Error())
 		c.JSON(http.StatusOK, errmsg.Error())
+		return
 	}
 
 	c.JSON(http.StatusOK, errmsg.Success(category))

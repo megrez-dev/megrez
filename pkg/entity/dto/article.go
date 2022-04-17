@@ -77,11 +77,12 @@ func (dto *ArticleDTO) LoadFromModel(article model.Article) error {
 	dto.Private = article.Private
 	dto.AllowedComment = article.AllowedComment
 	dto.WordCount = article.WordCount
-	dto.SeoDescription = article.SeoDescription
 	dto.Status = article.Status
 	// top priority
 	dto.IsTop = article.TopPriority != 0
-	dto.SeoKeywords = strings.Split(article.SeoKeywords, ";")
+	if article.SeoKeywords != "" {
+		dto.SeoKeywords = strings.Split(article.SeoKeywords, ";")
+	}
 	dto.SeoDescription = article.SeoDescription
 	dto.Categories = []uint{}
 	categories, err := model.ListCategoriesByArticleID(article.ID)

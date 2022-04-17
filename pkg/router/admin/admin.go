@@ -10,8 +10,12 @@ func RouteAdminAPI(g *gin.Engine) {
 	auth := g.Group("api/admin")
 	auth.Use(jwt.Jwt())
 
-	//api for install
+	// api for install
 	auth.POST("install", admin.Install)
+
+	// api for upload
+	auth.POST("upload", admin.Upload)
+	auth.GET("attachments", admin.ListAttachments)
 
 	//api for admin
 	auth.POST("login", admin.Login)

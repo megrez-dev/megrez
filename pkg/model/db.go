@@ -29,6 +29,7 @@ func New(dsn string) (*gorm.DB, error) {
 		&Tag{},
 		&ArticleTag{},
 		&ArticleCategory{},
+		&Attachment{},
 	)
 	if err != nil {
 		log.Println("migrate database failed, ", err)
