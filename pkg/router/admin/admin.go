@@ -48,12 +48,11 @@ func RouteAdminAPI(g *gin.Engine) {
 	auth.GET("tags", admin.ListTags)
 	// auth.GET("tag/:id", admin.GetTag)
 
-	// // api for link
-	// auth.POST("link", admin.CreateLink)
-	// auth.PUT("link/:id", admin.UpdateLink)
-	// auth.DELETE("link/:id", admin.DeleteLink)
-	// auth.GET("link", admin.ListLinks)
-	// auth.GET("link/:id", admin.GetLink)
+	// api for link
+	auth.POST("link", admin.CreateLink)
+	auth.PUT("link/:id", admin.UpdateLink)
+	auth.DELETE("link/:id", admin.DeleteLink)
+	auth.GET("links", admin.ListLinks)
 
 	// // api for journal
 	// auth.POST("journal", admin.CreateJournal)

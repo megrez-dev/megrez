@@ -5,7 +5,7 @@ import "time"
 type Link struct {
 	ID         uint      `gorm:"primarykey" json:"id"`
 	Name       string    `gorm:"type:varchar(255)" json:"name"`
-	Addr       string    `gorm:"type:varchar(255)" json:"addr"`
+	URL        string    `gorm:"type:varchar(255)" json:"url"`
 	Logo       string    `gorm:"type:varchar(255)" json:"logo"`
 	Priority   uint      `gorm:"type:int(11)" json:"priority"`
 	Status     int       `gorm:"type:int(11)" json:"status"`
@@ -16,12 +16,35 @@ type Link struct {
 // ListAllLinks return all links
 func ListAllLinks() ([]Link, error) {
 	var links []Link
-	result := db.Find(&links)
+	result := db.Order("priority").Find(&links)
 	return links, result.Error
+}
+
+// ListLinksByPage return links by page
+func ListLinksByPage(page, pageSize int) ([]Link, error) {
+	var links []Link
+	result := db.Order("priority").Offset((page - 1) * pageSize).Limit(pageSize).Find(&links)
+	return links, result.Error
+}
+
+func CountLinks() (int64, error) {
+	var count int64
+	result := db.Model(&Link{}).Count(&count)
+	return count, result.Error
 }
 
 // CreateLink handle create link
 func CreateLink(link *Link) error {
 	result := db.Create(link)
+	return result.Error
+}
+
+func UpdateLink(link *Link) error {
+	result := db.Model(&Link{}).Where("id = ?", link.ID).Updates(link)
+	return result.Error
+}
+
+func DeleteLinkByID(id uint) error {
+	result := db.Delete(&Link{}, "id = ?", id)
 	return result.Error
 }
