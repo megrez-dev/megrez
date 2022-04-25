@@ -2,22 +2,23 @@ package app
 
 import (
 	"fmt"
+	"github.com/megrez/pkg/config"
 	"go.uber.org/zap"
+	"gopkg.in/yaml.v2"
+	"io/ioutil"
 	"path"
 
-	"github.com/fsnotify/fsnotify"
 	"github.com/gin-gonic/gin"
 	"github.com/megrez/pkg/log"
 	"github.com/megrez/pkg/model"
 	"github.com/megrez/pkg/router"
 	dirUtils "github.com/megrez/pkg/utils/dir"
-	"github.com/spf13/viper"
 	"gorm.io/gorm"
 )
 
 // Megrez application
 type Megrez struct {
-	config *viper.Viper
+	config *config.Config
 	db     *gorm.DB
 	server *gin.Engine
 	Home   string
@@ -73,40 +74,55 @@ func (m *Megrez) initLogger() error {
 }
 
 func (m *Megrez) initConfig() error {
-	v := viper.New()
-	v.SetConfigFile(path.Join(m.Home, "config.yaml"))
-
-	if err := v.ReadInConfig(); err != nil {
-		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
-			log.Error("Config file not found; ignore error if desired")
-			return err
-		}
-		log.Error("Config file was found but another error was produced")
-		return err
+	var cfg = &config.Config{}
+	c, err := ioutil.ReadFile(path.Join(m.Home, "config.yaml"))
+	if err != nil {
+		log.Error("read config file failed, ", err.Error())
+		return m.initDefaultConfig()
 	}
+	err = yaml.Unmarshal(c, cfg)
+	if err != nil {
+		log.Error("unmarshal config failed, ", err.Error())
+		return m.initDefaultConfig()
+	}
+	m.config = cfg
+	return nil
+}
 
-	v.WatchConfig()
-
-	v.OnConfigChange(func(e fsnotify.Event) {
-		log.Info("Config file changed:", e.Name, " | ", e.Op.String())
-	})
-	m.config = v
+func (m *Megrez) initDefaultConfig() error {
+	var cfg = &config.Config{}
+	cfg.Database.SQLite.Path = path.Join(m.Home, "megrez.db")
+	cfg.Debug = false
+	m.config = cfg
 	return nil
 }
 
 func (m *Megrez) initDAO() error {
-	dbconfig := m.config.GetStringMapString("mysql")
-	host := dbconfig["host"]
-	port := dbconfig["port"]
-	name := dbconfig["database"]
-	user := dbconfig["username"]
-	pwd := dbconfig["password"]
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local&timeout=30s",
-		user, pwd, host, port, name)
-	db, err := model.New(dsn)
-	if err != nil {
-		log.Error("connect db failed, ", err)
-		return err
+	var db *gorm.DB
+	var err error
+	if m.config.Database.SQLite.Path != "" {
+		log.Info("Use SQLite as database")
+		db, err = model.NewSQLite(m.config.Database.SQLite.Path)
+		if err != nil {
+			return err
+		}
+	} else if m.config.Database.MySQL.Host != "" {
+		log.Info("Use MySQL as database")
+		host := m.config.Database.MySQL.Host
+		port := m.config.Database.MySQL.Port
+		name := m.config.Database.MySQL.Name
+		user := m.config.Database.MySQL.User
+		pwd := m.config.Database.MySQL.Password
+		dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local&timeout=30s",
+			user, pwd, host, port, name)
+		db, err = model.NewMySQL(dsn)
+		if err != nil {
+			log.Error("connect db failed, ", err)
+			return err
+		}
+	} else {
+		log.Error("Please check database config correctly")
+		return fmt.Errorf("database config error")
 	}
 	m.db = db
 	return nil
