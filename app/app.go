@@ -65,7 +65,7 @@ func (m *Megrez) initDir() error {
 }
 
 func (m *Megrez) initLogger() error {
-	logger, err := log.New()
+	logger, err := log.New(true)
 	if err != nil {
 		return err
 	}

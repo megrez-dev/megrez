@@ -5,9 +5,13 @@ import "go.uber.org/zap"
 var Logger *zap.Logger
 var Sugar *zap.SugaredLogger
 
-func New() (*zap.Logger, error) {
-	//Logger, err := zap.NewProduction()
-	Logger, err := zap.NewDevelopment()
+func New(debug bool) (*zap.Logger, error) {
+	var err error
+	if debug {
+		Logger, err = zap.NewDevelopment()
+	} else {
+		Logger, err = zap.NewProduction()
+	}
 	Sugar = Logger.WithOptions(zap.AddCallerSkip(1)).Sugar()
 	if err != nil {
 		return nil, err
