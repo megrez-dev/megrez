@@ -87,11 +87,22 @@ func Install(c *gin.Context) {
 			return
 		}
 	}
-	err = dirUtils.CopyDirFromFS(themesAssets.Static, "default", themesPath)
+	_, err = os.Stat(path.Join(themesPath, "default"))
 	if err != nil {
-		log.Error("copy themes dir failed:", err.Error())
-		c.JSON(http.StatusOK, errmsg.Error())
-		return
+		if os.IsNotExist(err) {
+			copyErr := dirUtils.CopyDirFromFS(themesAssets.Static, "default", themesPath)
+			if copyErr != nil {
+				log.Error("copy default theme failed:", err.Error())
+				c.JSON(http.StatusOK, errmsg.Error())
+				return
+			}
+		} else {
+			log.Error("copy default theme failed:", err.Error())
+			c.JSON(http.StatusOK, errmsg.Error())
+			return
+		}
+	} else {
+		log.Info("default theme is exist")
 	}
 
 	admin := model.User{

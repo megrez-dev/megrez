@@ -11,6 +11,10 @@ type Menu struct {
 
 // ListAllMenus list all menus
 func ListAllMenus() ([]Menu, error) {
+	if db.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
 	var menus []Menu
 	result := db.Order("priority").Find(&menus)
 	return menus, result.Error
@@ -18,6 +22,10 @@ func ListAllMenus() ([]Menu, error) {
 
 // CreateMenu handle create menu
 func CreateMenu(menu *Menu) error {
+	if db.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
 	result := db.Create(menu)
 	return result.Error
 }

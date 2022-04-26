@@ -9,6 +9,10 @@ type Tag struct {
 }
 
 func GetTagByID(tid uint) (Tag, error) {
+	if db.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
 	tag := Tag{}
 	result := db.First(&tag, tid)
 	return tag, result.Error
@@ -16,6 +20,10 @@ func GetTagByID(tid uint) (Tag, error) {
 
 // GetTagsByArticleID return tags by articleID
 func GetTagsByArticleID(aid uint) ([]Tag, error) {
+	if db.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
 	var tags []Tag
 	result := db.Where("id in (?)", db.Table("article_tags").Select("tag_id").Where("article_id = ?", aid)).Find(&tags)
 	return tags, result.Error
@@ -23,6 +31,10 @@ func GetTagsByArticleID(aid uint) ([]Tag, error) {
 
 // GetTagByName return tags by articleID
 func GetTagByName(name string) (Tag, error) {
+	if db.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
 	tag := Tag{}
 	result := db.First(&tag, "`name` = ?", name)
 	return tag, result.Error
@@ -30,6 +42,10 @@ func GetTagByName(name string) (Tag, error) {
 
 // ListAllTags return all tags
 func ListAllTags() ([]Tag, error) {
+	if db.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
 	var tags []Tag
 	result := db.Find(&tags)
 	return tags, result.Error
@@ -37,6 +53,10 @@ func ListAllTags() ([]Tag, error) {
 
 // ListTagsByPage return tags by page
 func ListTagsByPage(pageNum int, pageSize int) ([]Tag, error) {
+	if db.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
 	var tags []Tag
 	result := db.Offset(pageSize * (pageNum - 1)).Limit(pageSize).Find(&tags)
 	return tags, result.Error
@@ -44,12 +64,20 @@ func ListTagsByPage(pageNum int, pageSize int) ([]Tag, error) {
 
 // ListTagsByArticleID return categories by articleID
 func ListTagsByArticleID(aid uint) ([]Tag, error) {
+	if db.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
 	var tags []Tag
 	result := db.Where("id in (?)", db.Table("article_tags").Select("tag_id").Where("article_id = ?", aid)).Find(&tags)
 	return tags, result.Error
 }
 
 func CreateTag(tag *Tag) error {
+	if db.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
 	result := db.Create(tag)
 	return result.Error
 }

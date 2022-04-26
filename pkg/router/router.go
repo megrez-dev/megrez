@@ -22,7 +22,12 @@ import (
 
 var DefaultTheme = "default"
 
-func NewRouter(logger *zap.Logger) (*gin.Engine, error) {
+func NewRouter(logger *zap.Logger, debug bool) (*gin.Engine, error) {
+	if debug {
+		gin.SetMode(gin.DebugMode)
+	} else {
+		gin.SetMode(gin.ReleaseMode)
+	}
 	g := gin.New()
 	g.Use(cros.Cors())
 	g.Use(checkinstall.CheckInstall())

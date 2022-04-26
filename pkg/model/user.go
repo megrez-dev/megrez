@@ -13,6 +13,10 @@ type User struct {
 
 // GetUserByUsername return user by username or password
 func GetUserByUsername(username string) (User, error) {
+	if db.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
 	user := User{}
 	result := db.Where("username = ?", username).Or("email = ?", username).First(&user)
 	return user, result.Error
@@ -20,6 +24,10 @@ func GetUserByUsername(username string) (User, error) {
 
 // CreateUser handle create user
 func CreateUser(user *User) error {
+	if db.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
 	result := db.Create(user)
 	return result.Error
 }

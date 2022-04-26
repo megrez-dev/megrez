@@ -26,6 +26,10 @@ type Comment struct {
 
 // GetCommentByID return comment by ID
 func GetCommentByID(id uint) (Comment, error) {
+	if db.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
 	comment := Comment{}
 	result := db.First(&comment, id)
 	return comment, result.Error
@@ -33,6 +37,10 @@ func GetCommentByID(id uint) (Comment, error) {
 
 // ListCommentsByRootID return comments by rootID
 func ListCommentsByRootID(rid uint) ([]Comment, error) {
+	if db.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
 	var comments []Comment
 	result := db.Find(&comments, "root_id = ?", rid)
 	return comments, result.Error
@@ -40,6 +48,10 @@ func ListCommentsByRootID(rid uint) ([]Comment, error) {
 
 // ListRootCommentsByArticleID return root comments by parentID
 func ListRootCommentsByArticleID(aid uint, pageNum, pageSize int) ([]Comment, error) {
+	if db.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
 	var comments []Comment
 	var result *gorm.DB
 	if pageNum == 0 && pageSize == 0 {
@@ -53,6 +65,10 @@ func ListRootCommentsByArticleID(aid uint, pageNum, pageSize int) ([]Comment, er
 
 // ListRootCommentsByPageID return root comments by pageID
 func ListRootCommentsByPageID(pid uint, pageNum, pageSize int) ([]Comment, error) {
+	if db.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
 	var comments []Comment
 	var result *gorm.DB
 	if pageNum == 0 && pageSize == 0 {
@@ -66,6 +82,10 @@ func ListRootCommentsByPageID(pid uint, pageNum, pageSize int) ([]Comment, error
 
 // ListLatestComments return latest comments
 func ListLatestComments() ([]Comment, error) {
+	if db.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
 	var comments []Comment
 	result := db.Limit(8).Find(&comments)
 	return comments, result.Error
@@ -73,6 +93,10 @@ func ListLatestComments() ([]Comment, error) {
 
 // CountCommentsByArticleID return count of comments by articleID
 func CountCommentsByArticleID(aid uint) (int64, error) {
+	if db.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
 	var count int64
 	result := db.Model(&Comment{}).Where("article_id = ?", aid).Count(&count)
 	return count, result.Error
@@ -80,6 +104,10 @@ func CountCommentsByArticleID(aid uint) (int64, error) {
 
 // CountCommentsByPageID return count of comments by pageID
 func CountCommentsByPageID(pid uint) (int64, error) {
+	if db.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
 	var count int64
 	result := db.Model(&Comment{}).Where("page_id = ?", pid).Count(&count)
 	return count, result.Error
@@ -87,6 +115,10 @@ func CountCommentsByPageID(pid uint) (int64, error) {
 
 // CountRootCommentsByArticleID count root comments by articleID
 func CountRootCommentsByArticleID(aid uint) (int64, error) {
+	if db.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
 	var count int64
 	result := db.Model(&Comment{}).Where("article_id = ? AND root_id = ?", aid, 0).Count(&count)
 	return count, result.Error
@@ -94,6 +126,10 @@ func CountRootCommentsByArticleID(aid uint) (int64, error) {
 
 // CountRootCommentsByPageID count root comments by pageID
 func CountRootCommentsByPageID(pid uint) (int64, error) {
+	if db.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
 	var count int64
 	result := db.Model(&Comment{}).Where("page_id = ? AND root_id = ?", pid, 0).Count(&count)
 	return count, result.Error
@@ -101,6 +137,10 @@ func CountRootCommentsByPageID(pid uint) (int64, error) {
 
 // CreateComment handle create comment
 func CreateComment(comment *Comment) error {
+	if db.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
 	result := db.Create(comment)
 	return result.Error
 }

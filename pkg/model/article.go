@@ -28,6 +28,10 @@ type Article struct {
 
 // GetArticleByID return article by id
 func GetArticleByID(id uint) (Article, error) {
+	if db.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
 	article := Article{}
 	result := db.First(&article, id)
 	return article, result.Error
@@ -35,6 +39,10 @@ func GetArticleByID(id uint) (Article, error) {
 
 // GetArticleBySlug return article by slug
 func GetArticleBySlug(slug string) (Article, error) {
+	if db.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
 	article := Article{}
 	result := db.First(&article, "`slug` = ?", slug)
 	return article, result.Error
@@ -42,6 +50,10 @@ func GetArticleBySlug(slug string) (Article, error) {
 
 // ListArticlesByIDs return articles by ids
 func ListArticlesByIDs(ids []uint) ([]Article, error) {
+	if db.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
 	var articles []Article
 	result := db.Find(&articles, ids)
 	return articles, result.Error
@@ -49,6 +61,10 @@ func ListArticlesByIDs(ids []uint) ([]Article, error) {
 
 // ListAllArticles return all articles
 func ListAllArticles(pageNum, pageSize int) ([]Article, error) {
+	if db.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
 	var articles []Article
 	result := db.Offset(pageSize * (pageNum - 1)).Limit(pageSize).Find(&articles)
 	return articles, result.Error
@@ -56,18 +72,30 @@ func ListAllArticles(pageNum, pageSize int) ([]Article, error) {
 
 // UpdateArticleByID update article by id and data
 func UpdateArticleByID(article *Article) error {
+	if db.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
 	result := db.Model(&article).Select("*").Omit("publish_time").Updates(article)
 	return result.Error
 }
 
 // DeleteArticleByID delete article by id
 func DeleteArticleByID(id uint) error {
+	if db.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
 	result := db.Delete(&Article{}, id)
 	return result.Error
 }
 
 // ListLatestArticles return latest articles
 func ListLatestArticles() ([]Article, error) {
+	if db.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
 	var articles []Article
 	result := db.Limit(8).Find(&articles)
 	return articles, result.Error
@@ -75,6 +103,10 @@ func ListLatestArticles() ([]Article, error) {
 
 // ListArticlesByCategoryID return articles by categoryID
 func ListArticlesByCategoryID(cid uint, pageNum, pageSize int) ([]Article, error) {
+	if db.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
 	var articles []Article
 	result := db.Where("id in (?)", db.Table("article_categories").Select("article_id").Where("category_id = ?", cid)).Find(&articles)
 	return articles, result.Error
@@ -82,6 +114,10 @@ func ListArticlesByCategoryID(cid uint, pageNum, pageSize int) ([]Article, error
 
 // CountAllArticles return count of all articles
 func CountAllArticles() (int64, error) {
+	if db.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
 	var count int64
 	result := db.Model(&Article{}).Count(&count)
 	return count, result.Error
@@ -89,6 +125,10 @@ func CountAllArticles() (int64, error) {
 
 // CountArticlesByCategoryID return count for articles by categoryID
 func CountArticlesByCategoryID(cid uint) (int64, error) {
+	if db.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
 	var count int64
 	result := db.Model(&ArticleCategory{}).Where("category_id = ?", cid).Count(&count)
 	return count, result.Error
@@ -96,6 +136,10 @@ func CountArticlesByCategoryID(cid uint) (int64, error) {
 
 // CountArticlesByTagID return count for articles by tagID
 func CountArticlesByTagID(tid uint) (int64, error) {
+	if db.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
 	var count int64
 	result := db.Model(&ArticleTag{}).Where("tag_id = ?", tid).Count(&count)
 	return count, result.Error
@@ -103,6 +147,10 @@ func CountArticlesByTagID(tid uint) (int64, error) {
 
 // CreateArticle handle create article
 func CreateArticle(article *Article) error {
+	if db.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
 	result := db.Create(article)
 	return result.Error
 }

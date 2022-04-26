@@ -20,6 +20,10 @@ type Page struct {
 
 // GetPageByID return page by pageID
 func GetPageByID(id uint) (Page, error) {
+	if db.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
 	page := Page{}
 	result := db.First(&page, id)
 	return page, result.Error
@@ -27,6 +31,10 @@ func GetPageByID(id uint) (Page, error) {
 
 // GetPageBySlug return page by slug
 func GetPageBySlug(slug string) (Page, error) {
+	if db.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
 	page := Page{}
 	result := db.First(&page, "`slug` = ?", slug)
 	return page, result.Error
@@ -34,6 +42,10 @@ func GetPageBySlug(slug string) (Page, error) {
 
 // CreatePage create a new page
 func CreatePage(page *Page) error {
+	if db.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
 	result := db.Create(page)
 	return result.Error
 }

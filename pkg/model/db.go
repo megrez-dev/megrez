@@ -5,10 +5,12 @@ import (
 	"github.com/megrez/pkg/log"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"sync"
 )
 
 var db *gorm.DB
 var err error
+var lock sync.Mutex
 
 func NewMySQL(dsn string) (*gorm.DB, error) {
 	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})

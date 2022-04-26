@@ -12,6 +12,10 @@ type Option struct {
 
 // GetOptionByKey return option by key
 func GetOptionByKey(key string) (string, error) {
+	if db.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
 	option := Option{}
 	result := db.First(&option, "`key` = ?", key)
 	return option.Value, result.Error
@@ -19,6 +23,10 @@ func GetOptionByKey(key string) (string, error) {
 
 // SetOption handle set option
 func SetOption(key, value string) error {
+	if db.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
 	option := Option{
 		Key:   key,
 		Value: value,

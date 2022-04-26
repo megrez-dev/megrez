@@ -92,7 +92,7 @@ func (m *Megrez) initConfig() error {
 func (m *Megrez) initDefaultConfig() error {
 	var cfg = &config.Config{}
 	cfg.Database.SQLite.Path = path.Join(m.Home, "megrez.db")
-	cfg.Debug = false
+	cfg.Debug = true
 	m.config = cfg
 	return nil
 }
@@ -129,7 +129,7 @@ func (m *Megrez) initDAO() error {
 }
 
 func (m *Megrez) initRouter() error {
-	server, err := router.NewRouter(m.Logger)
+	server, err := router.NewRouter(m.Logger, m.config.Debug)
 	if err != nil {
 		log.Error("init router failed, ", err)
 		return err

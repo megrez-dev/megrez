@@ -16,16 +16,28 @@ type Attachment struct {
 }
 
 func CreateAttachment(attachment *Attachment) error {
+	if db.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
 	return db.Create(attachment).Error
 }
 
 func ListAttachments(pageNum, pageSize int) ([]Attachment, error) {
+	if db.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
 	var attachments []Attachment
 	result := db.Offset(pageSize * (pageNum - 1)).Limit(pageSize).Find(&attachments)
 	return attachments, result.Error
 }
 
 func CountAllAttachments() (int64, error) {
+	if db.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
 	var count int64
 	result := db.Model(&Attachment{}).Count(&count)
 	return count, result.Error

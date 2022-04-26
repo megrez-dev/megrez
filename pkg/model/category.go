@@ -10,6 +10,10 @@ type Category struct {
 
 // GetCategoryByID return category by id
 func GetCategoryByID(id uint) (Category, error) {
+	if db.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
 	category := Category{}
 	result := db.First(&category, id)
 	return category, result.Error
@@ -17,6 +21,10 @@ func GetCategoryByID(id uint) (Category, error) {
 
 // GetCategoryBySlug return category by slug
 func GetCategoryBySlug(slug string) (Category, error) {
+	if db.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
 	category := Category{}
 	result := db.First(&category, "`slug` = ?", slug)
 	return category, result.Error
@@ -24,6 +32,10 @@ func GetCategoryBySlug(slug string) (Category, error) {
 
 // ListAllCategories return all categories
 func ListAllCategories() ([]Category, error) {
+	if db.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
 	var categories []Category
 	result := db.Find(&categories)
 	return categories, result.Error
@@ -31,6 +43,10 @@ func ListAllCategories() ([]Category, error) {
 
 // ListCategoriesByPage return categories by page
 func ListCategoriesByPage(pageNum int, pageSize int) ([]Category, error) {
+	if db.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
 	var categories []Category
 	result := db.Offset(pageSize * (pageNum - 1)).Limit(pageSize).Find(&categories)
 	return categories, result.Error
@@ -38,6 +54,10 @@ func ListCategoriesByPage(pageNum int, pageSize int) ([]Category, error) {
 
 // ListCategoriesByArticleID return categories by articleID
 func ListCategoriesByArticleID(aid uint) ([]Category, error) {
+	if db.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
 	var categories []Category
 	result := db.Where("id in (?)", db.Table("article_categories").Select("category_id").Where("article_id = ?", aid)).Find(&categories)
 	return categories, result.Error
@@ -45,24 +65,40 @@ func ListCategoriesByArticleID(aid uint) ([]Category, error) {
 
 // CreateCategory handle create category
 func CreateCategory(category *Category) error {
+	if db.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
 	result := db.Create(category)
 	return result.Error
 }
 
 // UpdateCategoryByID update article by id and data
 func UpdateCategoryByID(id uint, category *Category) error {
+	if db.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
 	result := db.Model(&category).Where("id= ？", id).Updates(&category)
 	return result.Error
 }
 
 // DeleteCategoryByID delete article by id
 func DeleteCategoryByID(id uint) error {
+	if db.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
 	result := db.Delete(&Category{}, id)
 	return result.Error
 }
 
 // DeleteArticleCategoriesByArticleID delete article categories by articleID
 func DeleteArticleCategoriesByArticleID(aid uint) error {
+	if db.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
 	result := db.Delete(&ArticleCategory{}, "article_id = ?", aid)
 	return result.Error
 }
