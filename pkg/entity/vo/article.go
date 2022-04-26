@@ -12,7 +12,7 @@ type IndexArticle struct {
 	Summary     string
 	Cover       string
 	Private     bool
-	Category    *BriefCategory
+	Categories  []*BriefCategory
 	CommentsNum int64
 	TopPriority int
 	Visits      int64
@@ -38,7 +38,7 @@ type ArticleDetail struct {
 	FormatContent string
 	Cover         string
 	Private       bool
-	Category      *BriefCategory
+	Categories    []*BriefCategory
 	Tags          []*BriefTag
 	Comments      []*Comment
 	CommentsNum   int64
@@ -72,18 +72,22 @@ func GetIndexArticleFromPO(article *model.Article) (IndexArticle, error) {
 	vo.PublishTime = article.PublishTime
 	vo.EditTime = article.EditTime
 
-	// TODO: 默认 CategoryID = 1
-	//category, err := model.GetCategoryByID(article.CategoryID)
-	//if err != nil {
-	//	return vo, err
-	//}
+	categoryPOs, err := model.ListCategoriesByArticleID(article.ID)
+	if err != nil {
+		return vo, err
+	}
+	var categories []*BriefCategory
+	for _, categoryPO := range categoryPOs {
+		category := GetBriefCategoryFromPO(categoryPO)
+		categories = append(categories, category)
+	}
+	vo.Categories = categories
+
 	commentsNum, err := model.CountCommentsByArticleID(article.ID)
 	if err != nil {
 		return vo, err
 	}
 	vo.CommentsNum = commentsNum
-	//categoryVO := GetBriefCategoryFromPO(category)
-	//vo.Category = categoryVO
 	return vo, nil
 }
 
@@ -113,14 +117,20 @@ func GetArticleDetailFromPO(article model.Article, pageNum, pageSize int) (*Arti
 	vo.EditTime = article.EditTime
 	vo.Status = article.Status
 
-	// TODO: 默认 CategoryID = 1
-	//categoryPO, err := model.GetCategoryByID(article.CategoryID)
-	//if err != nil {
-	//	return vo, err
-	//}
-	//category := GetBriefCategoryFromPO(categoryPO)
-	//vo.Category = category
-	tagPOs, err := model.GetTagsByArticleID(article.ID)
+	categoryPOs, err := model.ListCategoriesByArticleID(article.ID)
+	if err != nil {
+		return vo, err
+	}
+	var categories []*BriefCategory
+	for _, categoryPO := range categoryPOs {
+		category := GetBriefCategoryFromPO(categoryPO)
+		categories = append(categories, category)
+	}
+	vo.Categories = categories
+	tagPOs, err := model.ListTagsByArticleID(article.ID)
+	if err != nil {
+		return vo, err
+	}
 	var tags []*BriefTag
 	for _, tagPO := range tagPOs {
 		tag := GetBriefTagFromPO(tagPO)

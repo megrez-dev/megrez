@@ -42,12 +42,15 @@
                             <a href="/article/{{ article.ID }}"><span style="padding-right:10px"></span>{{ article.Title }}</a>
                         </div>
                         <div class="item-meta">
-                            <time datetime="2020-11-22T23:00:00+08:00" itemprop="datePublished"><i class="fa fa-clock-o"
-                                    aria-hidden="true"> </i> {{ article.PublishTime|date:"2006-01-02" }}</time>&nbsp;&nbsp; <i class="fa fa-tags" aria-hidden="true"></i> <a
-                                href="category/{{ article.Category.Slug }}">{{ article.Category.Name }}</a>&nbsp;&nbsp;
-                            <i class="fa fa-comments-o" aria-hidden="true"></i> <a
-                                href="/article/{{ article.ID }}#comments">{{article.CommentsNum}}
-                                评论</a>&nbsp;&nbsp; <i class="fa fa-eye" aria-hidden="true"></i> {{ article.Visits }} 浏览
+                            <time datetime="2020-11-22T23:00:00+08:00" itemprop="datePublished">
+                            <i class="fa fa-clock-o" aria-hidden="true"> </i> {{ article.PublishTime|date:"2006-01-02" }}</time>&nbsp;&nbsp;
+                            {% if article.Categories | length != 0 %}
+                            {% with category = article.Categories | first %}
+                            <i class="fa fa-tags" aria-hidden="true"></i> <a href="category/{{ category.Slug }}">{{ category.Name }}</a>&nbsp;&nbsp;
+                            {% endwith %}
+                            {% endif %}
+                            <i class="fa fa-comments-o" aria-hidden="true"></i> <a href="/article/{{ article.ID }}#comments">{{article.CommentsNum}} 评论</a>&nbsp;&nbsp;
+                            <i class="fa fa-eye" aria-hidden="true"></i> {{ article.Visits }} 浏览
                         </div>
                         <div class="item-meta-hr  bg-{{ global.RandomColor }}"></div>
                         <div class="item-content">

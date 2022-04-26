@@ -18,17 +18,6 @@ func GetTagByID(tid uint) (Tag, error) {
 	return tag, result.Error
 }
 
-// GetTagsByArticleID return tags by articleID
-func GetTagsByArticleID(aid uint) ([]Tag, error) {
-	if db.Dialector.Name() == "sqlite3" {
-		lock.Lock()
-		defer lock.Unlock()
-	}
-	var tags []Tag
-	result := db.Where("id in (?)", db.Table("article_tags").Select("tag_id").Where("article_id = ?", aid)).Find(&tags)
-	return tags, result.Error
-}
-
 // GetTagByName return tags by articleID
 func GetTagByName(name string) (Tag, error) {
 	if db.Dialector.Name() == "sqlite3" {
