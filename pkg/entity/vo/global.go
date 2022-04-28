@@ -2,11 +2,12 @@ package vo
 
 import (
 	"fmt"
-	"github.com/megrez/pkg/log"
-	"gorm.io/gorm"
 	"math/rand"
 	"strconv"
 	"time"
+
+	"github.com/megrez/pkg/log"
+	"gorm.io/gorm"
 
 	"github.com/megrez/pkg/model"
 )
@@ -25,6 +26,7 @@ type Global struct {
 	Categories      []*BriefCategory
 	LatestArticles  []*LatestArticle
 	LatestComments  []*LatestComment
+	ThemeOptions    map[string]string
 	RandomColor     func() string
 }
 
@@ -109,6 +111,25 @@ func GetLatestCommentFromPO(comment *model.Comment) (*LatestComment, error) {
 	return latestComment, nil
 }
 
+// @return map[string]map[string]string map[tab]map[key]value
+func GetThemeOptions() map[string]string {
+	theme, err := model.GetOptionByKey(OptionKeyBlogTheme)
+	if err != nil {
+		log.Error(err)
+		return nil
+	}
+	options, err := model.ListThemeOptionsByThemeID(theme)
+	if err != nil {
+		log.Error(err)
+		return nil
+	}
+	m := make(map[string]string)
+	for _, option := range options {
+		m[option.Key] = option.Value
+	}
+	return m
+}
+
 func GetGlobalOption() (Global, error) {
 	global := Global{}
 	blogTitle, err := model.GetOptionByKey(OptionKeyBlogTitle)
@@ -190,6 +211,8 @@ func GetGlobalOption() (Global, error) {
 		}
 		latestComments = append(latestComments, latestComment)
 	}
+	themeOptions := GetThemeOptions()
+	global.ThemeOptions = themeOptions
 	global.LatestComments = latestComments
 	global.RandomColor = randomColor
 	return global, nil

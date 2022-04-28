@@ -71,7 +71,6 @@ func NewRouter(logger *zap.Logger, debug bool) (*gin.Engine, error) {
 				return
 			}
 			c.Writer.Header().Add("Accept", "text/html")
-			//显示刷新
 			c.Writer.Flush()
 			return
 		}
