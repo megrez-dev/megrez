@@ -3,31 +3,33 @@ package config
 type ItemType string
 
 const (
-	ItemTypeInput    ItemType = "input"
-	ItemTypeTextarea ItemType = "textarea"
-	ItemTypeRadio    ItemType = "radio"
-	ItemTypeCheckbox ItemType = "checkbox"
-	ItemTypeList     ItemType = "list"
-	ItemTypeSelect   ItemType = "select"
-	ItemTypeImage    ItemType = "image"
+	ItemTypeInput       ItemType = "input"
+	ItemTypeTextarea    ItemType = "textarea"
+	ItemTypeSelect      ItemType = "select"
+	ItemTypeMultiSelect ItemType = "multiSelect"
+	ItemTypeTags        ItemType = "tags"
+	ItemTypeImage       ItemType = "image"
+	ItemTypeSwitch      ItemType = "switch"
 )
 
 type ThemeConfig struct {
-	Tabs []Tab `yaml:"tabs"`
+	Tabs []Tab `yaml:"tabs" json:"tabs"`
 }
 
 type Tab struct {
-	Name  string `yaml:"name"`
-	Label string `yaml:"label"`
-	Items []Item `yaml:"items"`
+	Name  string `yaml:"name" json:"name"`
+	Key   string `yaml:"key" json:"key"`
+	Items []Item `yaml:"items" json:"items"`
 }
 
 type Item struct {
-	Name        string   `yaml:"name"`
-	Label       string   `yaml:"label"`
-	Type        string   `yaml:"type"`
-	Default     string   `yaml:"default"`
-	Description string   `yaml:"description"`
-	Value       string   `yaml:"value"`
-	Options     []string `yaml:"options"`
+	Name        string      `yaml:"name" json:"name"`
+	Key         string      `yaml:"key" json:"key"`
+	Type        string      `yaml:"type" json:"type"`
+	Default     string      `yaml:"default" json:"default"`
+	Description string      `yaml:"description" json:"description"`
+	Placeholder string      `yaml:"placeholder" json:"placeholder"`
+	Value       interface{} `yaml:"value" json:"value"`
+	Values      []string    `yaml:"values" json:"values"`
+	Options     []string    `yaml:"options" json:"options"`
 }

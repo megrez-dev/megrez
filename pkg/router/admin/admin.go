@@ -17,6 +17,9 @@ func RouteAdminAPI(g *gin.Engine) {
 	auth.POST("upload", admin.Upload)
 	auth.GET("attachments", admin.ListAttachments)
 
+	// api for themes
+	auth.GET("theme/config", admin.GetThemeConfig)
+
 	//api for admin
 	auth.POST("login", admin.Login)
 
