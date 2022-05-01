@@ -10,7 +10,6 @@ var (
 	OptionKeyUploadType      = "upload_type"
 	OptionKeyEmailSSLPort    = "email_ssl_port"
 	OptionKeyEmailProtocol   = "email_protocol"
-	OptionKeyIPCRecord       = "ipc_record"
 	OptionKeyQQ              = "qq"
 	OptionKeyGithub          = "github"
 	OptionKeyTwitter         = "twitter"

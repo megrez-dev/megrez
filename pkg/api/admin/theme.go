@@ -1,8 +1,11 @@
 package admin
 
 import (
+	"archive/zip"
+	"io/fs"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"path"
 	"strings"
 
@@ -10,17 +13,18 @@ import (
 	"github.com/megrez/pkg/entity/vo"
 	"github.com/megrez/pkg/log"
 	"github.com/megrez/pkg/model"
-	"github.com/megrez/pkg/utils/dir"
+	dirUtils "github.com/megrez/pkg/utils/dir"
 	"github.com/megrez/pkg/utils/errmsg"
+	zipUtils "github.com/megrez/pkg/utils/zip"
 
 	"github.com/gin-gonic/gin"
 	"gopkg.in/yaml.v2"
 	"gorm.io/gorm"
 )
 
-func GetThemeConfig(c *gin.Context) {
+func GetCurrentThemeConfig(c *gin.Context) {
 	var cfg = &config.ThemeConfig{}
-	home, err := dir.GetOrCreateMegrezHome()
+	home, err := dirUtils.GetOrCreateMegrezHome()
 	if err != nil {
 		log.Error("get megrez home failed:", err.Error())
 		c.JSON(http.StatusOK, errmsg.Error())
@@ -43,8 +47,8 @@ func GetThemeConfig(c *gin.Context) {
 		c.JSON(http.StatusOK, errmsg.Error())
 		return
 	}
-	for _, tab := range cfg.Tabs {
-		for _, item := range tab.Items {
+	for i, tab := range cfg.Tabs {
+		for j, item := range tab.Items {
 			value, err := model.GetThemeOptionByThemeIDAndKey(themeID, item.Key)
 			if err != nil {
 				if err == gorm.ErrRecordNotFound {
@@ -56,11 +60,175 @@ func GetThemeConfig(c *gin.Context) {
 				}
 			}
 			if item.Type == "multiSelect" || item.Type == "tags" {
-				item.Value = strings.Split(value, ",")
+				cfg.Tabs[i].Items[j].Value = strings.Split(value, ";")
 			} else {
-				item.Value = value
+				cfg.Tabs[i].Items[j].Value = value
 			}
 		}
 	}
 	c.JSON(http.StatusOK, errmsg.Success(cfg))
+}
+
+func UpdateCurrentThemeConfig(c *gin.Context) {
+	var cfg config.ThemeConfig
+	err := c.ShouldBindJSON(&cfg)
+	if err != nil {
+		log.Error("bind json failed:", err.Error())
+		c.JSON(http.StatusOK, errmsg.Fail(errmsg.ErrorInvalidParam))
+		return
+	}
+	currentThemeID, err := model.GetOptionByKey(vo.OptionKeyBlogTheme)
+	if err != nil {
+		log.Error("get option blog theme failed:", err.Error())
+		c.JSON(http.StatusOK, errmsg.Error())
+		return
+	}
+	for _, tab := range cfg.Tabs {
+		for _, item := range tab.Items {
+			if values, ok := item.Value.([]string); ok {
+				if len(values) != 0 {
+					item.Value = strings.Join(values, ",")
+				} else {
+					item.Value = item.Default
+				}
+			} else if value, ok := item.Value.(string); ok {
+				if value == "" {
+					item.Value = item.Default
+				}
+			}
+			str, ok := item.Value.(string)
+			if !ok {
+				log.Error("invalid type of value:", item.Value)
+				c.JSON(http.StatusOK, errmsg.Fail(errmsg.ErrorInvalidParam))
+				return
+			}
+			model.SetThemeOption(currentThemeID, item.Key, str)
+		}
+	}
+	c.JSON(http.StatusOK, errmsg.Success(nil))
+}
+
+func InstallTheme(c *gin.Context) {
+	file, err := c.FormFile("file")
+	if err != nil {
+		log.Error("get file from request failed: ", err)
+		c.JSON(http.StatusOK, errmsg.Error())
+		return
+	}
+	fileName := file.Filename
+	ext := path.Ext(fileName)
+	if ext != ".zip" {
+		c.JSON(http.StatusOK, errmsg.FailMsg("仅支持zip格式"))
+		return
+	}
+	open, err := file.Open()
+	if err != nil {
+		log.Error("open zip file failed: ", err)
+		c.JSON(http.StatusOK, errmsg.FailMsg("打开压缩文件失败"))
+		return
+	}
+	defer open.Close()
+	reader, err := zip.NewReader(open, file.Size)
+	if err != nil {
+		log.Error("new zip reader failed: ", err)
+		c.JSON(http.StatusOK, errmsg.FailMsg("解压失败"))
+		return
+	}
+	infoFile, err := reader.Open("theme.yaml")
+	if err != nil {
+		log.Error("open theme.yaml failed: ", err)
+		c.JSON(http.StatusOK, errmsg.FailMsg("打开主题信息文件失败"))
+		return
+	}
+	defer infoFile.Close()
+	themeInfo, ok := getThemeInfo(infoFile)
+	if !ok {
+		c.JSON(http.StatusOK, errmsg.FailMsg("主题信息文件格式错误"))
+		return
+	}
+	if themeInfo.ID == "" {
+		c.JSON(http.StatusOK, errmsg.FailMsg("主题ID不能为空"))
+		return
+	}
+	cfgFile, err := reader.Open("config.yaml")
+	if err != nil {
+		log.Error("open config.yaml failed: ", err)
+		c.JSON(http.StatusOK, errmsg.FailMsg("打开主题配置文件失败"))
+		return
+	}
+	defer cfgFile.Close()
+	themeConfig, ok := getThemeConfig(cfgFile)
+	if !ok {
+		c.JSON(http.StatusOK, errmsg.FailMsg("主题配置文件格式错误"))
+		return
+	}
+	home, err := dirUtils.GetOrCreateMegrezHome()
+	if err != nil {
+		log.Error("get megrez home failed:", err.Error())
+		c.JSON(http.StatusOK, errmsg.Error())
+		return
+	}
+	if _, err := os.Stat(path.Join(home, "themes", themeInfo.ID)); err != nil {
+		if err != nil {
+			if !os.IsNotExist(err) {
+				log.Errorf("get theme %s dir failed: %s", themeInfo.ID, err.Error())
+				c.JSON(http.StatusOK, errmsg.Error())
+				return
+			}
+		} else {
+			log.Errorf("theme %s already exists", themeInfo.ID)
+			c.JSON(http.StatusOK, errmsg.FailMsg("主题已存在"))
+			return
+		}
+	}
+	if err := os.MkdirAll(path.Join(home, "themes", themeInfo.ID), 0755); err != nil {
+		log.Error("create theme dir failed:", err.Error())
+		c.JSON(http.StatusOK, errmsg.Error())
+		return
+	}
+	err = zipUtils.UnZip(reader, path.Join(home, "themes", themeInfo.ID))
+	if err != nil {
+		os.RemoveAll(path.Join(home, "themes", themeInfo.ID))
+		log.Error("unzip theme failed:", err.Error())
+		c.JSON(http.StatusOK, errmsg.Error())
+		return
+	}
+	for _, tag := range themeConfig.Tabs {
+		for _, item := range tag.Items {
+			err := model.SetThemeOption(themeInfo.ID, item.Key, item.Default)
+			if err != nil {
+				os.RemoveAll(path.Join(home, "themes", themeInfo.ID))
+				log.Errorf("set theme option %s failed: %s", themeInfo.ID, err.Error())
+				c.JSON(http.StatusOK, errmsg.Error())
+				return
+			}
+		}
+	}
+	c.JSON(http.StatusOK, errmsg.Success(nil))
+}
+
+func GetCurrentThemeID(c *gin.Context) {
+	themeID, err := model.GetOptionByKey(vo.OptionKeyBlogTheme)
+	if err != nil {
+		log.Error("get option blog theme failed:", err.Error())
+		c.JSON(http.StatusOK, errmsg.Error())
+		return
+	}
+	c.JSON(http.StatusOK, errmsg.Success(themeID))
+}
+
+func getThemeConfig(file fs.File) (config.ThemeConfig, bool) {
+	var cfg config.ThemeConfig
+	if err := yaml.NewDecoder(file).Decode(&cfg); err != nil {
+		return cfg, false
+	}
+	return cfg, true
+}
+
+func getThemeInfo(file fs.File) (config.ThemeInfo, bool) {
+	var cfg config.ThemeInfo
+	if err := yaml.NewDecoder(file).Decode(&cfg); err != nil {
+		return cfg, false
+	}
+	return cfg, true
 }

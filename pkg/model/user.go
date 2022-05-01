@@ -2,11 +2,11 @@ package model
 
 type User struct {
 	ID          uint   `gorm:"primarykey" json:"id"`
-	Username    string `gorm:"type:varchar(255);unique_index" json:"username"`
+	Username    string `gorm:"type:varchar(255);uniqueIndex" json:"username"`
 	Nickname    string `gorm:"type:varchar(255)" json:"nickname"`
 	Avatar      string `gorm:"type:varchar(255)" json:"avatar"`
 	Description string `gorm:"type:varchar(255)" json:"description"`
-	Email       string `gorm:"type:varchar(255);unique_index" json:"email"`
+	Email       string `gorm:"type:varchar(255);uniqueIndex" json:"email"`
 	Password    string `gorm:"type:varchar(255)" json:"password"`
 	Status      int    `gorm:"type:int(11)" json:"status"`
 }

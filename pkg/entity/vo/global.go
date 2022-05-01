@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math/rand"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/megrez/pkg/log"
@@ -16,7 +17,6 @@ type Global struct {
 	BlogURL         string
 	BlogTitle       string
 	BlogDescription string
-	IPCRecord       string
 	Github          string
 	QQ              string
 	Email           string
@@ -26,7 +26,7 @@ type Global struct {
 	Categories      []*BriefCategory
 	LatestArticles  []*LatestArticle
 	LatestComments  []*LatestComment
-	ThemeOptions    map[string]string
+	ThemeOptions    map[string]interface{}
 	RandomColor     func() string
 }
 
@@ -112,7 +112,7 @@ func GetLatestCommentFromPO(comment *model.Comment) (*LatestComment, error) {
 }
 
 // @return map[string]map[string]string map[tab]map[key]value
-func GetThemeOptions() map[string]string {
+func GetThemeOptions() map[string]interface{} {
 	theme, err := model.GetOptionByKey(OptionKeyBlogTheme)
 	if err != nil {
 		log.Error(err)
@@ -123,9 +123,13 @@ func GetThemeOptions() map[string]string {
 		log.Error(err)
 		return nil
 	}
-	m := make(map[string]string)
+	m := make(map[string]interface{})
 	for _, option := range options {
-		m[option.Key] = option.Value
+		if option.Type == "multiSelect" || option.Type == "tags" {
+			m[option.Key] = strings.Split(option.Value, ";")
+		} else {
+			m[option.Key] = option.Value
+		}
 	}
 	return m
 }
@@ -147,11 +151,6 @@ func GetGlobalOption() (Global, error) {
 		return global, err
 	}
 	global.BlogDescription = blogDescription
-	ipcRecord, err := model.GetOptionByKey(OptionKeyIPCRecord)
-	if err != nil && err != gorm.ErrRecordNotFound {
-		return global, err
-	}
-	global.IPCRecord = ipcRecord
 	blogBirthStr, err := model.GetOptionByKey(OptionKeyBlogBirth)
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return global, err

@@ -23,6 +23,11 @@ const (
 	// code= 3000... 分类模块的错误
 	ErrorCategorySlugExist = 3001
 	ErrorCateNotExist      = 3002
+
+	// code= 4000... 评论模块的错误
+
+	// code= 5000... 附件模块的错误
+	ErrorOnlySupportZip = 5001
 )
 
 var codeMsg = map[int]string{
@@ -42,6 +47,8 @@ var codeMsg = map[int]string{
 
 	ErrorCategorySlugExist: "分类别名已存在",
 	ErrorCateNotExist:      "该分类不存在",
+
+	ErrorOnlySupportZip: "仅支持zip格式",
 }
 
 func GetErrMsg(code int) string {
@@ -60,6 +67,13 @@ func Fail(status int) gin.H {
 	return gin.H{
 		"status": status,
 		"msg":    GetErrMsg(status),
+	}
+}
+
+func FailMsg(msg string) gin.H {
+	return gin.H{
+		"status": ERROR,
+		"msg":    msg,
 	}
 }
 

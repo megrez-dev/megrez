@@ -14,11 +14,14 @@ func RouteAdminAPI(g *gin.Engine) {
 	auth.POST("install", admin.Install)
 
 	// api for upload
-	auth.POST("upload", admin.Upload)
+	auth.POST("upload", admin.UploadAttachment)
 	auth.GET("attachments", admin.ListAttachments)
 
 	// api for themes
-	auth.GET("theme/config", admin.GetThemeConfig)
+	auth.GET("theme/current/config", admin.GetCurrentThemeConfig)
+	auth.PUT("theme/current/config", admin.UpdateCurrentThemeConfig)
+	auth.GET("theme/current/id", admin.GetCurrentThemeID)
+	auth.POST("theme/install", admin.InstallTheme)
 
 	//api for admin
 	auth.POST("login", admin.Login)

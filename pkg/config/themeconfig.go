@@ -12,6 +12,7 @@ const (
 	ItemTypeSwitch      ItemType = "switch"
 )
 
+// ThemeConfig is the struct for config.yaml under theme folder
 type ThemeConfig struct {
 	Tabs []Tab `yaml:"tabs" json:"tabs"`
 }

@@ -11,7 +11,6 @@ import (
 	_ "image/gif"
 	_ "image/jpeg"
 	_ "image/png"
-	"mime/multipart"
 	"net/http"
 	"path"
 	"strconv"
@@ -22,7 +21,7 @@ import (
 	"github.com/megrez/pkg/utils/errmsg"
 )
 
-func Upload(c *gin.Context) {
+func UploadAttachment(c *gin.Context) {
 	file, err := c.FormFile("file")
 	if err != nil {
 		log.Error("get file from request failed: ", err)
@@ -38,12 +37,7 @@ func Upload(c *gin.Context) {
 		c.JSON(http.StatusOK, errmsg.Error())
 		return
 	}
-	defer func(open multipart.File) {
-		err := open.Close()
-		if err != nil {
-			log.Error("close file failed: ", err)
-		}
-	}(open)
+	defer open.Close()
 	config, _, err := image.DecodeConfig(open)
 	if err != nil {
 		log.Error("decode image error: ", err)
