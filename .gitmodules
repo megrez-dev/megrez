@@ -1,0 +1,3 @@
+[submodule "assets/themes/default"]
+	path = assets/themes/default
+	url = git@github.com:AlkaidChan/megrez-theme-default.git
