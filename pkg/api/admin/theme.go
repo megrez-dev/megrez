@@ -85,24 +85,30 @@ func UpdateCurrentThemeConfig(c *gin.Context) {
 	}
 	for _, tab := range cfg.Tabs {
 		for _, item := range tab.Items {
-			if values, ok := item.Value.([]string); ok {
-				if len(values) != 0 {
-					item.Value = strings.Join(values, ",")
+			var strValue string
+			if values, ok := item.Value.([]interface{}); ok {
+				if len(values) == 0 {
+					strValue = item.Default
 				} else {
-					item.Value = item.Default
+					var strValues []string
+					for _, value := range values {
+						strValues = append(strValues, value.(string))
+					}
+					strValue = strings.Join(strValues, ";")
 				}
 			} else if value, ok := item.Value.(string); ok {
 				if value == "" {
-					item.Value = item.Default
+					strValue = item.Default
+				} else {
+					strValue = value
 				}
 			}
-			str, ok := item.Value.(string)
-			if !ok {
-				log.Error("invalid type of value:", item.Value)
-				c.JSON(http.StatusOK, errmsg.Fail(errmsg.ErrorInvalidParam))
+			err := model.UpdateThemeOption(currentThemeID, item.Key, strValue)
+			if err != nil {
+				log.Errorf("update theme option %s failed: %s", item.Key, err.Error())
+				c.JSON(http.StatusOK, errmsg.Error())
 				return
 			}
-			model.SetThemeOption(currentThemeID, item.Key, str)
 		}
 	}
 	c.JSON(http.StatusOK, errmsg.Success(nil))
@@ -193,12 +199,18 @@ func InstallTheme(c *gin.Context) {
 		c.JSON(http.StatusOK, errmsg.Error())
 		return
 	}
-	for _, tag := range themeConfig.Tabs {
-		for _, item := range tag.Items {
-			err := model.SetThemeOption(themeInfo.ID, item.Key, item.Default)
+	for _, tab := range themeConfig.Tabs {
+		for _, item := range tab.Items {
+			option := &model.ThemeOption{
+				ThemeID: themeInfo.ID,
+				Key:     item.Key,
+				Value:   item.Default,
+				Type:    item.Type,
+			}
+			err := model.CreateThemeOption(option)
 			if err != nil {
 				os.RemoveAll(path.Join(home, "themes", themeInfo.ID))
-				log.Errorf("set theme option %s failed: %s", themeInfo.ID, err.Error())
+				log.Errorf("init theme option %s failed: %s", themeInfo.ID, err.Error())
 				c.JSON(http.StatusOK, errmsg.Error())
 				return
 			}

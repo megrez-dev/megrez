@@ -1,6 +1,7 @@
 package vo
 
 import (
+	"encoding/json"
 	"fmt"
 	"math/rand"
 	"strconv"
@@ -214,6 +215,11 @@ func GetGlobalOption() (Global, error) {
 	global.ThemeOptions = themeOptions
 	global.LatestComments = latestComments
 	global.RandomColor = randomColor
+	b, err := json.Marshal(global.ThemeOptions)
+	if err != nil {
+		log.Debug(err)
+	}
+	log.Debug(string(b))
 	return global, nil
 }
 

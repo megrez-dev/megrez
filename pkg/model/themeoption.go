@@ -2,8 +2,6 @@ package model
 
 import (
 	"time"
-
-	"gorm.io/gorm/clause"
 )
 
 type ThemeOption struct {
@@ -36,19 +34,22 @@ func GetThemeOptionByThemeIDAndKey(themeID string, key string) (string, error) {
 	return themeOption.Value, result.Error
 }
 
-func SetThemeOption(themeID, key, value string) error {
+func CreateThemeOption(themeOption *ThemeOption) error {
 	if db.Dialector.Name() == "sqlite3" {
 		lock.Lock()
 		defer lock.Unlock()
 	}
-	themeOption := ThemeOption{
-		ThemeID: themeID,
-		Key:     key,
-		Value:   value,
+	themeOption.CreateTime = time.Now()
+	result := db.Create(themeOption)
+	return result.Error
+}
+
+func UpdateThemeOption(themeID, key, value string) error {
+	if db.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
 	}
-	result := db.Clauses(clause.OnConflict{
-		Columns:   []clause.Column{{Name: "theme_id"}, {Name: "key"}},
-		DoUpdates: clause.Assignments(map[string]interface{}{"value": value}),
-	}).Create(&themeOption)
+	db.Debug()
+	result := db.Model(&ThemeOption{}).Where("theme_id = ? AND key = ?", themeID, key).Update("value", value)
 	return result.Error
 }
