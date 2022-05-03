@@ -219,6 +219,41 @@ func InstallTheme(c *gin.Context) {
 	c.JSON(http.StatusOK, errmsg.Success(nil))
 }
 
+func ListThemes(c *gin.Context) {
+	home, err := dirUtils.GetOrCreateMegrezHome()
+	if err != nil {
+		log.Error("get megrez home failed:", err.Error())
+		c.JSON(http.StatusOK, errmsg.Error())
+		return
+	}
+	themes, err := ioutil.ReadDir(path.Join(home, "themes"))
+	if err != nil {
+		log.Error("read themes dir failed:", err.Error())
+		c.JSON(http.StatusOK, errmsg.Error())
+		return
+	}
+	var themeList []config.ThemeInfo
+	for _, theme := range themes {
+		if !theme.IsDir() {
+			continue
+		}
+		infoFile, err := os.Open(path.Join(home, "themes", theme.Name(), "theme.yaml"))
+		if err != nil {
+			log.Errorf("open theme dir %s info file failed: %s", theme.Name(), err.Error())
+			c.JSON(http.StatusOK, errmsg.Error())
+			return
+		}
+		themeInfo, ok := getThemeInfo(infoFile)
+		if !ok {
+			log.Errorf("read theme dir %s info failed: %s", theme.Name(), err.Error())
+			c.JSON(http.StatusOK, errmsg.Error())
+			return
+		}
+		themeList = append(themeList, themeInfo)
+	}
+	c.JSON(http.StatusOK, errmsg.Success(themeList))
+}
+
 func GetCurrentThemeID(c *gin.Context) {
 	themeID, err := model.GetOptionByKey(vo.OptionKeyBlogTheme)
 	if err != nil {
@@ -240,6 +275,7 @@ func getThemeConfig(file fs.File) (config.ThemeConfig, bool) {
 func getThemeInfo(file fs.File) (config.ThemeInfo, bool) {
 	var cfg config.ThemeInfo
 	if err := yaml.NewDecoder(file).Decode(&cfg); err != nil {
+		log.Error("read theme info file failed:", err.Error())
 		return cfg, false
 	}
 	return cfg, true

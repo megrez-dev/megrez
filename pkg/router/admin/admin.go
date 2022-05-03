@@ -22,6 +22,7 @@ func RouteAdminAPI(g *gin.Engine) {
 	auth.PUT("theme/current/config", admin.UpdateCurrentThemeConfig)
 	auth.GET("theme/current/id", admin.GetCurrentThemeID)
 	auth.POST("theme/install", admin.InstallTheme)
+	auth.GET("themes", admin.ListThemes)
 
 	//api for admin
 	auth.POST("login", admin.Login)
