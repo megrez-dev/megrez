@@ -99,9 +99,11 @@ func CopyDirFromFS(static fs.FS, src string, dst string) error {
 			}
 			_, err = io.Copy(created, bytes.NewReader(file))
 			if err != nil {
+				created.Close()
 				log.Error(err)
 				return err
 			}
+			created.Close()
 		}
 	}
 	return nil

@@ -1,6 +1,7 @@
 package model
 
 import (
+	"gorm.io/gorm"
 	"time"
 )
 
@@ -12,6 +13,31 @@ type ThemeOption struct {
 	Value      string    `gorm:"type:varchar(255)" json:"value"`
 	CreateTime time.Time `gorm:"default:NULL" json:"createTime"`
 	UpdateTime time.Time `gorm:"default:NULL" json:"updateTime"`
+}
+
+func CreateThemeOption(tx *gorm.DB, themeOption *ThemeOption) error {
+	if tx == nil {
+		tx = db
+	}
+	if tx.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
+	themeOption.CreateTime = time.Now()
+	result := tx.Create(themeOption)
+	return result.Error
+}
+
+func UpdateThemeOption(tx *gorm.DB, themeID, key, value string) error {
+	if tx == nil {
+		tx = db
+	}
+	if tx.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
+	result := tx.Model(&ThemeOption{}).Where("theme_id = ? AND key = ?", themeID, key).Update("value", value)
+	return result.Error
 }
 
 func ListThemeOptionsByThemeID(themeID string) ([]ThemeOption, error) {
@@ -32,24 +58,4 @@ func GetThemeOptionByThemeIDAndKey(themeID string, key string) (string, error) {
 	var themeOption ThemeOption
 	result := db.Where("theme_id = ? AND key = ?", themeID, key).First(&themeOption)
 	return themeOption.Value, result.Error
-}
-
-func CreateThemeOption(themeOption *ThemeOption) error {
-	if db.Dialector.Name() == "sqlite3" {
-		lock.Lock()
-		defer lock.Unlock()
-	}
-	themeOption.CreateTime = time.Now()
-	result := db.Create(themeOption)
-	return result.Error
-}
-
-func UpdateThemeOption(themeID, key, value string) error {
-	if db.Dialector.Name() == "sqlite3" {
-		lock.Lock()
-		defer lock.Unlock()
-	}
-	db.Debug()
-	result := db.Model(&ThemeOption{}).Where("theme_id = ? AND key = ?", themeID, key).Update("value", value)
-	return result.Error
 }

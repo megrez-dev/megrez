@@ -1,11 +1,65 @@
 package model
 
+import "gorm.io/gorm"
+
 type Category struct {
 	ID          uint   `gorm:"primarykey" json:"id"`
 	Name        string `gorm:"type:varchar(255)" json:"name"`
 	Slug        string `gorm:"type:varchar(255);uniqueIndex" json:"slug"`
 	Description string `gorm:"type:varchar(255)" json:"description"`
 	Status      int    `gorm:"type:int(11)" json:"status"`
+}
+
+// CreateCategory handle create category
+func CreateCategory(tx *gorm.DB, category *Category) error {
+	if tx == nil {
+		tx = db
+	}
+	if tx.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
+	result := tx.Create(category)
+	return result.Error
+}
+
+// UpdateCategoryByID update article by id and data
+func UpdateCategoryByID(tx *gorm.DB, id uint, category *Category) error {
+	if tx == nil {
+		tx = db
+	}
+	if tx.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
+	result := tx.Model(&category).Where("id= ？", id).Updates(&category)
+	return result.Error
+}
+
+// DeleteCategoryByID delete article by id
+func DeleteCategoryByID(tx *gorm.DB, id uint) error {
+	if tx == nil {
+		tx = db
+	}
+	if tx.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
+	result := tx.Delete(&Category{}, id)
+	return result.Error
+}
+
+// DeleteArticleCategoriesByArticleID delete article categories by articleID
+func DeleteArticleCategoriesByArticleID(tx *gorm.DB, aid uint) error {
+	if tx == nil {
+		tx = db
+	}
+	if tx.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
+	result := tx.Delete(&ArticleCategory{}, "article_id = ?", aid)
+	return result.Error
 }
 
 // GetCategoryByID return category by id
@@ -61,44 +115,4 @@ func ListCategoriesByArticleID(aid uint) ([]Category, error) {
 	var categories []Category
 	result := db.Where("id in (?)", db.Table("article_categories").Select("category_id").Where("article_id = ?", aid)).Find(&categories)
 	return categories, result.Error
-}
-
-// CreateCategory handle create category
-func CreateCategory(category *Category) error {
-	if db.Dialector.Name() == "sqlite3" {
-		lock.Lock()
-		defer lock.Unlock()
-	}
-	result := db.Create(category)
-	return result.Error
-}
-
-// UpdateCategoryByID update article by id and data
-func UpdateCategoryByID(id uint, category *Category) error {
-	if db.Dialector.Name() == "sqlite3" {
-		lock.Lock()
-		defer lock.Unlock()
-	}
-	result := db.Model(&category).Where("id= ？", id).Updates(&category)
-	return result.Error
-}
-
-// DeleteCategoryByID delete article by id
-func DeleteCategoryByID(id uint) error {
-	if db.Dialector.Name() == "sqlite3" {
-		lock.Lock()
-		defer lock.Unlock()
-	}
-	result := db.Delete(&Category{}, id)
-	return result.Error
-}
-
-// DeleteArticleCategoriesByArticleID delete article categories by articleID
-func DeleteArticleCategoriesByArticleID(aid uint) error {
-	if db.Dialector.Name() == "sqlite3" {
-		lock.Lock()
-		defer lock.Unlock()
-	}
-	result := db.Delete(&ArticleCategory{}, "article_id = ?", aid)
-	return result.Error
 }

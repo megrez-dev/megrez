@@ -1,6 +1,7 @@
 package model
 
 import (
+	"gorm.io/gorm"
 	"time"
 )
 
@@ -24,6 +25,45 @@ type Article struct {
 	Status          int       `gorm:"type:int(11)" json:"status"`
 	PublishTime     time.Time `gorm:"default:NULL" json:"publishTime"`
 	EditTime        time.Time `gorm:"default:NULL" json:"editTime"`
+}
+
+// CreateArticle handle create article
+func CreateArticle(tx *gorm.DB, article *Article) error {
+	if tx == nil {
+		tx = db
+	}
+	if tx.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
+	result := tx.Create(article)
+	return result.Error
+}
+
+// UpdateArticleByID update article by id and data
+func UpdateArticleByID(tx *gorm.DB, article *Article) error {
+	if tx == nil {
+		tx = db
+	}
+	if tx.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
+	result := tx.Model(&article).Select("*").Omit("publish_time").Updates(article)
+	return result.Error
+}
+
+// DeleteArticleByID delete article by id
+func DeleteArticleByID(tx *gorm.DB, id uint) error {
+	if tx == nil {
+		tx = db
+	}
+	if tx.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
+	result := tx.Delete(&Article{}, id)
+	return result.Error
 }
 
 // GetArticleByID return article by id
@@ -68,26 +108,6 @@ func ListAllArticles(pageNum, pageSize int) ([]Article, error) {
 	var articles []Article
 	result := db.Offset(pageSize * (pageNum - 1)).Limit(pageSize).Find(&articles)
 	return articles, result.Error
-}
-
-// UpdateArticleByID update article by id and data
-func UpdateArticleByID(article *Article) error {
-	if db.Dialector.Name() == "sqlite3" {
-		lock.Lock()
-		defer lock.Unlock()
-	}
-	result := db.Model(&article).Select("*").Omit("publish_time").Updates(article)
-	return result.Error
-}
-
-// DeleteArticleByID delete article by id
-func DeleteArticleByID(id uint) error {
-	if db.Dialector.Name() == "sqlite3" {
-		lock.Lock()
-		defer lock.Unlock()
-	}
-	result := db.Delete(&Article{}, id)
-	return result.Error
 }
 
 // ListLatestArticles return latest articles
@@ -143,14 +163,4 @@ func CountArticlesByTagID(tid uint) (int64, error) {
 	var count int64
 	result := db.Model(&ArticleTag{}).Where("tag_id = ?", tid).Count(&count)
 	return count, result.Error
-}
-
-// CreateArticle handle create article
-func CreateArticle(article *Article) error {
-	if db.Dialector.Name() == "sqlite3" {
-		lock.Lock()
-		defer lock.Unlock()
-	}
-	result := db.Create(article)
-	return result.Error
 }

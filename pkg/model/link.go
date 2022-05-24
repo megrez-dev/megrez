@@ -1,6 +1,9 @@
 package model
 
-import "time"
+import (
+	"gorm.io/gorm"
+	"time"
+)
 
 type Link struct {
 	ID         uint      `gorm:"primarykey" json:"id"`
@@ -11,6 +14,43 @@ type Link struct {
 	Status     int       `gorm:"type:int(11)" json:"status"`
 	CreateTime time.Time `gorm:"default:NULL" json:"createTime"`
 	UpdateTime time.Time `gorm:"default:NULL" json:"updateTime"`
+}
+
+// CreateLink handle create link
+func CreateLink(tx *gorm.DB, link *Link) error {
+	if tx == nil {
+		tx = db
+	}
+	if tx.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
+	result := tx.Create(link)
+	return result.Error
+}
+
+func UpdateLink(tx *gorm.DB, link *Link) error {
+	if tx == nil {
+		tx = db
+	}
+	if tx.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
+	result := tx.Model(&Link{}).Where("id = ?", link.ID).Updates(link)
+	return result.Error
+}
+
+func DeleteLinkByID(tx *gorm.DB, id uint) error {
+	if tx == nil {
+		tx = db
+	}
+	if tx.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
+	result := tx.Delete(&Link{}, "id = ?", id)
+	return result.Error
 }
 
 // ListAllLinks return all links
@@ -43,32 +83,4 @@ func CountLinks() (int64, error) {
 	var count int64
 	result := db.Model(&Link{}).Count(&count)
 	return count, result.Error
-}
-
-// CreateLink handle create link
-func CreateLink(link *Link) error {
-	if db.Dialector.Name() == "sqlite3" {
-		lock.Lock()
-		defer lock.Unlock()
-	}
-	result := db.Create(link)
-	return result.Error
-}
-
-func UpdateLink(link *Link) error {
-	if db.Dialector.Name() == "sqlite3" {
-		lock.Lock()
-		defer lock.Unlock()
-	}
-	result := db.Model(&Link{}).Where("id = ?", link.ID).Updates(link)
-	return result.Error
-}
-
-func DeleteLinkByID(id uint) error {
-	if db.Dialector.Name() == "sqlite3" {
-		lock.Lock()
-		defer lock.Unlock()
-	}
-	result := db.Delete(&Link{}, "id = ?", id)
-	return result.Error
 }

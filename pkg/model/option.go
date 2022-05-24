@@ -1,7 +1,7 @@
 package model
 
 import (
-	"gorm.io/gorm/clause"
+	"gorm.io/gorm"
 )
 
 type Option struct {
@@ -22,18 +22,47 @@ func GetOptionByKey(key string) (string, error) {
 }
 
 // SetOption handle set option
-func SetOption(key, value string) error {
-	if db.Dialector.Name() == "sqlite3" {
+func SetOption(tx *gorm.DB, key, value string) error {
+	if tx == nil {
+		tx = db
+	}
+	if tx.Dialector.Name() == "sqlite3" {
 		lock.Lock()
 		defer lock.Unlock()
 	}
-	option := Option{
+	option := &Option{
 		Key:   key,
 		Value: value,
 	}
-	result := db.Clauses(clause.OnConflict{
-		Columns:   []clause.Column{{Name: "key"}},
-		DoUpdates: clause.Assignments(map[string]interface{}{"value": value}),
-	}).Create(&option)
-	return result.Error
+	result := db.First(&option, "`key` = ?", key)
+	if result.Error == gorm.ErrRecordNotFound {
+		result = tx.Create(option)
+		return result.Error
+	} else if result.Error == nil {
+		option.Value = value
+		result = tx.Save(option)
+		return result.Error
+	} else {
+		return result.Error
+	}
 }
+
+//// SetOption handle set option
+//func SetOption(tx *gorm.DB, key, value string) error {
+//	if tx == nil {
+//		tx = db
+//	}
+//	if tx.Dialector.Name() == "sqlite3" {
+//		lock.Lock()
+//		defer lock.Unlock()
+//	}
+//	option := Option{
+//		Key:   key,
+//		Value: value,
+//	}
+//	result := tx.Clauses(clause.OnConflict{
+//		Columns:   []clause.Column{{Name: "key"}},
+//		DoUpdates: clause.Assignments(map[string]interface{}{"value": value}),
+//	}).Create(&option)
+//	return result.Error
+//}

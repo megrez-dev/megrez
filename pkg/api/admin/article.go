@@ -77,32 +77,37 @@ func CreateArticle(c *gin.Context) {
 		article.SeoDescription = article.Summary
 	}
 
+	tx := model.BeginTx()
 	// create article
-	err = model.CreateArticle(&article)
+	err = model.CreateArticle(tx, &article)
 	if err != nil {
 		log.Error(err)
+		tx.Rollback()
 		c.JSON(http.StatusOK, errmsg.Error())
 		return
 	}
 
 	// insert article category table
 	for _, categoryID := range data.Categories {
-		err := model.CreateArticleCategory(article.ID, categoryID)
+		err := model.CreateArticleCategory(tx, article.ID, categoryID)
 		if err != nil {
 			log.Error(err)
+			tx.Rollback()
 			c.JSON(http.StatusOK, errmsg.Error())
 			return
 		}
 	}
 	// insert article tag table
 	for _, tagID := range data.Tags {
-		err := model.CreateArticleTag(article.ID, tagID)
+		err := model.CreateArticleTag(tx, article.ID, tagID)
 		if err != nil {
 			log.Error(err)
+			tx.Rollback()
 			c.JSON(http.StatusOK, errmsg.Error())
 			return
 		}
 	}
+	tx.Commit()
 	c.JSON(http.StatusOK, errmsg.Success(article))
 }
 
@@ -165,10 +170,12 @@ func UpdateArticle(c *gin.Context) {
 		article.SeoDescription = article.Summary
 	}
 
+	tx := model.BeginTx()
 	// create article
-	err = model.UpdateArticleByID(&article)
+	err = model.UpdateArticleByID(tx, &article)
 	if err != nil {
 		log.Error(err)
+		tx.Rollback()
 		c.JSON(http.StatusOK, errmsg.Error())
 		return
 	}
@@ -185,9 +192,10 @@ func UpdateArticle(c *gin.Context) {
 			}
 		}
 		if !exist {
-			err := model.DeleteArticleCategory(article.ID, oldCategory.ID)
+			err := model.DeleteArticleCategory(tx, article.ID, oldCategory.ID)
 			if err != nil {
 				log.Error(err)
+				tx.Rollback()
 				c.JSON(http.StatusOK, errmsg.Error())
 				return
 			}
@@ -203,9 +211,10 @@ func UpdateArticle(c *gin.Context) {
 			}
 		}
 		if !exist {
-			err := model.CreateArticleCategory(article.ID, newCategoryID)
+			err := model.CreateArticleCategory(tx, article.ID, newCategoryID)
 			if err != nil {
 				log.Error(err)
+				tx.Rollback()
 				c.JSON(http.StatusOK, errmsg.Error())
 				return
 			}
@@ -224,9 +233,10 @@ func UpdateArticle(c *gin.Context) {
 			}
 		}
 		if !exist {
-			err := model.DeleteArticleTag(article.ID, oldTag.ID)
+			err := model.DeleteArticleTag(tx, article.ID, oldTag.ID)
 			if err != nil {
 				log.Error(err)
+				tx.Rollback()
 				c.JSON(http.StatusOK, errmsg.Error())
 				return
 			}
@@ -242,14 +252,16 @@ func UpdateArticle(c *gin.Context) {
 			}
 		}
 		if !exist {
-			err := model.CreateArticleTag(article.ID, newTagID)
+			err := model.CreateArticleTag(tx, article.ID, newTagID)
 			if err != nil {
 				log.Error(err)
+				tx.Rollback()
 				c.JSON(http.StatusOK, errmsg.Error())
 				return
 			}
 		}
 	}
+	tx.Commit()
 	c.JSON(http.StatusOK, errmsg.Success(article))
 }
 
@@ -261,25 +273,29 @@ func DeleteArticle(c *gin.Context) {
 		return
 	}
 
-	err = model.DeleteArticleByID(uint(id))
+	tx := model.BeginTx()
+	err = model.DeleteArticleByID(tx, uint(id))
 	if err != nil {
 		log.Error(err)
+		tx.Rollback()
 		c.JSON(http.StatusOK, errmsg.Error())
 		return
 	}
-	err = model.DeleteArticleCategoriesByArticleID(uint(id))
+	err = model.DeleteArticleCategoriesByArticleID(tx, uint(id))
 	if err != nil {
 		log.Error(err)
+		tx.Rollback()
 		c.JSON(http.StatusOK, errmsg.Error())
 		return
 	}
-	err = model.DeleteArticleTagsByArticleID(uint(id))
+	err = model.DeleteArticleTagsByArticleID(tx, uint(id))
 	if err != nil {
 		log.Error(err)
+		tx.Rollback()
 		c.JSON(http.StatusOK, errmsg.Error())
 		return
 	}
-
+	tx.Commit()
 	c.JSON(http.StatusOK, errmsg.Success(nil))
 }
 

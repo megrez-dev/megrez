@@ -1,5 +1,7 @@
 package model
 
+import "gorm.io/gorm"
+
 type User struct {
 	ID          uint   `gorm:"primarykey" json:"id"`
 	Username    string `gorm:"type:varchar(255);uniqueIndex" json:"username"`
@@ -23,11 +25,14 @@ func GetUserByUsername(username string) (User, error) {
 }
 
 // CreateUser handle create user
-func CreateUser(user *User) error {
-	if db.Dialector.Name() == "sqlite3" {
+func CreateUser(tx *gorm.DB, user *User) error {
+	if tx == nil {
+		tx = db
+	}
+	if tx.Dialector.Name() == "sqlite3" {
 		lock.Lock()
 		defer lock.Unlock()
 	}
-	result := db.Create(user)
+	result := tx.Create(user)
 	return result.Error
 }

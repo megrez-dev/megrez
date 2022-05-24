@@ -1,13 +1,18 @@
 package model
 
+import "gorm.io/gorm"
+
 type ArticleCategory struct {
 	ID         uint `gorm:"primarykey" json:"id"`
 	ArticleID  uint `gorm:"type:int(11)" json:"articleID"`
 	CategoryID uint `gorm:"type:int(11)" json:"categoryID"`
 }
 
-func CreateArticleCategory(aid, cid uint) error {
-	if db.Dialector.Name() == "sqlite3" {
+func CreateArticleCategory(tx *gorm.DB, aid, cid uint) error {
+	if tx == nil {
+		tx = db
+	}
+	if tx.Dialector.Name() == "sqlite3" {
 		lock.Lock()
 		defer lock.Unlock()
 	}
@@ -15,15 +20,18 @@ func CreateArticleCategory(aid, cid uint) error {
 		ArticleID:  aid,
 		CategoryID: cid,
 	}
-	result := db.Create(&articleCategory)
+	result := tx.Create(&articleCategory)
 	return result.Error
 }
 
-func DeleteArticleCategory(aid, cid uint) error {
-	if db.Dialector.Name() == "sqlite3" {
+func DeleteArticleCategory(tx *gorm.DB, aid, cid uint) error {
+	if tx == nil {
+		tx = db
+	}
+	if tx.Dialector.Name() == "sqlite3" {
 		lock.Lock()
 		defer lock.Unlock()
 	}
-	result := db.Where("article_id = ? AND category_id = ?", aid, cid).Delete(&ArticleCategory{})
+	result := tx.Where("article_id = ? AND category_id = ?", aid, cid).Delete(&ArticleCategory{})
 	return result.Error
 }

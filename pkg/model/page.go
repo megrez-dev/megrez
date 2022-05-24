@@ -1,6 +1,9 @@
 package model
 
-import "time"
+import (
+	"gorm.io/gorm"
+	"time"
+)
 
 type Page struct {
 	ID              uint      `gorm:"primarykey" json:"id"`
@@ -41,11 +44,14 @@ func GetPageBySlug(slug string) (Page, error) {
 }
 
 // CreatePage create a new page
-func CreatePage(page *Page) error {
-	if db.Dialector.Name() == "sqlite3" {
+func CreatePage(tx *gorm.DB, page *Page) error {
+	if tx == nil {
+		tx = db
+	}
+	if tx.Dialector.Name() == "sqlite3" {
 		lock.Lock()
 		defer lock.Unlock()
 	}
-	result := db.Create(page)
+	result := tx.Create(page)
 	return result.Error
 }

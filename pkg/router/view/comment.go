@@ -2,8 +2,8 @@ package view
 
 import (
 	"fmt"
+	"github.com/megrez/pkg/log"
 	"gorm.io/gorm"
-	"log"
 	"net/http"
 	"strconv"
 
@@ -37,7 +37,7 @@ func createCommentForArticle(c *gin.Context) {
 	}
 	// TODO: 要不要存储头像到 DB
 	agent := c.Request.UserAgent()
-	log.Println("agent:", agent)
+	log.Debug("agent:", agent)
 	comment := &model.Comment{
 		ArticleID: uint(articleID),
 		Content:   c.PostForm("text"),
@@ -51,9 +51,11 @@ func createCommentForArticle(c *gin.Context) {
 		Type:      1,
 		Status:    0,
 	}
-	err = model.CreateComment(comment)
+	tx := model.BeginTx()
+	err = model.CreateComment(tx, comment)
 	if err != nil {
-		log.Println("create comment failed, err: ", err)
+		log.Error("create comment failed, err: ", err)
+		tx.Rollback()
 		c.Redirect(http.StatusInternalServerError, "/error")
 	}
 	// calculate pagination
@@ -62,15 +64,18 @@ func createCommentForArticle(c *gin.Context) {
 		if err == gorm.ErrRecordNotFound {
 			commentsPageSizeStr = "10"
 		} else {
+			tx.Rollback()
 			c.Redirect(http.StatusInternalServerError, "/error")
 		}
 	}
 	commentPageSize, err := strconv.Atoi(commentsPageSizeStr)
 	if err != nil {
+		tx.Rollback()
 		c.Redirect(http.StatusInternalServerError, "/error")
 	}
 	rootComments, err := model.ListRootCommentsByArticleID(comment.ArticleID, 0, 0)
 	if err != nil {
+		tx.Rollback()
 		c.Redirect(http.StatusInternalServerError, "/error")
 	}
 	var index int
@@ -82,6 +87,7 @@ func createCommentForArticle(c *gin.Context) {
 	}
 	pagination := (index + commentPageSize - 1) / commentPageSize
 	url := fmt.Sprintf("/article/%d/comment-page/%d#comment-%d", comment.ArticleID, pagination, comment.ID)
+	tx.Commit()
 	c.Redirect(http.StatusFound, url)
 }
 
@@ -119,12 +125,14 @@ func createCommentForPage(c *gin.Context) {
 	}
 	page, err := model.GetPageByID(uint(pageID))
 	if err != nil {
-		log.Println("get page failed, err: ", err.Error())
+		log.Error("get page failed, err: ", err.Error())
 		c.Redirect(http.StatusInternalServerError, "/error")
 	}
-	err = model.CreateComment(comment)
+	tx := model.BeginTx()
+	err = model.CreateComment(tx, comment)
 	if err != nil {
-		log.Println("create comment failed, err: ", err.Error())
+		log.Error("create comment failed, err: ", err.Error())
+		tx.Rollback()
 		c.Redirect(http.StatusInternalServerError, "/error")
 	}
 	// calculate pagination
@@ -133,16 +141,19 @@ func createCommentForPage(c *gin.Context) {
 		if err == gorm.ErrRecordNotFound {
 			commentsPageSizeStr = "10"
 		} else {
+			tx.Rollback()
 			c.Redirect(http.StatusInternalServerError, "/error")
 		}
 	}
 	commentsPageSize, err := strconv.Atoi(commentsPageSizeStr)
 	if err != nil {
-		log.Println(err.Error())
+		log.Error(err.Error())
+		tx.Rollback()
 		c.Redirect(http.StatusInternalServerError, "/error")
 	}
 	rootComments, err := model.ListRootCommentsByPageID(comment.PageID, 0, 0)
 	if err != nil {
+		tx.Rollback()
 		c.Redirect(http.StatusInternalServerError, "/error")
 	}
 	var index int
@@ -154,5 +165,6 @@ func createCommentForPage(c *gin.Context) {
 	}
 	pagination := (index + commentsPageSize - 1) / commentsPageSize
 	url := fmt.Sprintf("/%s/comment-page/%d#comment-%d", page.Slug, pagination, comment.ID)
+	tx.Commit()
 	c.Redirect(http.StatusFound, url)
 }

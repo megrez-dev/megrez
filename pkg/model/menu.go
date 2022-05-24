@@ -1,5 +1,7 @@
 package model
 
+import "gorm.io/gorm"
+
 type Menu struct {
 	ID       uint   `gorm:"primarykey" json:"id"`
 	Name     string `gorm:"type:varchar(255)" json:"name"`
@@ -21,11 +23,14 @@ func ListAllMenus() ([]Menu, error) {
 }
 
 // CreateMenu handle create menu
-func CreateMenu(menu *Menu) error {
-	if db.Dialector.Name() == "sqlite3" {
+func CreateMenu(tx *gorm.DB, menu *Menu) error {
+	if tx == nil {
+		tx = db
+	}
+	if tx.Dialector.Name() == "sqlite3" {
 		lock.Lock()
 		defer lock.Unlock()
 	}
-	result := db.Create(menu)
+	result := tx.Create(menu)
 	return result.Error
 }

@@ -19,55 +19,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"gopkg.in/yaml.v2"
-	"gorm.io/gorm"
 )
-
-func GetCurrentThemeConfig(c *gin.Context) {
-	var cfg = &config.ThemeConfig{}
-	home, err := dirUtils.GetOrCreateMegrezHome()
-	if err != nil {
-		log.Error("get megrez home failed:", err.Error())
-		c.JSON(http.StatusOK, errmsg.Error())
-		return
-	}
-	themeID, err := model.GetOptionByKey(vo.OptionKeyBlogTheme)
-	if err != nil {
-		log.Error("get option theme failed:", err.Error())
-		c.JSON(http.StatusOK, errmsg.Error())
-		return
-	}
-	b, err := ioutil.ReadFile(path.Join(home, "themes", themeID, "config.yaml"))
-	if err != nil {
-		log.Error("read theme config file failed, ", err.Error())
-		c.JSON(http.StatusOK, errmsg.Error())
-		return
-	}
-	if err := yaml.Unmarshal(b, cfg); err != nil {
-		log.Error("unmarshal config failed, ", err.Error())
-		c.JSON(http.StatusOK, errmsg.Error())
-		return
-	}
-	for i, tab := range cfg.Tabs {
-		for j, item := range tab.Items {
-			value, err := model.GetThemeOptionByThemeIDAndKey(themeID, item.Key)
-			if err != nil {
-				if err == gorm.ErrRecordNotFound {
-					value = item.Default
-				} else {
-					log.Error("get theme option failed:", err.Error())
-					c.JSON(http.StatusOK, errmsg.Error())
-					return
-				}
-			}
-			if item.Type == "multiSelect" || item.Type == "tags" {
-				cfg.Tabs[i].Items[j].Value = strings.Split(value, ";")
-			} else {
-				cfg.Tabs[i].Items[j].Value = value
-			}
-		}
-	}
-	c.JSON(http.StatusOK, errmsg.Success(cfg))
-}
 
 func UpdateCurrentThemeConfig(c *gin.Context) {
 	var cfg config.ThemeConfig
@@ -83,34 +35,29 @@ func UpdateCurrentThemeConfig(c *gin.Context) {
 		c.JSON(http.StatusOK, errmsg.Error())
 		return
 	}
+	tx := model.BeginTx()
 	for _, tab := range cfg.Tabs {
 		for _, item := range tab.Items {
 			var strValue string
 			if values, ok := item.Value.([]interface{}); ok {
-				if len(values) == 0 {
-					strValue = item.Default
-				} else {
-					var strValues []string
-					for _, value := range values {
-						strValues = append(strValues, value.(string))
-					}
-					strValue = strings.Join(strValues, ";")
+				var strValues []string
+				for _, value := range values {
+					strValues = append(strValues, value.(string))
 				}
+				strValue = strings.Join(strValues, ";")
 			} else if value, ok := item.Value.(string); ok {
-				if value == "" {
-					strValue = item.Default
-				} else {
-					strValue = value
-				}
+				strValue = value
 			}
-			err := model.UpdateThemeOption(currentThemeID, item.Key, strValue)
+			err := model.UpdateThemeOption(tx, currentThemeID, item.Key, strValue)
 			if err != nil {
 				log.Errorf("update theme option %s failed: %s", item.Key, err.Error())
+				tx.Rollback()
 				c.JSON(http.StatusOK, errmsg.Error())
 				return
 			}
 		}
 	}
+	tx.Commit()
 	c.JSON(http.StatusOK, errmsg.Success(nil))
 }
 
@@ -199,6 +146,7 @@ func InstallTheme(c *gin.Context) {
 		c.JSON(http.StatusOK, errmsg.Error())
 		return
 	}
+	tx := model.BeginTx()
 	for _, tab := range themeConfig.Tabs {
 		for _, item := range tab.Items {
 			option := &model.ThemeOption{
@@ -207,16 +155,65 @@ func InstallTheme(c *gin.Context) {
 				Value:   item.Default,
 				Type:    item.Type,
 			}
-			err := model.CreateThemeOption(option)
+			err := model.CreateThemeOption(tx, option)
 			if err != nil {
 				os.RemoveAll(path.Join(home, "themes", themeInfo.ID))
 				log.Errorf("init theme option %s failed: %s", themeInfo.ID, err.Error())
+				tx.Rollback()
 				c.JSON(http.StatusOK, errmsg.Error())
 				return
 			}
 		}
 	}
+	tx.Commit()
 	c.JSON(http.StatusOK, errmsg.Success(nil))
+}
+
+func GetCurrentThemeConfig(c *gin.Context) {
+	var cfg = &config.ThemeConfig{}
+	home, err := dirUtils.GetOrCreateMegrezHome()
+	if err != nil {
+		log.Error("get megrez home failed:", err.Error())
+		c.JSON(http.StatusOK, errmsg.Error())
+		return
+	}
+	themeID, err := model.GetOptionByKey(vo.OptionKeyBlogTheme)
+	if err != nil {
+		log.Error("get option theme failed:", err.Error())
+		c.JSON(http.StatusOK, errmsg.Error())
+		return
+	}
+	b, err := ioutil.ReadFile(path.Join(home, "themes", themeID, "config.yaml"))
+	if err != nil {
+		log.Error("read theme config file failed, ", err.Error())
+		c.JSON(http.StatusOK, errmsg.Error())
+		return
+	}
+	if err := yaml.Unmarshal(b, cfg); err != nil {
+		log.Error("unmarshal config failed, ", err.Error())
+		c.JSON(http.StatusOK, errmsg.Error())
+		return
+	}
+	for i, tab := range cfg.Tabs {
+		for j, item := range tab.Items {
+			value, err := model.GetThemeOptionByThemeIDAndKey(themeID, item.Key)
+			if err != nil {
+				log.Error("get theme option failed:", err.Error())
+				c.JSON(http.StatusOK, errmsg.Error())
+				return
+			}
+			if item.Type == "multiSelect" || item.Type == "tags" {
+				if value == "" {
+					cfg.Tabs[i].Items[j].Value = []string{}
+				} else {
+					cfg.Tabs[i].Items[j].Value = strings.Split(value, ";")
+				}
+			} else {
+				cfg.Tabs[i].Items[j].Value = value
+			}
+		}
+	}
+	c.JSON(http.StatusOK, errmsg.Success(cfg))
 }
 
 func ListThemes(c *gin.Context) {

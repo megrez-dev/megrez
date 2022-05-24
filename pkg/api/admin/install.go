@@ -24,40 +24,46 @@ func Install(c *gin.Context) {
 		c.JSON(http.StatusOK, errmsg.Fail(errmsg.ErrorInvalidParam))
 		return
 	}
+	tx := model.BeginTx()
 	// set option blog birth
-	err = model.SetOption(vo.OptionKeyBlogBirth, time.Now().Format("2006-01-02 15:04:05"))
+	err = model.SetOption(tx, vo.OptionKeyBlogBirth, time.Now().Format("2006-01-02 15:04:05"))
 	if err != nil {
 		log.Error("set option blog birth failed:", err.Error())
+		tx.Rollback()
 		c.JSON(http.StatusOK, errmsg.Error())
 		return
 	}
 	// set option blog title
-	err = model.SetOption(vo.OptionKeyBlogTitle, data.BlogTitle)
+	err = model.SetOption(tx, vo.OptionKeyBlogTitle, data.BlogTitle)
 	if err != nil {
 		log.Error("set option blog title failed:", err.Error())
+		tx.Rollback()
 		c.JSON(http.StatusOK, errmsg.Error())
 		return
 	}
 	// set option blog url
-	err = model.SetOption(vo.OptionKeyBlogURL, data.BlogURL)
+	err = model.SetOption(tx, vo.OptionKeyBlogURL, data.BlogURL)
 	if err != nil {
 		log.Error("set option blog url failed:", err.Error())
+		tx.Rollback()
 		c.JSON(http.StatusOK, errmsg.Error())
 		return
 	}
 
 	// set option blog description
-	err = model.SetOption(vo.OptionKeyBlogDescription, "平凡的日子里，也要闪闪发光✨")
+	err = model.SetOption(tx, vo.OptionKeyBlogDescription, "平凡的日子里，也要闪闪发光✨")
 	if err != nil {
 		log.Error("set option blog description failed:", err.Error())
+		tx.Rollback()
 		c.JSON(http.StatusOK, errmsg.Error())
 		return
 	}
 
 	// set option blog themes
-	err = model.SetOption(vo.OptionKeyBlogTheme, "default")
+	err = model.SetOption(tx, vo.OptionKeyBlogTheme, "default")
 	if err != nil {
 		log.Error("set option blog themes failed:", err.Error())
+		tx.Rollback()
 		c.JSON(http.StatusOK, errmsg.Error())
 		return
 	}
@@ -66,6 +72,7 @@ func Install(c *gin.Context) {
 	megrezHome, err := dirUtils.GetOrCreateMegrezHome()
 	if err != nil {
 		log.Error("get megrez home dir failed:", err.Error())
+		tx.Rollback()
 		c.JSON(http.StatusOK, errmsg.Error())
 		return
 	}
@@ -76,6 +83,7 @@ func Install(c *gin.Context) {
 			err = os.Mkdir(themesPath, os.ModePerm)
 			if err != nil {
 				log.Error("create themes dir failed:", err.Error())
+				tx.Rollback()
 				c.JSON(http.StatusOK, errmsg.Error())
 				return
 			}
@@ -83,6 +91,7 @@ func Install(c *gin.Context) {
 	} else {
 		if !stat.IsDir() {
 			log.Error("themes dir is not dir")
+			tx.Rollback()
 			c.JSON(http.StatusOK, errmsg.Error())
 			return
 		}
@@ -93,16 +102,54 @@ func Install(c *gin.Context) {
 			copyErr := dirUtils.CopyDirFromFS(themesAssets.Static, "default", themesPath)
 			if copyErr != nil {
 				log.Error("copy default theme failed:", err.Error())
+				tx.Rollback()
 				c.JSON(http.StatusOK, errmsg.Error())
 				return
 			}
 		} else {
 			log.Error("copy default theme failed:", err.Error())
+			tx.Rollback()
 			c.JSON(http.StatusOK, errmsg.Error())
 			return
 		}
 	} else {
 		log.Info("default theme is exist")
+	}
+
+	// set default theme options
+	cfgFile := path.Join(themesPath, "default", "config.yaml")
+	open, err := os.Open(cfgFile)
+	if err != nil {
+		log.Error("open default theme config file failed:", err.Error())
+		tx.Rollback()
+		c.JSON(http.StatusOK, errmsg.Error())
+		return
+	}
+	defer open.Close()
+	themeConfig, ok := getThemeConfig(open)
+	if !ok {
+		log.Error("get default theme config failed")
+		tx.Rollback()
+		c.JSON(http.StatusOK, errmsg.FailMsg("主题配置文件格式错误"))
+		return
+	}
+	for _, tab := range themeConfig.Tabs {
+		for _, item := range tab.Items {
+			option := &model.ThemeOption{
+				ThemeID: "default",
+				Key:     item.Key,
+				Value:   item.Default,
+				Type:    item.Type,
+			}
+			err := model.CreateThemeOption(tx, option)
+			if err != nil {
+				os.RemoveAll(path.Join(themesPath, "default"))
+				log.Errorf("init default theme option %s failed: %s", item.Key, err.Error())
+				tx.Rollback()
+				c.JSON(http.StatusOK, errmsg.Error())
+				return
+			}
+		}
 	}
 
 	admin := model.User{
@@ -116,9 +163,10 @@ func Install(c *gin.Context) {
 		Password:    data.Password,
 		Status:      0,
 	}
-	err = model.CreateUser(&admin)
+	err = model.CreateUser(tx, &admin)
 	if err != nil {
 		log.Error("create admin user failed:", err.Error())
+		tx.Rollback()
 		c.JSON(http.StatusOK, errmsg.Error())
 		return
 	}
@@ -129,9 +177,10 @@ func Install(c *gin.Context) {
 		Slug:        "default",
 		Description: "默认分类",
 	}
-	err = model.CreateCategory(&category)
+	err = model.CreateCategory(tx, &category)
 	if err != nil {
 		log.Error("create default category failed:", err.Error())
+		tx.Rollback()
 		c.JSON(http.StatusOK, errmsg.Error())
 		return
 	}
@@ -146,16 +195,18 @@ func Install(c *gin.Context) {
 		AllowedComment:  true,
 		PublishTime:     time.Now(),
 	}
-	err = model.CreateArticle(&article)
+	err = model.CreateArticle(tx, &article)
 	if err != nil {
 		log.Error("create hello world article failed:", err.Error())
+		tx.Rollback()
 		c.JSON(http.StatusOK, errmsg.Error())
 		return
 	}
 
-	err = model.CreateArticleCategory(article.ID, category.ID)
+	err = model.CreateArticleCategory(tx, article.ID, category.ID)
 	if err != nil {
 		log.Error("create articleCategory failed:", err.Error())
+		tx.Rollback()
 		c.JSON(http.StatusOK, errmsg.Error())
 		return
 	}
@@ -169,9 +220,10 @@ func Install(c *gin.Context) {
 		Author:     "MEGREZ",
 		CreateTime: time.Now(),
 	}
-	err = model.CreateComment(&comment)
+	err = model.CreateComment(tx, &comment)
 	if err != nil {
 		log.Error("create hello world comment failed:", err.Error())
+		tx.Rollback()
 		c.JSON(http.StatusOK, errmsg.Error())
 		return
 	}
@@ -197,9 +249,10 @@ func Install(c *gin.Context) {
 		CreateTime: time.Now(),
 	}
 	for _, page := range pages {
-		err := model.CreatePage(&page)
+		err := model.CreatePage(tx, &page)
 		if err != nil {
 			log.Errorf("create page %s failed: %s\n", page.Name, err.Error())
+			tx.Rollback()
 			c.JSON(http.StatusOK, errmsg.Error())
 			return
 		}
@@ -225,21 +278,23 @@ func Install(c *gin.Context) {
 		Priority: 1,
 	}
 	for _, menu := range menus {
-		err := model.CreateMenu(&menu)
+		err := model.CreateMenu(tx, &menu)
 		if err != nil {
 			log.Errorf("create menu %s failed: %s\n", menu.Name, err.Error())
+			tx.Rollback()
 			c.JSON(http.StatusOK, errmsg.Error())
 			return
 		}
 	}
 
 	// set option installed
-	err = model.SetOption(vo.OptionKeyIsInstalled, "true")
+	err = model.SetOption(tx, vo.OptionKeyIsInstalled, "true")
 	if err != nil {
 		log.Error("set option is installed failed, ", err.Error())
+		tx.Rollback()
 		c.JSON(http.StatusOK, errmsg.Error())
 		return
 	}
-
+	tx.Commit()
 	c.JSON(http.StatusOK, errmsg.Success(nil))
 }

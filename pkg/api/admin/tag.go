@@ -1,6 +1,7 @@
 package admin
 
 import (
+	"github.com/megrez/pkg/log"
 	"net/http"
 	"strconv"
 
@@ -22,12 +23,15 @@ func CreateTag(c *gin.Context) {
 		c.JSON(http.StatusOK, errmsg.Success(tag))
 		return
 	}
-
-	err = model.CreateTag(&data)
+	tx := model.BeginTx()
+	err = model.CreateTag(tx, &data)
 	if err != nil {
+		log.Error("create tag error: %v", err)
+		tx.Rollback()
 		c.JSON(http.StatusOK, errmsg.Error())
 		return
 	}
+	tx.Commit()
 	c.JSON(http.StatusOK, errmsg.Success(data))
 }
 

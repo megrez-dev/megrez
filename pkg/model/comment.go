@@ -24,6 +24,19 @@ type Comment struct {
 	UpdateTime time.Time `gorm:"default:NULL" json:"updateTime"`
 }
 
+// CreateComment handle create comment
+func CreateComment(tx *gorm.DB, comment *Comment) error {
+	if tx == nil {
+		tx = db
+	}
+	if tx.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
+	result := tx.Create(comment)
+	return result.Error
+}
+
 // GetCommentByID return comment by ID
 func GetCommentByID(id uint) (Comment, error) {
 	if db.Dialector.Name() == "sqlite3" {
@@ -133,14 +146,4 @@ func CountRootCommentsByPageID(pid uint) (int64, error) {
 	var count int64
 	result := db.Model(&Comment{}).Where("page_id = ? AND root_id = ?", pid, 0).Count(&count)
 	return count, result.Error
-}
-
-// CreateComment handle create comment
-func CreateComment(comment *Comment) error {
-	if db.Dialector.Name() == "sqlite3" {
-		lock.Lock()
-		defer lock.Unlock()
-	}
-	result := db.Create(comment)
-	return result.Error
 }

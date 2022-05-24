@@ -1,6 +1,9 @@
 package model
 
-import "time"
+import (
+	"gorm.io/gorm"
+	"time"
+)
 
 type Attachment struct {
 	ID         uint      `gorm:"primarykey" json:"id"`
@@ -15,12 +18,15 @@ type Attachment struct {
 	UploadTime time.Time `gorm:"default:NULL" json:"uploadTime"`
 }
 
-func CreateAttachment(attachment *Attachment) error {
-	if db.Dialector.Name() == "sqlite3" {
+func CreateAttachment(tx *gorm.DB, attachment *Attachment) error {
+	if tx == nil {
+		tx = db
+	}
+	if tx.Dialector.Name() == "sqlite3" {
 		lock.Lock()
 		defer lock.Unlock()
 	}
-	return db.Create(attachment).Error
+	return tx.Create(attachment).Error
 }
 
 func ListAttachments(pageNum, pageSize int) ([]Attachment, error) {

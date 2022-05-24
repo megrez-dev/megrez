@@ -49,3 +49,7 @@ func NewDB(dial gorm.Dialector) (*gorm.DB, error) {
 	}
 	return db, nil
 }
+
+func BeginTx() *gorm.DB {
+	return db.Begin()
+}

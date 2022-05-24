@@ -120,12 +120,15 @@ func UploadAttachment(c *gin.Context) {
 		Type:       0,
 		UploadTime: time.Now(),
 	}
-	err = model.CreateAttachment(attahcment)
+	tx := model.BeginTx()
+	err = model.CreateAttachment(tx, attahcment)
 	if err != nil {
 		log.Error("create attachment error: ", err)
+		tx.Rollback()
 		c.JSON(http.StatusOK, errmsg.Error())
 		return
 	}
+	tx.Commit()
 	c.JSON(http.StatusOK, errmsg.Success(attahcment))
 }
 

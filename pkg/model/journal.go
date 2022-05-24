@@ -1,6 +1,9 @@
 package model
 
-import "time"
+import (
+	"gorm.io/gorm"
+	"time"
+)
 
 type Journal struct {
 	ID         uint      `gorm:"primarykey" json:"id"`
@@ -37,11 +40,14 @@ func CountAllJournals() (int64, error) {
 }
 
 // CreateJournal handle create link
-func CreateJournal(journal *Journal) error {
-	if db.Dialector.Name() == "sqlite3" {
+func CreateJournal(tx *gorm.DB, journal *Journal) error {
+	if tx == nil {
+		tx = db
+	}
+	if tx.Dialector.Name() == "sqlite3" {
 		lock.Lock()
 		defer lock.Unlock()
 	}
-	result := db.Create(journal)
+	result := tx.Create(journal)
 	return result.Error
 }
