@@ -40,6 +40,18 @@ func UpdateThemeOption(tx *gorm.DB, themeID, key, value string) error {
 	return result.Error
 }
 
+func DeleteThemeOptionsByID(tx *gorm.DB, id string) error {
+	if tx == nil {
+		tx = db
+	}
+	if tx.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
+	result := tx.Delete(&ThemeOption{}, "theme_id = ?", id)
+	return result.Error
+}
+
 func ListThemeOptionsByThemeID(themeID string) ([]ThemeOption, error) {
 	if db.Dialector.Name() == "sqlite3" {
 		lock.Lock()

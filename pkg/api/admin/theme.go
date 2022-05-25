@@ -4,6 +4,7 @@ import (
 	"archive/zip"
 	"io/fs"
 	"io/ioutil"
+	"mime/multipart"
 	"net/http"
 	"os"
 	"path"
@@ -80,7 +81,12 @@ func InstallTheme(c *gin.Context) {
 		c.JSON(http.StatusOK, errmsg.FailMsg("打开压缩文件失败"))
 		return
 	}
-	defer open.Close()
+	defer func(open multipart.File) {
+		err := open.Close()
+		if err != nil {
+			log.Error("close zip file failed: ", err)
+		}
+	}(open)
 	reader, err := zip.NewReader(open, file.Size)
 	if err != nil {
 		log.Error("new zip reader failed: ", err)
@@ -93,7 +99,12 @@ func InstallTheme(c *gin.Context) {
 		c.JSON(http.StatusOK, errmsg.FailMsg("打开主题信息文件失败"))
 		return
 	}
-	defer infoFile.Close()
+	defer func(infoFile fs.File) {
+		err := infoFile.Close()
+		if err != nil {
+			log.Error("close theme.yaml failed: ", err)
+		}
+	}(infoFile)
 	themeInfo, ok := getThemeInfo(infoFile)
 	if !ok {
 		c.JSON(http.StatusOK, errmsg.FailMsg("主题信息文件格式错误"))
@@ -109,7 +120,12 @@ func InstallTheme(c *gin.Context) {
 		c.JSON(http.StatusOK, errmsg.FailMsg("打开主题配置文件失败"))
 		return
 	}
-	defer cfgFile.Close()
+	defer func(cfgFile fs.File) {
+		err := cfgFile.Close()
+		if err != nil {
+			log.Error("close config.yaml failed: ", err)
+		}
+	}(cfgFile)
 	themeConfig, ok := getThemeConfig(cfgFile)
 	if !ok {
 		c.JSON(http.StatusOK, errmsg.FailMsg("主题配置文件格式错误"))
@@ -141,7 +157,10 @@ func InstallTheme(c *gin.Context) {
 	}
 	err = zipUtils.UnZip(reader, path.Join(home, "themes", themeInfo.ID))
 	if err != nil {
-		os.RemoveAll(path.Join(home, "themes", themeInfo.ID))
+		err := os.RemoveAll(path.Join(home, "themes", themeInfo.ID))
+		if err != nil {
+			log.Error("remove theme dir failed:", err.Error())
+		}
 		log.Error("unzip theme failed:", err.Error())
 		c.JSON(http.StatusOK, errmsg.Error())
 		return
@@ -157,13 +176,46 @@ func InstallTheme(c *gin.Context) {
 			}
 			err := model.CreateThemeOption(tx, option)
 			if err != nil {
-				os.RemoveAll(path.Join(home, "themes", themeInfo.ID))
+				err := os.RemoveAll(path.Join(home, "themes", themeInfo.ID))
+				if err != nil {
+					log.Error("remove theme dir failed:", err.Error())
+				}
 				log.Errorf("init theme option %s failed: %s", themeInfo.ID, err.Error())
 				tx.Rollback()
 				c.JSON(http.StatusOK, errmsg.Error())
 				return
 			}
 		}
+	}
+	tx.Commit()
+	c.JSON(http.StatusOK, errmsg.Success(nil))
+}
+
+func DeleteTheme(c *gin.Context) {
+	home, err := dirUtils.GetOrCreateMegrezHome()
+	if err != nil {
+		log.Error("get megrez home dir failed")
+		c.JSON(http.StatusOK, errmsg.Error())
+		return
+	}
+	themeID := c.Param("id")
+	if themeID == "" {
+		c.JSON(http.StatusOK, errmsg.Fail(errmsg.ErrorInvalidParam))
+		return
+	}
+	err = os.RemoveAll(path.Join(home, "themes", themeID))
+	if err != nil {
+		log.Errorf("delete theme %s dir failed: %s", c.Param("id"), err.Error())
+		c.JSON(http.StatusOK, errmsg.Error())
+		return
+	}
+	tx := model.BeginTx()
+	err = model.DeleteThemeOptionsByID(tx, themeID)
+	if err != nil {
+		log.Error("delete theme options failed: ", err.Error())
+		tx.Rollback()
+		c.JSON(http.StatusOK, errmsg.Error())
+		return
 	}
 	tx.Commit()
 	c.JSON(http.StatusOK, errmsg.Success(nil))
@@ -240,6 +292,12 @@ func ListThemes(c *gin.Context) {
 			c.JSON(http.StatusOK, errmsg.Error())
 			return
 		}
+		defer func(infoFile *os.File) {
+			err := infoFile.Close()
+			if err != nil {
+				log.Error("close theme info file failed:", err.Error())
+			}
+		}(infoFile)
 		themeInfo, ok := getThemeInfo(infoFile)
 		if !ok {
 			log.Errorf("read theme dir %s info failed: %s", theme.Name(), err.Error())

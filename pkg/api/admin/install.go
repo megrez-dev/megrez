@@ -125,7 +125,12 @@ func Install(c *gin.Context) {
 		c.JSON(http.StatusOK, errmsg.Error())
 		return
 	}
-	defer open.Close()
+	defer func(open *os.File) {
+		err := open.Close()
+		if err != nil {
+			log.Error("close default theme config file failed:", err.Error())
+		}
+	}(open)
 	themeConfig, ok := getThemeConfig(open)
 	if !ok {
 		log.Error("get default theme config failed")

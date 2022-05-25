@@ -48,6 +48,17 @@ func GetCommentByID(id uint) (Comment, error) {
 	return comment, result.Error
 }
 
+// ListAllComments return all comments
+func ListAllComments(pageNum, pageSize int) ([]Comment, error) {
+	if db.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
+	var comments []Comment
+	result := db.Offset(pageSize * (pageNum - 1)).Limit(pageSize).Find(&comments)
+	return comments, result.Error
+}
+
 // ListCommentsByRootID return comments by rootID
 func ListCommentsByRootID(rid uint) ([]Comment, error) {
 	if db.Dialector.Name() == "sqlite3" {

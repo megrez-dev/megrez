@@ -22,6 +22,7 @@ func RouteAdminAPI(g *gin.Engine) {
 	auth.PUT("theme/current/config", admin.UpdateCurrentThemeConfig)
 	auth.GET("theme/current/id", admin.GetCurrentThemeID)
 	auth.POST("theme/install", admin.InstallTheme)
+	auth.DELETE("theme/:id", admin.DeleteTheme)
 	auth.GET("themes", admin.ListThemes)
 
 	//api for admin
@@ -34,11 +35,11 @@ func RouteAdminAPI(g *gin.Engine) {
 	auth.GET("articles", admin.ListArticles)
 	auth.GET("article/:id", admin.GetArticle)
 
-	// // api for comment
-	// auth.POST("comment", admin.CreateComment)
+	// api for comment
+	//auth.POST("comment", admin.CreateComment)
 	// auth.PUT("comment/:id", admin.UpdateComment)
 	// auth.DELETE("comment/:id", admin.DeleteComment)
-	// auth.GET("comment", admin.ListComments)
+	auth.GET("comments", admin.ListComments)
 	// auth.GET("comment/:id", admin.GetComment)
 
 	// // api for category
@@ -60,6 +61,9 @@ func RouteAdminAPI(g *gin.Engine) {
 	auth.PUT("link/:id", admin.UpdateLink)
 	auth.DELETE("link/:id", admin.DeleteLink)
 	auth.GET("links", admin.ListLinks)
+
+	// api for option
+	auth.PUT("option/:key", admin.SetOption)
 
 	// // api for journal
 	// auth.POST("journal", admin.CreateJournal)
