@@ -6,6 +6,7 @@ import (
 	"gorm.io/gorm"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/megrez/pkg/entity/vo"
@@ -39,17 +40,19 @@ func createCommentForArticle(c *gin.Context) {
 	agent := c.Request.UserAgent()
 	log.Debug("agent:", agent)
 	comment := &model.Comment{
-		ArticleID: uint(articleID),
-		Content:   c.PostForm("text"),
-		RootID:    uint(rootID),
-		ParentID:  uint(parentID),
-		Author:    c.PostForm("author"),
-		Mail:      c.PostForm("mail"),
-		Site:      c.PostForm("url"),
-		Agent:     c.Request.UserAgent(),
-		IP:        c.ClientIP(),
-		Type:      1,
-		Status:    0,
+		ArticleID:  uint(articleID),
+		Content:    c.PostForm("text"),
+		RootID:     uint(rootID),
+		ParentID:   uint(parentID),
+		Author:     c.PostForm("author"),
+		Mail:       c.PostForm("mail"),
+		Site:       c.PostForm("url"),
+		Agent:      c.Request.UserAgent(),
+		IP:         c.ClientIP(),
+		Type:       1,
+		Status:     0,
+		CreateTime: time.Now(),
+		UpdateTime: time.Now(),
 	}
 	tx := model.BeginTx()
 	err = model.CreateComment(tx, comment)

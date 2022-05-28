@@ -37,6 +37,55 @@ func CreateComment(tx *gorm.DB, comment *Comment) error {
 	return result.Error
 }
 
+// DeleteCommentsByArticleID delete all comments by article ID
+func DeleteCommentsByArticleID(tx *gorm.DB, aid uint) error {
+	if tx == nil {
+		tx = db
+	}
+	if tx.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
+	result := tx.Where("article_id = ?", aid).Delete(&Comment{})
+	return result.Error
+}
+
+func DeleteCommentsByParentID(tx *gorm.DB, pid uint) error {
+	if tx == nil {
+		tx = db
+	}
+	if tx.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
+	var subComments []Comment
+	result := tx.Where("parent_id = ?", pid).Find(&subComments)
+	if result.Error != nil {
+		return result.Error
+	}
+	for _, subComment := range subComments {
+		err := DeleteCommentsByParentID(tx, subComment.ID)
+		if err != nil {
+			return err
+		}
+	}
+	result = tx.Where("parent_id = ?", pid).Delete(&Comment{})
+	return result.Error
+}
+
+// DeleteCommentByID delete comment by ID
+func DeleteCommentByID(tx *gorm.DB, id uint) error {
+	if tx == nil {
+		tx = db
+	}
+	if tx.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
+	result := tx.Where("id = ?", id).Delete(&Comment{})
+	return result.Error
+}
+
 // GetCommentByID return comment by ID
 func GetCommentByID(id uint) (Comment, error) {
 	if db.Dialector.Name() == "sqlite3" {

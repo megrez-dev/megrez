@@ -295,6 +295,13 @@ func DeleteArticle(c *gin.Context) {
 		c.JSON(http.StatusOK, errmsg.Error())
 		return
 	}
+	err = model.DeleteCommentsByArticleID(tx, uint(id))
+	if err != nil {
+		log.Error(err)
+		tx.Rollback()
+		c.JSON(http.StatusOK, errmsg.Error())
+		return
+	}
 	tx.Commit()
 	c.JSON(http.StatusOK, errmsg.Success(nil))
 }

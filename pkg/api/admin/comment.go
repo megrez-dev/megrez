@@ -64,3 +64,29 @@ func ListComments(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, errmsg.Success(pagination))
 }
+
+func DeleteComment(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		log.Error(err)
+		c.JSON(http.StatusOK, errmsg.Fail(errmsg.ErrorInvalidParam))
+		return
+	}
+	tx := model.BeginTx()
+	err = model.DeleteCommentByID(tx, uint(id))
+	if err != nil {
+		log.Error("delete comment error:", err.Error())
+		tx.Rollback()
+		c.JSON(http.StatusOK, errmsg.Error())
+		return
+	}
+	err = model.DeleteCommentsByParentID(tx, uint(id))
+	if err != nil {
+		log.Error("delete comment error:", err.Error())
+		tx.Rollback()
+		c.JSON(http.StatusOK, errmsg.Error())
+		return
+	}
+	tx.Commit()
+	c.JSON(http.StatusOK, errmsg.Success(nil))
+}
