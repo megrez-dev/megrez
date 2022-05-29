@@ -38,7 +38,7 @@ func RouteAdminAPI(g *gin.Engine) {
 	// api for comment
 	//auth.POST("comment", admin.CreateComment)
 	// auth.PUT("comment/:id", admin.UpdateComment)
-	// auth.DELETE("comment/:id", admin.DeleteComment)
+	auth.DELETE("comment/:id", admin.DeleteComment)
 	auth.GET("comments", admin.ListComments)
 	// auth.GET("comment/:id", admin.GetComment)
 

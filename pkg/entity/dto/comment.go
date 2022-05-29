@@ -11,9 +11,11 @@ type CommentListDTO struct {
 	Page       PageDTO    `json:"page"`
 	Content    string     `json:"content"`
 	Author     string     `json:"author"`
+	IP         string     `json:"ip"`
 	Site       string     `json:"site"`
 	Mail       string     `json:"mail"`
 	Status     int        `json:"status"`
+	Type       int        `json:"type"`
 	CreateTime time.Time  `json:"createTime"`
 }
 
@@ -23,6 +25,10 @@ func (dto *CommentListDTO) LoadFromModel(comment model.Comment) error {
 	dto.Author = comment.Author
 	dto.Site = comment.Site
 	dto.Mail = comment.Mail
+	dto.IP = comment.IP
+	dto.Type = comment.Type
+	dto.Status = comment.Status
+	dto.CreateTime = comment.CreateTime
 	if comment.Type == 1 {
 		article, err := model.GetArticleByID(comment.ArticleID)
 		if err != nil {
