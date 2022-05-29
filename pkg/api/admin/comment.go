@@ -10,6 +10,10 @@ import (
 	"strconv"
 )
 
+func CreateComment(c *gin.Context) {
+
+}
+
 func ListComments(c *gin.Context) {
 	var pageNum, pageSize int
 	var err error

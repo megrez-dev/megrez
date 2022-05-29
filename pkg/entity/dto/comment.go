@@ -16,6 +16,8 @@ type CommentListDTO struct {
 	Mail       string     `json:"mail"`
 	Status     int        `json:"status"`
 	Type       int        `json:"type"`
+	RootID     uint       `json:"rootID"`
+	ParentID   uint       `json:"parentID"`
 	CreateTime time.Time  `json:"createTime"`
 }
 
@@ -28,6 +30,8 @@ func (dto *CommentListDTO) LoadFromModel(comment model.Comment) error {
 	dto.IP = comment.IP
 	dto.Type = comment.Type
 	dto.Status = comment.Status
+	dto.RootID = comment.RootID
+	dto.ParentID = comment.ParentID
 	dto.CreateTime = comment.CreateTime
 	if comment.Type == 1 {
 		article, err := model.GetArticleByID(comment.ArticleID)
