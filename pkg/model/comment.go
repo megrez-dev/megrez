@@ -15,7 +15,7 @@ type Comment struct {
 	Type       int       `gorm:"type:int(11)" json:"type"`
 	Author     string    `gorm:"type:varchar(63)" json:"author"`
 	Role       int       `gorm:"type:int(11)" json:"role"`
-	Mail       string    `gorm:"type:varchar(63)" json:"mail"`
+	Email      string    `gorm:"type:varchar(63)" json:"email"`
 	Site       string    `gorm:"type:varchar(63)" json:"site"`
 	Agent      string    `gorm:"type:varchar(1023)" json:"agent"`
 	IP         string    `gorm:"type:varchar(20)" json:"ip"`

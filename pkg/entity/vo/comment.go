@@ -71,7 +71,7 @@ func GetCommentFromPO(comment model.Comment) (*Comment, error) {
 	commentVO.CreateTime = comment.CreateTime
 	commentVO.Author = comment.Author
 	commentVO.Role = Role(comment.Role).String()
-	commentVO.Mail = comment.Mail
+	commentVO.Mail = comment.Email
 	commentVO.Site = comment.Site
 	// TODO: 设置头像
 	commentVO.Avatar = "https://cdn.rawchen.com/logo/alkaidchen.jpg"
@@ -108,7 +108,7 @@ func GetSubCommentFromPO(comment model.Comment) (*SubComment, error) {
 	subComment.CreateTime = comment.CreateTime
 	subComment.Author = comment.Author
 	subComment.Role = Role(comment.Role).String()
-	subComment.Mail = comment.Mail
+	subComment.Mail = comment.Email
 	subComment.Site = comment.Site
 	// TODO: 设置头像
 	subComment.Avatar = "https://cdn.rawchen.com/logo/alkaidchen.jpg"

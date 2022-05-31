@@ -21,12 +21,23 @@ type CommentListDTO struct {
 	CreateTime time.Time  `json:"createTime"`
 }
 
+type CreateCommentForm struct {
+	Content    string    `json:"content"`
+	Type       int       `json:"type"`
+	ArticleID  uint      `json:"articleID"`
+	PageID     uint      `json:"pageID"`
+	RootID     uint      `json:"rootID"`
+	ParentID   uint      `json:"parentID"`
+	CreateTime time.Time `json:"createTime"`
+	UpdateTime time.Time `json:"updateTime"`
+}
+
 func (dto *CommentListDTO) LoadFromModel(comment model.Comment) error {
 	dto.ID = comment.ID
 	dto.Content = comment.Content
 	dto.Author = comment.Author
 	dto.Site = comment.Site
-	dto.Mail = comment.Mail
+	dto.Mail = comment.Email
 	dto.IP = comment.IP
 	dto.Type = comment.Type
 	dto.Status = comment.Status

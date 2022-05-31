@@ -221,7 +221,7 @@ func Install(c *gin.Context) {
 		Content:    "Welcome to Megrez!",
 		Type:       1,
 		Site:       "https://megrez.run",
-		Mail:       "admin@megrez.run",
+		Email:      "admin@megrez.run",
 		Author:     "MEGREZ",
 		CreateTime: time.Now(),
 	}

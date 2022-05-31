@@ -13,7 +13,7 @@ type User struct {
 	Status      int    `gorm:"type:int(11)" json:"status"`
 }
 
-// GetUserByUsername return user by username or password
+// GetUserByUsername return user by username or email
 func GetUserByUsername(username string) (User, error) {
 	if db.Dialector.Name() == "sqlite3" {
 		lock.Lock()
@@ -21,6 +21,17 @@ func GetUserByUsername(username string) (User, error) {
 	}
 	user := User{}
 	result := db.Where("username = ?", username).Or("email = ?", username).First(&user)
+	return user, result.Error
+}
+
+// GetUserByID return user by id
+func GetUserByID(id uint) (User, error) {
+	if db.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
+	user := User{}
+	result := db.First(&user, id)
 	return user, result.Error
 }
 
