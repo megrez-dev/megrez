@@ -6,14 +6,14 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/88250/lute"
-	"github.com/gin-gonic/gin"
-	"github.com/gosimple/slug"
-
 	"github.com/megrez/pkg/entity/dto"
 	"github.com/megrez/pkg/log"
 	"github.com/megrez/pkg/model"
 	"github.com/megrez/pkg/utils/errmsg"
+
+	"github.com/88250/lute"
+	"github.com/gin-gonic/gin"
+	"github.com/gosimple/slug"
 )
 
 func CreateArticle(c *gin.Context) {

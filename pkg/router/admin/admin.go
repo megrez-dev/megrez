@@ -66,7 +66,7 @@ func RouteAdminAPI(g *gin.Engine) {
 	auth.PUT("option/:key", admin.SetOption)
 
 	// // api for journal
-	// auth.POST("journal", admin.CreateJournal)
+	auth.POST("journal", admin.CreateJournal)
 	// auth.PUT("journal/:id", admin.UpdateJournal)
 	// auth.DELETE("journal/:id", admin.DeleteJournal)
 	// auth.GET("journal", admin.ListJournals)
