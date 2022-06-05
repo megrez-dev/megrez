@@ -60,7 +60,7 @@ func ListAllLinks() ([]Link, error) {
 		defer lock.Unlock()
 	}
 	var links []Link
-	result := db.Order("priority").Find(&links)
+	result := db.Order("priority, create_time DESC").Find(&links)
 	return links, result.Error
 }
 
@@ -71,7 +71,7 @@ func ListLinksByPage(page, pageSize int) ([]Link, error) {
 		defer lock.Unlock()
 	}
 	var links []Link
-	result := db.Order("priority").Offset((page - 1) * pageSize).Limit(pageSize).Find(&links)
+	result := db.Order("priority, create_time DESC").Offset((page - 1) * pageSize).Limit(pageSize).Find(&links)
 	return links, result.Error
 }
 

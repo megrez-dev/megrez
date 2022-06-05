@@ -86,15 +86,14 @@ func DeleteCommentByID(tx *gorm.DB, id uint) error {
 	return result.Error
 }
 
-// GetCommentByID return comment by ID
-func GetCommentByID(id uint) (Comment, error) {
+func CountAllComments() (int64, error) {
 	if db.Dialector.Name() == "sqlite3" {
 		lock.Lock()
 		defer lock.Unlock()
 	}
-	comment := Comment{}
-	result := db.First(&comment, id)
-	return comment, result.Error
+	var count int64
+	result := db.Model(&Comment{}).Count(&count)
+	return count, result.Error
 }
 
 // ListAllComments return all comments
@@ -104,7 +103,7 @@ func ListAllComments(pageNum, pageSize int) ([]Comment, error) {
 		defer lock.Unlock()
 	}
 	var comments []Comment
-	result := db.Offset(pageSize * (pageNum - 1)).Limit(pageSize).Find(&comments)
+	result := db.Order("create_time DESC").Offset(pageSize * (pageNum - 1)).Limit(pageSize).Find(&comments)
 	return comments, result.Error
 }
 
@@ -115,7 +114,7 @@ func ListCommentsByRootID(rid uint) ([]Comment, error) {
 		defer lock.Unlock()
 	}
 	var comments []Comment
-	result := db.Find(&comments, "root_id = ?", rid)
+	result := db.Order("create_time DESC").Find(&comments, "root_id = ?", rid)
 	return comments, result.Error
 }
 
@@ -128,9 +127,9 @@ func ListRootCommentsByArticleID(aid uint, pageNum, pageSize int) ([]Comment, er
 	var comments []Comment
 	var result *gorm.DB
 	if pageNum == 0 && pageSize == 0 {
-		result = db.Where("article_id = ? AND root_id = ?", aid, 0).Find(&comments)
+		result = db.Where("article_id = ? AND root_id = ?", aid, 0).Order("create_time DESC").Find(&comments)
 	} else {
-		result = db.Where("article_id = ? AND root_id = ?", aid, 0).
+		result = db.Where("article_id = ? AND root_id = ?", aid, 0).Order("create_time DESC").
 			Limit(pageSize).Offset((pageNum - 1) * pageSize).Find(&comments)
 	}
 	return comments, result.Error
@@ -145,9 +144,9 @@ func ListRootCommentsByPageID(pid uint, pageNum, pageSize int) ([]Comment, error
 	var comments []Comment
 	var result *gorm.DB
 	if pageNum == 0 && pageSize == 0 {
-		result = db.Where("page_id = ? AND root_id = ?", pid, 0).Find(&comments)
+		result = db.Where("page_id = ? AND root_id = ?", pid, 0).Order("create_time DESC").Find(&comments)
 	} else {
-		result = db.Where("page_id = ? AND root_id = ?", pid, 0).
+		result = db.Where("page_id = ? AND root_id = ?", pid, 0).Order("create_time DESC").
 			Limit(pageSize).Offset((pageNum - 1) * pageSize).Find(&comments)
 	}
 	return comments, result.Error
@@ -160,7 +159,7 @@ func ListLatestComments() ([]Comment, error) {
 		defer lock.Unlock()
 	}
 	var comments []Comment
-	result := db.Limit(8).Find(&comments)
+	result := db.Order("create_time DESC").Limit(8).Find(&comments)
 	return comments, result.Error
 }
 

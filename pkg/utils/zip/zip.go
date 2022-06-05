@@ -2,12 +2,9 @@ package zip
 
 import (
 	"archive/zip"
-	"encoding/json"
 	"io"
 	"os"
 	"path"
-
-	"github.com/megrez/pkg/log"
 )
 
 func UnZip(reader *zip.Reader, dstPath string) error {
@@ -18,8 +15,6 @@ func UnZip(reader *zip.Reader, dstPath string) error {
 	}
 	// 遍历压缩包的内容
 	// 注意：reader.File获取到的是压缩包内的所有文件，包括子文件夹下的文件
-	b, _ := json.Marshal(reader.File)
-	log.Debug(string(b))
 	for _, file := range reader.File {
 		// 文件夹就不解压出来了
 		if file.FileInfo().IsDir() { // 文件夹

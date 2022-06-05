@@ -24,7 +24,7 @@ func ListAllJournals(pageNum, pageSize int) ([]Journal, error) {
 		defer lock.Unlock()
 	}
 	var journals []Journal
-	result := db.Offset(pageSize * (pageNum - 1)).Limit(pageSize).Find(&journals)
+	result := db.Order("create_time DESC").Offset(pageSize * (pageNum - 1)).Limit(pageSize).Find(&journals)
 	return journals, result.Error
 }
 

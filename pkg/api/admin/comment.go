@@ -107,7 +107,7 @@ func ListComments(c *gin.Context) {
 		}
 		commentDTOs = append(commentDTOs, commentDTO)
 	}
-	total, err := model.CountAllArticles()
+	total, err := model.CountAllComments()
 	if err != nil {
 		log.Error(err)
 		c.JSON(http.StatusOK, errmsg.Error())

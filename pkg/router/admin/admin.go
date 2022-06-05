@@ -69,21 +69,21 @@ func RouteAdminAPI(g *gin.Engine) {
 	auth.POST("journal", admin.CreateJournal)
 	// auth.PUT("journal/:id", admin.UpdateJournal)
 	// auth.DELETE("journal/:id", admin.DeleteJournal)
-	// auth.GET("journal", admin.ListJournals)
+	auth.GET("journals", admin.ListJournals)
 	// auth.GET("journal/:id", admin.GetJournal)
 
 	// // api for page
 	// auth.POST("page", admin.CreatePage)
 	// auth.PUT("page/:id", admin.UpdatePage)
 	// auth.DELETE("page/:id", admin.DeletePage)
-	// auth.GET("page", admin.ListPages)
+	// auth.GET("pages", admin.ListPages)
 	// auth.GET("page/:id", admin.GetPage)
 
 	// // api for menu
 	// auth.POST("menu", admin.CreateMenu)
 	// auth.PUT("menu/:id", admin.UpdateMenu)
 	// auth.DELETE("menu/:id", admin.DeleteMenu)
-	// auth.GET("menu", admin.ListMenu)
+	// auth.GET("menus", admin.ListMenu)
 	// auth.GET("menu/:id", admin.GetMenu)
 
 	// // api for option

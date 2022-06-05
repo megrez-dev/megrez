@@ -95,7 +95,7 @@ func ListArticlesByIDs(ids []uint) ([]Article, error) {
 		defer lock.Unlock()
 	}
 	var articles []Article
-	result := db.Find(&articles, ids)
+	result := db.Order("publish_time DESC").Find(&articles, ids)
 	return articles, result.Error
 }
 
@@ -106,7 +106,7 @@ func ListAllArticles(pageNum, pageSize int) ([]Article, error) {
 		defer lock.Unlock()
 	}
 	var articles []Article
-	result := db.Offset(pageSize * (pageNum - 1)).Limit(pageSize).Find(&articles)
+	result := db.Order("publish_time DESC").Offset(pageSize * (pageNum - 1)).Limit(pageSize).Find(&articles)
 	return articles, result.Error
 }
 
@@ -117,7 +117,7 @@ func ListLatestArticles() ([]Article, error) {
 		defer lock.Unlock()
 	}
 	var articles []Article
-	result := db.Limit(8).Find(&articles)
+	result := db.Order("publish_time DESC").Limit(8).Find(&articles)
 	return articles, result.Error
 }
 
@@ -128,7 +128,7 @@ func ListArticlesByCategoryID(cid uint, pageNum, pageSize int) ([]Article, error
 		defer lock.Unlock()
 	}
 	var articles []Article
-	result := db.Where("id in (?)", db.Table("article_categories").Select("article_id").Where("category_id = ?", cid)).Find(&articles)
+	result := db.Where("id in (?)", db.Table("article_categories").Select("article_id").Where("category_id = ?", cid)).Order("publish_time DESC").Find(&articles)
 	return articles, result.Error
 }
 

@@ -35,7 +35,7 @@ func ListAttachments(pageNum, pageSize int) ([]Attachment, error) {
 		defer lock.Unlock()
 	}
 	var attachments []Attachment
-	result := db.Offset(pageSize * (pageNum - 1)).Limit(pageSize).Find(&attachments)
+	result := db.Order("upload_time DESC").Offset(pageSize * (pageNum - 1)).Limit(pageSize).Find(&attachments)
 	return attachments, result.Error
 }
 

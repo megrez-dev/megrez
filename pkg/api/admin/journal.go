@@ -47,7 +47,7 @@ func CreateJournal(c *gin.Context) {
 	c.JSON(http.StatusOK, errmsg.Success(nil))
 }
 
-func ListJournal(c *gin.Context) {
+func ListJournals(c *gin.Context) {
 	var pageNum, pageSize int
 	var err error
 	if c.Query("pageNum") == "" {
@@ -70,22 +70,22 @@ func ListJournal(c *gin.Context) {
 			return
 		}
 	}
-	comments, err := model.ListAllJournals(pageNum, pageSize)
+	journals, err := model.ListAllJournals(pageNum, pageSize)
 	if err != nil {
 		log.Error(err)
 		c.JSON(http.StatusOK, errmsg.Error())
 		return
 	}
-	var commentDTOs []dto.CommentListDTO
-	for _, comment := range comments {
-		commentDTO := dto.CommentListDTO{}
-		err := commentDTO.LoadFromModel(comment)
+	var journalDTOs []dto.JournalDTO
+	for _, journal := range journals {
+		journalDTO := dto.JournalDTO{}
+		journalDTO.LoadFromModel(journal)
 		if err != nil {
 			log.Error(err)
 			c.JSON(http.StatusOK, errmsg.Error())
 			return
 		}
-		commentDTOs = append(commentDTOs, commentDTO)
+		journalDTOs = append(journalDTOs, journalDTO)
 	}
 	total, err := model.CountAllJournals()
 	if err != nil {
@@ -94,7 +94,7 @@ func ListJournal(c *gin.Context) {
 		return
 	}
 	pagination := dto.Pagination{
-		List:     commentDTOs,
+		List:     journalDTOs,
 		Current:  pageNum,
 		PageSize: pageSize,
 		Total:    total,
