@@ -8,25 +8,27 @@ import (
 )
 
 type ArticleDTO struct {
-	ID              uint     `json:"id"`
-	Title           string   `json:"title"`
-	OriginalContent string   `json:"originalContent"`
-	FormatContent   string   `json:"formatContent"`
-	Summary         string   `json:"summary"`
-	Slug            string   `json:"slug"`
-	Password        string   `json:"password"`
-	Cover           string   `json:"cover"`
-	Private         bool     `json:"private"`
-	AllowedComment  bool     `json:"allowedComment"`
-	Categories      []uint   `json:"categories"`
-	Tags            []uint   `json:"tags"`
-	IsTop           bool     `json:"isTop"`
-	Visits          int64    `json:"visits"`
-	Likes           int64    `json:"likes"`
-	WordCount       int64    `json:"wordCount"`
-	SeoKeywords     []string `json:"seoKeywords"`
-	SeoDescription  string   `json:"seoDescription"`
-	Status          int      `json:"status"`
+	ID              uint      `json:"id"`
+	Title           string    `json:"title"`
+	OriginalContent string    `json:"originalContent"`
+	FormatContent   string    `json:"formatContent"`
+	Summary         string    `json:"summary"`
+	Slug            string    `json:"slug"`
+	Password        string    `json:"password"`
+	Cover           string    `json:"cover"`
+	Private         bool      `json:"private"`
+	AllowedComment  bool      `json:"allowedComment"`
+	Categories      []uint    `json:"categories"`
+	Tags            []uint    `json:"tags"`
+	IsTop           bool      `json:"isTop"`
+	Visits          int64     `json:"visits"`
+	Likes           int64     `json:"likes"`
+	WordCount       int64     `json:"wordCount"`
+	SeoKeywords     []string  `json:"seoKeywords"`
+	SeoDescription  string    `json:"seoDescription"`
+	PublishTime     time.Time `json:"publishTime"`
+	EditTime        time.Time `json:"editTime"`
+	Status          int       `json:"status"`
 }
 
 func (dto *ArticleDTO) Transfer2Model() model.Article {
@@ -76,6 +78,8 @@ func (dto *ArticleDTO) LoadFromModel(article model.Article) error {
 	dto.Private = article.Private
 	dto.AllowedComment = article.AllowedComment
 	dto.WordCount = article.WordCount
+	dto.PublishTime = article.PublishTime
+	dto.EditTime = article.EditTime
 	dto.Status = article.Status
 	// top priority
 	dto.IsTop = article.TopPriority != 0
