@@ -52,7 +52,7 @@ func GetLatestCommentFromPO(comment *model.Comment) (*LatestComment, error) {
 	latestComment := &LatestComment{
 		Content: comment.Content,
 	}
-	commentsPageSizeStr, err := model.GetOptionByKey(OptionComentsPageSize)
+	commentsPageSizeStr, err := model.GetOptionByKey(model.OptionKeyCommentsPageSize)
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			commentsPageSizeStr = "10"
@@ -113,7 +113,7 @@ func GetLatestCommentFromPO(comment *model.Comment) (*LatestComment, error) {
 
 // @return map[string]map[string]string map[tab]map[key]value
 func GetThemeOptions() map[string]interface{} {
-	theme, err := model.GetOptionByKey(OptionKeyBlogTheme)
+	theme, err := model.GetOptionByKey(model.OptionKeyBlogTheme)
 	if err != nil {
 		log.Error(err)
 		return nil
@@ -136,22 +136,22 @@ func GetThemeOptions() map[string]interface{} {
 
 func GetGlobalOption() (Global, error) {
 	global := Global{}
-	blogTitle, err := model.GetOptionByKey(OptionKeyBlogTitle)
+	blogTitle, err := model.GetOptionByKey(model.OptionKeyBlogTitle)
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return global, err
 	}
 	global.BlogTitle = blogTitle
-	blogURL, err := model.GetOptionByKey(OptionKeyBlogURL)
+	blogURL, err := model.GetOptionByKey(model.OptionKeyBlogURL)
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return global, err
 	}
 	global.BlogURL = blogURL
-	blogDescription, err := model.GetOptionByKey(OptionKeyBlogDescription)
+	blogDescription, err := model.GetOptionByKey(model.OptionKeyBlogDescription)
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return global, err
 	}
 	global.BlogDescription = blogDescription
-	blogBirthStr, err := model.GetOptionByKey(OptionKeyBlogBirth)
+	blogBirthStr, err := model.GetOptionByKey(model.OptionKeyBlogBirth)
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return global, err
 	}

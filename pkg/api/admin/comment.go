@@ -3,7 +3,6 @@ package admin
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/megrez/pkg/entity/dto"
-	"github.com/megrez/pkg/entity/vo"
 	"github.com/megrez/pkg/log"
 	"github.com/megrez/pkg/model"
 	"github.com/megrez/pkg/utils/errmsg"
@@ -43,7 +42,7 @@ func CreateComment(c *gin.Context) {
 	comment.Author = user.Nickname
 	comment.Role = 1
 	comment.Email = user.Email
-	site, err := model.GetOptionByKey(vo.OptionKeyBlogURL)
+	site, err := model.GetOptionByKey(model.OptionKeyBlogURL)
 	if err != nil {
 		log.Error("get option failed:", err.Error())
 		c.JSON(http.StatusOK, errmsg.Error())

@@ -4,6 +4,24 @@ import (
 	"gorm.io/gorm"
 )
 
+var (
+	OptionKeyIsInstalled      = "is_installed"
+	OptionKeyBlogURL          = "blog_url"
+	OptionKeyBlogTitle        = "blog_title"
+	OptionKeyBlogDescription  = "blog_description"
+	OptionKeyBlogBirth        = "blog_birth"
+	OptionKeyBlogTheme        = "blog_theme"
+	OptionKeyUploadType       = "upload_type"
+	OptionKeySMTPURL          = "smtp_url"
+	OptionKeySMTPProtocol     = "smtp_protocol"
+	OptionKeySMTPSSLPort      = "smtp_ssl_port"
+	OptionKeySMTPEmail        = "smtp_email"
+	OptionKeySMTPPassword     = "smtp_password"
+	OptionKeyGithub           = "github"
+	OptionKeyEmail            = "email"
+	OptionKeyCommentsPageSize = "comments_page_size"
+)
+
 type Option struct {
 	ID    uint   `gorm:"primarykey" json:"id"`
 	Key   string `gorm:"type:varchar(255);uniqueIndex" json:"key"`

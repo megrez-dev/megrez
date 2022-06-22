@@ -11,7 +11,6 @@ import (
 	"strings"
 
 	"github.com/megrez/pkg/config"
-	"github.com/megrez/pkg/entity/vo"
 	"github.com/megrez/pkg/log"
 	"github.com/megrez/pkg/model"
 	dirUtils "github.com/megrez/pkg/utils/dir"
@@ -30,7 +29,7 @@ func UpdateCurrentThemeConfig(c *gin.Context) {
 		c.JSON(http.StatusOK, errmsg.Fail(errmsg.ErrorInvalidParam))
 		return
 	}
-	currentThemeID, err := model.GetOptionByKey(vo.OptionKeyBlogTheme)
+	currentThemeID, err := model.GetOptionByKey(model.OptionKeyBlogTheme)
 	if err != nil {
 		log.Error("get option blog theme failed:", err.Error())
 		c.JSON(http.StatusOK, errmsg.Error())
@@ -229,7 +228,7 @@ func GetCurrentThemeConfig(c *gin.Context) {
 		c.JSON(http.StatusOK, errmsg.Error())
 		return
 	}
-	themeID, err := model.GetOptionByKey(vo.OptionKeyBlogTheme)
+	themeID, err := model.GetOptionByKey(model.OptionKeyBlogTheme)
 	if err != nil {
 		log.Error("get option theme failed:", err.Error())
 		c.JSON(http.StatusOK, errmsg.Error())
@@ -310,7 +309,7 @@ func ListThemes(c *gin.Context) {
 }
 
 func GetCurrentThemeID(c *gin.Context) {
-	themeID, err := model.GetOptionByKey(vo.OptionKeyBlogTheme)
+	themeID, err := model.GetOptionByKey(model.OptionKeyBlogTheme)
 	if err != nil {
 		log.Error("get option blog theme failed:", err.Error())
 		c.JSON(http.StatusOK, errmsg.Error())

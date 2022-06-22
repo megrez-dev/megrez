@@ -3,7 +3,6 @@ package admin
 import (
 	"github.com/google/uuid"
 	"github.com/megrez/pkg/entity/dto"
-	"github.com/megrez/pkg/entity/vo"
 	"github.com/megrez/pkg/model"
 	dirUtils "github.com/megrez/pkg/utils/dir"
 	"gorm.io/gorm"
@@ -49,7 +48,7 @@ func UploadAttachment(c *gin.Context) {
 	size := file.Size
 	var url string
 	// TODO: make thumbnail
-	uploadType, err := model.GetOptionByKey(vo.OptionKeyUploadType)
+	uploadType, err := model.GetOptionByKey(model.OptionKeyUploadType)
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			uploadType = "local"

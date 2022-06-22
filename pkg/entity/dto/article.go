@@ -43,8 +43,7 @@ func (dto *ArticleDTO) Transfer2Model() model.Article {
 		AllowedComment:  dto.AllowedComment,
 		WordCount:       dto.WordCount,
 		SeoDescription:  dto.SeoDescription,
-		// TODO: 0:正常 1:草稿 2:回收站 ...
-		Status: dto.Status,
+		Status:          dto.Status,
 	}
 	// top priority
 	if dto.IsTop {

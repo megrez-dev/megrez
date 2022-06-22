@@ -9,7 +9,6 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/megrez/pkg/entity/vo"
 	"github.com/megrez/pkg/model"
 )
 
@@ -36,7 +35,6 @@ func createCommentForArticle(c *gin.Context) {
 			c.Redirect(http.StatusInternalServerError, "/error")
 		}
 	}
-	// TODO: 要不要存储头像到 DB
 	agent := c.Request.UserAgent()
 	log.Debug("agent:", agent)
 	comment := &model.Comment{
@@ -62,7 +60,7 @@ func createCommentForArticle(c *gin.Context) {
 		c.Redirect(http.StatusInternalServerError, "/error")
 	}
 	// calculate pagination
-	commentsPageSizeStr, err := model.GetOptionByKey(vo.OptionComentsPageSize)
+	commentsPageSizeStr, err := model.GetOptionByKey(model.OptionKeyCommentsPageSize)
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			commentsPageSizeStr = "10"
@@ -139,7 +137,7 @@ func createCommentForPage(c *gin.Context) {
 		c.Redirect(http.StatusInternalServerError, "/error")
 	}
 	// calculate pagination
-	commentsPageSizeStr, err := model.GetOptionByKey(vo.OptionComentsPageSize)
+	commentsPageSizeStr, err := model.GetOptionByKey(model.OptionKeyCommentsPageSize)
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			commentsPageSizeStr = "10"

@@ -5,11 +5,11 @@ import (
 	"github.com/gosimple/slug"
 	themesAssets "github.com/megrez/assets/themes"
 	"github.com/megrez/pkg/entity/dto"
-	"github.com/megrez/pkg/entity/vo"
 	"github.com/megrez/pkg/log"
 	"github.com/megrez/pkg/model"
 	dirUtils "github.com/megrez/pkg/utils/dir"
 	"github.com/megrez/pkg/utils/errmsg"
+	"gorm.io/gorm"
 	"net/http"
 	"os"
 	"path"
@@ -25,8 +25,19 @@ func Install(c *gin.Context) {
 		return
 	}
 	tx := model.BeginTx()
+	// check blog installed
+	value, err := model.GetOptionByKey(model.OptionKeyIsInstalled)
+	if err == nil && value == "true" {
+		c.JSON(http.StatusOK, errmsg.FailMsg("不能重复安装"))
+		return
+	} else if err != nil && err != gorm.ErrRecordNotFound {
+		log.Error("get option blog installed failed:", err.Error())
+		tx.Rollback()
+		c.JSON(http.StatusOK, errmsg.Error())
+		return
+	}
 	// set option blog birth
-	err = model.SetOption(tx, vo.OptionKeyBlogBirth, time.Now().Format("2006-01-02 15:04:05"))
+	err = model.SetOption(tx, model.OptionKeyBlogBirth, time.Now().Format("2006-01-02 15:04:05"))
 	if err != nil {
 		log.Error("set option blog birth failed:", err.Error())
 		tx.Rollback()
@@ -34,7 +45,7 @@ func Install(c *gin.Context) {
 		return
 	}
 	// set option blog title
-	err = model.SetOption(tx, vo.OptionKeyBlogTitle, data.BlogTitle)
+	err = model.SetOption(tx, model.OptionKeyBlogTitle, data.BlogTitle)
 	if err != nil {
 		log.Error("set option blog title failed:", err.Error())
 		tx.Rollback()
@@ -42,7 +53,7 @@ func Install(c *gin.Context) {
 		return
 	}
 	// set option blog url
-	err = model.SetOption(tx, vo.OptionKeyBlogURL, data.BlogURL)
+	err = model.SetOption(tx, model.OptionKeyBlogURL, data.BlogURL)
 	if err != nil {
 		log.Error("set option blog url failed:", err.Error())
 		tx.Rollback()
@@ -51,7 +62,7 @@ func Install(c *gin.Context) {
 	}
 
 	// set option blog description
-	err = model.SetOption(tx, vo.OptionKeyBlogDescription, "平凡的日子里，也要闪闪发光✨")
+	err = model.SetOption(tx, model.OptionKeyBlogDescription, "平凡的日子里，也要闪闪发光✨")
 	if err != nil {
 		log.Error("set option blog description failed:", err.Error())
 		tx.Rollback()
@@ -60,7 +71,7 @@ func Install(c *gin.Context) {
 	}
 
 	// set option blog themes
-	err = model.SetOption(tx, vo.OptionKeyBlogTheme, "default")
+	err = model.SetOption(tx, model.OptionKeyBlogTheme, "default")
 	if err != nil {
 		log.Error("set option blog themes failed:", err.Error())
 		tx.Rollback()
@@ -293,7 +304,7 @@ func Install(c *gin.Context) {
 	}
 
 	// set option installed
-	err = model.SetOption(tx, vo.OptionKeyIsInstalled, "true")
+	err = model.SetOption(tx, model.OptionKeyIsInstalled, "true")
 	if err != nil {
 		log.Error("set option is installed failed, ", err.Error())
 		tx.Rollback()

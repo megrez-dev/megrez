@@ -3,7 +3,6 @@ package checkinstall
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/megrez/pkg/entity/vo"
 	"github.com/megrez/pkg/model"
 	"github.com/megrez/pkg/utils/errmsg"
 	"gorm.io/gorm"
@@ -29,7 +28,7 @@ func CheckInstall() gin.HandlerFunc {
 			c.Next()
 			return
 		}
-		isInstalledStr, err := model.GetOptionByKey(vo.OptionKeyIsInstalled)
+		isInstalledStr, err := model.GetOptionByKey(model.OptionKeyIsInstalled)
 		if err == gorm.ErrRecordNotFound {
 			log.Println("redirect to install page, origin path:", c.Request.URL.Path)
 			// TODO: 判断完之后，后续 err 判空处理可能有 bug，所有 ErrRecordNotFound 都会有这个问题。

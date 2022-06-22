@@ -5,6 +5,12 @@ import (
 	"time"
 )
 
+const (
+	ArticleStatusPublished = 1
+	ArticleStatusDraft     = 2
+	ArticleStatusRecycled  = 3
+)
+
 type Article struct {
 	ID              uint      `gorm:"primarykey" json:"id"`
 	Title           string    `gorm:"type:varchar(255)" json:"title"`

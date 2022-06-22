@@ -4,7 +4,6 @@ import (
 	ginzap "github.com/gin-contrib/zap"
 	"github.com/gin-gonic/gin"
 	adminAssets "github.com/megrez/assets/admin"
-	"github.com/megrez/pkg/entity/vo"
 	"github.com/megrez/pkg/middleware/checkinstall"
 	"github.com/megrez/pkg/middleware/cros"
 	"github.com/megrez/pkg/middleware/pongo2gin"
@@ -34,7 +33,7 @@ func NewRouter(logger *zap.Logger, debug bool) (*gin.Engine, error) {
 	g.Use(ginzap.Ginzap(logger, time.RFC3339, true))
 	g.Use(ginzap.RecoveryWithZap(logger, true))
 
-	theme, err := model.GetOptionByKey(vo.OptionKeyBlogTheme)
+	theme, err := model.GetOptionByKey(model.OptionKeyBlogTheme)
 	if err != nil {
 		theme = DefaultTheme
 	}

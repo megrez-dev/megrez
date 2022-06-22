@@ -75,7 +75,6 @@ func GetCommentFromPO(comment model.Comment) (*Comment, error) {
 	commentVO.Site = comment.Site
 	// TODO: 设置头像
 	commentVO.Avatar = "https://cdn.rawchen.com/logo/alkaidchen.jpg"
-	// TODO: 计算Agent的浏览器和内核
 	commentVO.Agent = comment.Agent
 	subCommentPOs, err := model.ListCommentsByRootID(commentVO.ID)
 	if err != nil {
