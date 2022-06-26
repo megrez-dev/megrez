@@ -5,6 +5,15 @@ import (
 	"time"
 )
 
+const (
+	AttachmentTypeLocal = iota
+	AttachmentQiniu
+	AttachmentTypeAliOss
+	AttachmentTypeQcloudOss
+	AttachmentTypeHuaweiObs
+	AttachmentTypeYoupai
+)
+
 type Attachment struct {
 	ID         uint      `gorm:"primarykey" json:"id"`
 	URL        string    `gorm:"type:varchar(255)" json:"url"`

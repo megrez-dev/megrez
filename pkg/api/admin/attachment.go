@@ -5,6 +5,7 @@ import (
 	"github.com/megrez/pkg/entity/dto"
 	"github.com/megrez/pkg/model"
 	dirUtils "github.com/megrez/pkg/utils/dir"
+	"github.com/megrez/pkg/utils/uploader"
 	"gorm.io/gorm"
 	"image"
 	_ "image/gif"
@@ -46,7 +47,16 @@ func UploadAttachment(c *gin.Context) {
 	width := config.Width
 	height := config.Height
 	size := file.Size
+	dayDir := path.Join(strconv.Itoa(time.Now().Year()),
+		strconv.Itoa(int(time.Now().Month())),
+		strconv.Itoa(time.Now().Day()))
+	if err != nil {
+		log.Error("get upload dir error: ", err)
+		c.JSON(http.StatusOK, errmsg.Error())
+		return
+	}
 	var url string
+	var tp int
 	// TODO: make thumbnail
 	uploadType, err := model.GetOptionByKey(model.OptionKeyUploadType)
 	if err != nil {
@@ -61,9 +71,6 @@ func UploadAttachment(c *gin.Context) {
 	switch uploadType {
 	case "local":
 		uploadHome, err := dirUtils.GetOrCreateUploadHome()
-		dayDir := path.Join(strconv.Itoa(time.Now().Year()),
-			strconv.Itoa(int(time.Now().Month())),
-			strconv.Itoa(time.Now().Day()))
 		if err != nil {
 			log.Error("get upload dir error: ", err)
 			c.JSON(http.StatusOK, errmsg.Error())
@@ -76,6 +83,7 @@ func UploadAttachment(c *gin.Context) {
 			return
 		}
 		url = "/upload/" + path.Join(dayDir, newName)
+		tp = model.AttachmentTypeLocal
 		if err := c.SaveUploadedFile(file, path.Join(uploadHome, dayDir, newName)); err != nil {
 			log.Error("upload file error: ", err)
 			c.JSON(http.StatusOK, errmsg.Error())
@@ -87,40 +95,60 @@ func UploadAttachment(c *gin.Context) {
 	case "ali_oss":
 		// TODO
 	case "qcloud_cos":
-		// TODO
+		cos, err := uploader.GetTencentCosUploader()
+		if err != nil {
+			log.Error("get cos uploader error: ", err)
+			c.JSON(http.StatusOK, errmsg.Error())
+			return
+		}
+		err = cos.Upload(file, path.Join(dayDir, newName))
+		if err != nil {
+			log.Error("upload file error: ", err)
+			c.JSON(http.StatusOK, errmsg.Error())
+			return
+		}
+		url = cos.GetUrl(path.Join(dayDir, newName))
+		tp = model.AttachmentTypeQcloudOss
+
 	case "huawei_obs":
 		// TODO
 	case "youpai":
 		// TODO
 	default:
-		uploadDir, err := dirUtils.GetOrCreateUploadHome()
+		uploadHome, err := dirUtils.GetOrCreateUploadHome()
 		if err != nil {
 			log.Error("get upload dir error: ", err)
 			c.JSON(http.StatusOK, errmsg.Error())
 			return
 		}
-		url = "/upload/" + newName
-		if err := c.SaveUploadedFile(file, path.Join(uploadDir, newName)); err != nil {
+		err = dirUtils.CreateDir(uploadHome, dayDir)
+		if err != nil {
+			log.Error("create upload dir error: ", err)
+			c.JSON(http.StatusOK, errmsg.Error())
+			return
+		}
+		url = "/upload/" + path.Join(dayDir, newName)
+		tp = model.AttachmentTypeLocal
+		if err := c.SaveUploadedFile(file, path.Join(uploadHome, dayDir, newName)); err != nil {
 			log.Error("upload file error: ", err)
 			c.JSON(http.StatusOK, errmsg.Error())
 			return
 		}
 		log.Infof("upload file success, type: [%s], name: %s", "local", newName)
 	}
-	attahcment := &model.Attachment{
-		FileName: fileName,
-		URL:      url,
-		ThumbURL: url,
-		Size:     size,
-		Ext:      ext,
-		Height:   height,
-		Width:    width,
-		// TODO: 0: local, 1: qiniu, 2: ali_oss, 3: qcloud_cos, 4: huawei_obs, 5: youpai
-		Type:       0,
+	attachment := &model.Attachment{
+		FileName:   fileName,
+		URL:        url,
+		ThumbURL:   url,
+		Size:       size,
+		Ext:        ext,
+		Height:     height,
+		Width:      width,
+		Type:       tp,
 		UploadTime: time.Now(),
 	}
 	tx := model.BeginTx()
-	err = model.CreateAttachment(tx, attahcment)
+	err = model.CreateAttachment(tx, attachment)
 	if err != nil {
 		log.Error("create attachment error: ", err)
 		tx.Rollback()
@@ -128,7 +156,7 @@ func UploadAttachment(c *gin.Context) {
 		return
 	}
 	tx.Commit()
-	c.JSON(http.StatusOK, errmsg.Success(attahcment))
+	c.JSON(http.StatusOK, errmsg.Success(attachment))
 }
 
 func ListAttachments(c *gin.Context) {

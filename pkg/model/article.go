@@ -7,9 +7,9 @@ import (
 )
 
 const (
-	ArticleStatusPublished = 0
-	ArticleStatusDraft     = 1
-	ArticleStatusRecycled  = 2
+	ArticleStatusPublished = iota
+	ArticleStatusDraft
+	ArticleStatusRecycled
 )
 
 type Article struct {
