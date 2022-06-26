@@ -150,17 +150,17 @@ func GetArticleDetailFromPO(article model.Article, pageNum, pageSize int) (*Arti
 		comments = append(comments, comment)
 	}
 	vo.Comments = comments
-	comentsNum, err := model.CountCommentsByArticleID(article.ID)
+	commentsNum, err := model.CountCommentsByArticleID(article.ID)
 	if err != nil {
 		return vo, err
 	}
-	vo.CommentsNum = comentsNum
+	vo.CommentsNum = commentsNum
 
-	pre, err := model.GetArticleByID(vo.ID - 1)
+	pre, err := model.GetPreArticleByID(vo.ID)
 	if err == nil {
 		vo.Pre = GetNextPreArticleFromPO(pre)
 	}
-	next, err := model.GetArticleByID(vo.ID + 1)
+	next, err := model.GetNextArticleByID(vo.ID)
 	if err == nil {
 		vo.Next = GetNextPreArticleFromPO(next)
 	}

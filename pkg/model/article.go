@@ -1,14 +1,15 @@
 package model
 
 import (
+	"github.com/megrez/pkg/log"
 	"gorm.io/gorm"
 	"time"
 )
 
 const (
-	ArticleStatusPublished = 1
-	ArticleStatusDraft     = 2
-	ArticleStatusRecycled  = 3
+	ArticleStatusPublished = 0
+	ArticleStatusDraft     = 1
+	ArticleStatusRecycled  = 2
 )
 
 type Article struct {
@@ -72,6 +73,15 @@ func DeleteArticleByID(tx *gorm.DB, id uint) error {
 	return result.Error
 }
 
+func AddArticleView(id uint) {
+	log.Debug("AddArticleView")
+	if db.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
+	db.Model(&Article{}).Where("id = ?", id).Update("visits", gorm.Expr("visits + 1"))
+}
+
 // GetArticleByID return article by id
 func GetArticleByID(id uint) (Article, error) {
 	if db.Dialector.Name() == "sqlite3" {
@@ -94,15 +104,24 @@ func GetArticleBySlug(slug string) (Article, error) {
 	return article, result.Error
 }
 
-// ListArticlesByIDs return articles by ids
-func ListArticlesByIDs(ids []uint) ([]Article, error) {
+func GetPreArticleByID(id uint) (Article, error) {
 	if db.Dialector.Name() == "sqlite3" {
 		lock.Lock()
 		defer lock.Unlock()
 	}
-	var articles []Article
-	result := db.Order("publish_time DESC").Find(&articles, ids)
-	return articles, result.Error
+	article := Article{}
+	result := db.Where("id < ? AND status = ?", id, ArticleStatusPublished).Order("id DESC").First(&article)
+	return article, result.Error
+}
+
+func GetNextArticleByID(id uint) (Article, error) {
+	if db.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
+	article := Article{}
+	result := db.Where("id > ? AND status = ?", id, ArticleStatusPublished).Order("id").First(&article)
+	return article, result.Error
 }
 
 // ListAllArticles return all articles
@@ -113,6 +132,17 @@ func ListAllArticles(pageNum, pageSize int) ([]Article, error) {
 	}
 	var articles []Article
 	result := db.Order("publish_time DESC").Offset(pageSize * (pageNum - 1)).Limit(pageSize).Find(&articles)
+	return articles, result.Error
+}
+
+// ListPublishedArticles return all articles with status published
+func ListPublishedArticles(pageNum, pageSize int) ([]Article, error) {
+	if db.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
+	var articles []Article
+	result := db.Where("status = ?", ArticleStatusPublished).Order("publish_time DESC").Offset(pageSize * (pageNum - 1)).Limit(pageSize).Find(&articles)
 	return articles, result.Error
 }
 
@@ -134,7 +164,8 @@ func ListArticlesByCategoryID(cid uint, pageNum, pageSize int) ([]Article, error
 		defer lock.Unlock()
 	}
 	var articles []Article
-	result := db.Where("id in (?)", db.Table("article_categories").Select("article_id").Where("category_id = ?", cid)).Order("publish_time DESC").Find(&articles)
+	result := db.Where("id in (?)", db.Table("article_categories").Select("article_id").
+		Where("category_id = ?", cid)).Order("publish_time DESC").Offset(pageSize * (pageNum - 1)).Limit(pageSize).Find(&articles)
 	return articles, result.Error
 }
 

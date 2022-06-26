@@ -49,8 +49,8 @@ func CreateArticle(c *gin.Context) {
 	if article.Summary == "" {
 		l := lute.New()
 		length := len([]rune(l.HTML2Text(article.FormatContent)))
-		if length > 500 {
-			article.Summary = string([]rune(l.HTML2Text(article.FormatContent))[:500])
+		if length > 200 {
+			article.Summary = string([]rune(l.HTML2Text(article.FormatContent))[:200])
 		} else {
 			article.Summary = l.HTML2Text(article.FormatContent)
 		}

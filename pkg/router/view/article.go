@@ -39,7 +39,7 @@ func index(c *gin.Context) {
 			c.Redirect(http.StatusInternalServerError, "/error")
 		}
 	}
-	articlePOs, err := model.ListAllArticles(pageNum, pageSize)
+	articlePOs, err := model.ListPublishedArticles(pageNum, pageSize)
 	if err != nil {
 		log.Println("get articles from db failed, err:", err)
 		c.Redirect(http.StatusInternalServerError, "/error")
@@ -97,7 +97,7 @@ func articleDetail(c *gin.Context) {
 	if err != nil {
 		log.Println("query article from db failed, err: ", err)
 	}
-	articleDetial, err := vo.GetArticleDetailFromPO(articlePO, pageNum, pageSize)
+	article, err := vo.GetArticleDetailFromPO(articlePO, pageNum, pageSize)
 	if err != nil {
 		log.Println("get article detail failed, err:", err)
 		c.Redirect(http.StatusInternalServerError, "/error")
@@ -106,5 +106,6 @@ func articleDetail(c *gin.Context) {
 	if err != nil {
 		c.Redirect(http.StatusInternalServerError, "/error")
 	}
-	c.HTML(http.StatusOK, "article.html", pongo2.Context{"article": articleDetial, "global": globalOption})
+	go model.AddArticleView(uint(id))
+	c.HTML(http.StatusOK, "article.html", pongo2.Context{"article": article, "global": globalOption})
 }
