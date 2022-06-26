@@ -7,31 +7,27 @@ import (
 	"time"
 )
 
-type ArticleDTO struct {
-	ID              uint      `json:"id"`
-	Title           string    `json:"title"`
-	OriginalContent string    `json:"originalContent"`
-	FormatContent   string    `json:"formatContent"`
-	Summary         string    `json:"summary"`
-	Slug            string    `json:"slug"`
-	Password        string    `json:"password"`
-	Cover           string    `json:"cover"`
-	Private         bool      `json:"private"`
-	AllowedComment  bool      `json:"allowedComment"`
-	Categories      []uint    `json:"categories"`
-	Tags            []uint    `json:"tags"`
-	IsTop           bool      `json:"isTop"`
-	Visits          int64     `json:"visits"`
-	Likes           int64     `json:"likes"`
-	WordCount       int64     `json:"wordCount"`
-	SeoKeywords     []string  `json:"seoKeywords"`
-	SeoDescription  string    `json:"seoDescription"`
-	PublishTime     time.Time `json:"publishTime"`
-	EditTime        time.Time `json:"editTime"`
-	Status          int       `json:"status"`
+type CreateArticleForm struct {
+	ID              uint     `json:"id"`
+	Title           string   `json:"title"`
+	OriginalContent string   `json:"originalContent"`
+	FormatContent   string   `json:"formatContent"`
+	Summary         string   `json:"summary"`
+	Slug            string   `json:"slug"`
+	Password        string   `json:"password"`
+	Cover           string   `json:"cover"`
+	Private         bool     `json:"private"`
+	AllowedComment  bool     `json:"allowedComment"`
+	Categories      []uint   `json:"categories"`
+	Tags            []uint   `json:"tags"`
+	IsTop           bool     `json:"isTop"`
+	WordCount       int64    `json:"wordCount"`
+	SeoKeywords     []string `json:"seoKeywords"`
+	SeoDescription  string   `json:"seoDescription"`
+	Status          int      `json:"status"`
 }
 
-func (dto *ArticleDTO) Transfer2Model() model.Article {
+func (dto *CreateArticleForm) Transfer2Model() model.Article {
 	article := model.Article{
 		ID:              dto.ID,
 		Title:           dto.Title,
@@ -64,6 +60,30 @@ func (dto *ArticleDTO) Transfer2Model() model.Article {
 	}
 	article.SeoKeywords = seoKeywords
 	return article
+}
+
+type ArticleDTO struct {
+	ID              uint      `json:"id"`
+	Title           string    `json:"title"`
+	OriginalContent string    `json:"originalContent"`
+	FormatContent   string    `json:"formatContent"`
+	Summary         string    `json:"summary"`
+	Slug            string    `json:"slug"`
+	Password        string    `json:"password"`
+	Cover           string    `json:"cover"`
+	Private         bool      `json:"private"`
+	AllowedComment  bool      `json:"allowedComment"`
+	Categories      []uint    `json:"categories"`
+	Tags            []uint    `json:"tags"`
+	IsTop           bool      `json:"isTop"`
+	Visits          int64     `json:"visits"`
+	Likes           int64     `json:"likes"`
+	WordCount       int64     `json:"wordCount"`
+	SeoKeywords     []string  `json:"seoKeywords"`
+	SeoDescription  string    `json:"seoDescription"`
+	PublishTime     time.Time `json:"publishTime"`
+	EditTime        time.Time `json:"editTime"`
+	Status          int       `json:"status"`
 }
 
 func (dto *ArticleDTO) LoadFromModel(article model.Article) error {

@@ -17,7 +17,7 @@ import (
 )
 
 func CreateArticle(c *gin.Context) {
-	var data dto.ArticleDTO
+	var data dto.CreateArticleForm
 	err := c.ShouldBindJSON(&data)
 	if err != nil {
 		log.Error(err.Error())
@@ -112,7 +112,7 @@ func CreateArticle(c *gin.Context) {
 }
 
 func UpdateArticle(c *gin.Context) {
-	var data dto.ArticleDTO
+	var data dto.CreateArticleForm
 	err := c.ShouldBindJSON(&data)
 	if err != nil {
 		log.Error(err)
