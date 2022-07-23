@@ -8,6 +8,15 @@ import (
 	"net/http"
 )
 
+// SetOption godoc
+// @Summary set blog option
+// @Schemes http https
+// @Description set blog option
+// @Accept application/json
+// @Param Authorization header string false "Authorization"
+// @Param key path string false "option key"
+// @Success 200 {object} errmsg.Response{}
+// @Router /api/admin/option/{key} [put]
 func SetOption(c *gin.Context) {
 	key := c.Param("key")
 	type valueJson struct {

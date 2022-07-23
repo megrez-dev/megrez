@@ -10,6 +10,15 @@ import (
 	"strconv"
 )
 
+// CreateLink godoc
+// @Summary create link
+// @Schemes http https
+// @Description create link
+// @Accept application/json
+// @Param Authorization header string false "Authorization"
+// @Param req body model.Link true "body"
+// @Success 200 {object} errmsg.Response{data=model.Link}
+// @Router /api/admin/link [post]
 func CreateLink(c *gin.Context) {
 	var data model.Link
 	err := c.ShouldBindJSON(&data)
@@ -30,6 +39,16 @@ func CreateLink(c *gin.Context) {
 	c.JSON(http.StatusOK, errmsg.Success(data))
 }
 
+// UpdateLink godoc
+// @Summary update link
+// @Schemes http https
+// @Description update link
+// @Accept application/json
+// @Param Authorization header string false "Authorization"
+// @Param id path int true "link id"
+// @Param req body model.Link true "link"
+// @Success 200 {object} errmsg.Response{data=model.Link}
+// @Router /api/admin/link/{id} [put]
 func UpdateLink(c *gin.Context) {
 	var data model.Link
 	err := c.ShouldBindJSON(&data)
@@ -50,6 +69,15 @@ func UpdateLink(c *gin.Context) {
 	c.JSON(http.StatusOK, errmsg.Success(data))
 }
 
+// DeleteLink godoc
+// @Summary delete link by link id
+// @Schemes http https
+// @Description delete link by link id
+// @Accept application/json
+// @Param Authorization header string false "Authorization"
+// @Param id path int true "link id"
+// @Success 200 {object} errmsg.Response{}
+// @Router /api/admin/link/{id} [delete]
 func DeleteLink(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -69,6 +97,16 @@ func DeleteLink(c *gin.Context) {
 	c.JSON(http.StatusOK, errmsg.Success(nil))
 }
 
+// ListLinks godoc
+// @Summary list links
+// @Schemes http https
+// @Description list links
+// @Accept application/json
+// @Param Authorization header string false "Authorization"
+// @Param pageNum query int false "page num"
+// @Param pageSize query int false "page size"
+// @Success 200 {object} errmsg.Response{data=dto.Pagination{list=[]model.Link}}
+// @Router /api/admin/links [get]
 func ListLinks(c *gin.Context) {
 	pageNumStr := c.Query("pageNum")
 	pageSizeStr := c.Query("pageSize")

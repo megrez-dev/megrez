@@ -1,6 +1,7 @@
 package admin
 
 import (
+	"github.com/megrez/pkg/entity/dto"
 	"net/http"
 	"strconv"
 
@@ -10,6 +11,15 @@ import (
 	"github.com/megrez/pkg/utils/errmsg"
 )
 
+// CreateCategory godoc
+// @Summary create category
+// @Schemes http https
+// @Description create category
+// @Accept application/json
+// @Param Authorization header string false "Authorization"
+// @Param req body model.Category true "body"
+// @Success 200 {object} errmsg.Response{data=model.Category}
+// @Router /api/admin/category [post]
 func CreateCategory(c *gin.Context) {
 	var data model.Category
 	err := c.ShouldBindJSON(&data)
@@ -38,6 +48,16 @@ func CreateCategory(c *gin.Context) {
 	c.JSON(http.StatusOK, errmsg.Success(data))
 }
 
+// UpdateCategory godoc
+// @Summary update category
+// @Schemes http https
+// @Description update category
+// @Accept application/json
+// @Param Authorization header string false "Authorization"
+// @Param id path int true "category id"
+// @Param req body model.Category true "category"
+// @Success 200 {object} errmsg.Response{data=model.Category}
+// @Router /api/admin/category/{id} [put]
 func UpdateCategory(c *gin.Context) {
 	var data model.Category
 	id, err := strconv.Atoi(c.Param("id"))
@@ -66,6 +86,15 @@ func UpdateCategory(c *gin.Context) {
 	c.JSON(http.StatusOK, errmsg.Success(data))
 }
 
+// DeleteCategory godoc
+// @Summary delete category by category id
+// @Schemes http https
+// @Description delete category by category id
+// @Accept application/json
+// @Param Authorization header string false "Authorization"
+// @Param id path int true "category id"
+// @Success 200 {object} errmsg.Response{}
+// @Router /api/admin/category/{id} [delete]
 func DeleteCategory(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -87,6 +116,15 @@ func DeleteCategory(c *gin.Context) {
 	c.JSON(http.StatusOK, errmsg.Success(nil))
 }
 
+// GetCategory godoc
+// @Summary get category by category id
+// @Schemes http https
+// @Description get category by category id
+// @Accept application/json
+// @Param Authorization header string false "Authorization"
+// @Param id path int false "category id"
+// @Success 200 {object} errmsg.Response{data=model.Category}
+// @Router /api/admin/category/{id} [get]
 func GetCategory(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -104,6 +142,16 @@ func GetCategory(c *gin.Context) {
 	c.JSON(http.StatusOK, errmsg.Success(category))
 }
 
+// ListCategories godoc
+// @Summary list categories
+// @Schemes http https
+// @Description list categories
+// @Accept application/json
+// @Param Authorization header string false "Authorization"
+// @Param pageNum query int false "page num"
+// @Param pageSize query int false "page size"
+// @Success 200 {object} errmsg.Response{data=dto.Pagination{list=[]model.Category}}
+// @Router /api/admin/categories [get]
 func ListCategories(c *gin.Context) {
 	pageNumStr := c.Query("pageNum")
 	pageSizeStr := c.Query("pageSize")
@@ -130,7 +178,18 @@ func ListCategories(c *gin.Context) {
 			c.JSON(http.StatusOK, errmsg.Error())
 			return
 		}
-
-		c.JSON(http.StatusOK, errmsg.Success(categories))
+		total, err := model.CountCategories()
+		if err != nil {
+			log.Error(err.Error())
+			c.JSON(http.StatusOK, errmsg.Error())
+			return
+		}
+		pagination := dto.Pagination{
+			Current:  pageNum,
+			PageSize: pageSize,
+			Total:    total,
+			List:     categories,
+		}
+		c.JSON(http.StatusOK, errmsg.Success(pagination))
 	}
 }

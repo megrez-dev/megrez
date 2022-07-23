@@ -1,7 +1,5 @@
 package errmsg
 
-import "github.com/gin-gonic/gin"
-
 const (
 	SUCCESS           = 0
 	ERROR             = -1
@@ -51,35 +49,41 @@ var codeMsg = map[int]string{
 	ErrorOnlySupportZip: "仅支持zip格式",
 }
 
+type Response struct {
+	Status int         `json:"status"`
+	Msg    string      `json:"msg"`
+	Data   interface{} `json:"data"`
+}
+
 func GetErrMsg(code int) string {
 	return codeMsg[code]
 }
 
-func Success(data interface{}) gin.H {
-	return gin.H{
-		"status": SUCCESS,
-		"msg":    GetErrMsg(SUCCESS),
-		"data":   data,
+func Success(data interface{}) Response {
+	return Response{
+		Status: SUCCESS,
+		Msg:    GetErrMsg(SUCCESS),
+		Data:   data,
 	}
 }
 
-func Fail(status int) gin.H {
-	return gin.H{
-		"status": status,
-		"msg":    GetErrMsg(status),
+func Fail(status int) Response {
+	return Response{
+		Status: status,
+		Msg:    GetErrMsg(status),
 	}
 }
 
-func FailMsg(msg string) gin.H {
-	return gin.H{
-		"status": ERROR,
-		"msg":    msg,
+func FailMsg(msg string) Response {
+	return Response{
+		Status: ERROR,
+		Msg:    msg,
 	}
 }
 
-func Error() gin.H {
-	return gin.H{
-		"status": ERROR,
-		"msg":    GetErrMsg(ERROR),
+func Error() Response {
+	return Response{
+		Status: ERROR,
+		Msg:    GetErrMsg(ERROR),
 	}
 }

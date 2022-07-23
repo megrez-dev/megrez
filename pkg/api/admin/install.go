@@ -16,6 +16,14 @@ import (
 	"time"
 )
 
+// Install godoc
+// @Summary install blog form
+// @Schemes http https
+// @Description install blog form
+// @Accept application/json
+// @Param  req body dto.InstallBlogForm true "install blog form"
+// @Success 200 {object} errmsg.Response{data=string}
+// @Router /api/admin/install [post]
 func Install(c *gin.Context) {
 	var data dto.InstallBlogForm
 	err := c.ShouldBindJSON(&data)

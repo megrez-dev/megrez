@@ -21,6 +21,15 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+// UpdateCurrentThemeConfig godoc
+// @Summary update current theme config
+// @Schemes http https
+// @Description update current theme config
+// @Accept application/json
+// @Param Authorization header string false "Authorization"
+// @Param req body config.ThemeConfig true "body"
+// @Success 200 {object} errmsg.Response{}
+// @Router /api/admin/theme/current/config [put]
 func UpdateCurrentThemeConfig(c *gin.Context) {
 	var cfg config.ThemeConfig
 	err := c.ShouldBindJSON(&cfg)
@@ -61,6 +70,15 @@ func UpdateCurrentThemeConfig(c *gin.Context) {
 	c.JSON(http.StatusOK, errmsg.Success(nil))
 }
 
+// InstallTheme godoc
+// @Summary install theme via upload zip file
+// @Schemes http https
+// @Description install theme via upload zip file
+// @Accept multipart/form-data
+// @Param Authorization header string false "Authorization"
+// @Param  file formData file true "file"
+// @Success 200 {object} errmsg.Response{}
+// @Router /api/admin/theme/install [post]
 func InstallTheme(c *gin.Context) {
 	file, err := c.FormFile("file")
 	if err != nil {
@@ -190,6 +208,15 @@ func InstallTheme(c *gin.Context) {
 	c.JSON(http.StatusOK, errmsg.Success(nil))
 }
 
+// DeleteTheme godoc
+// @Summary delete theme by theme id
+// @Schemes http https
+// @Description delete theme by theme id
+// @Accept application/json
+// @Param Authorization header string false "Authorization"
+// @Param  id path string true "theme id"
+// @Success 200 {object} errmsg.Response{}
+// @Router /api/admin/theme/{id} [delete]
 func DeleteTheme(c *gin.Context) {
 	home, err := dirUtils.GetOrCreateMegrezHome()
 	if err != nil {
@@ -220,6 +247,14 @@ func DeleteTheme(c *gin.Context) {
 	c.JSON(http.StatusOK, errmsg.Success(nil))
 }
 
+// GetCurrentThemeConfig godoc
+// @Summary get current theme config
+// @Schemes http https
+// @Description get current theme config
+// @Accept application/json
+// @Param Authorization header string false "Authorization"
+// @Success 200 {object} errmsg.Response{data=config.ThemeConfig}
+// @Router /api/admin/theme/current/config [get]
 func GetCurrentThemeConfig(c *gin.Context) {
 	var cfg = &config.ThemeConfig{}
 	home, err := dirUtils.GetOrCreateMegrezHome()
@@ -267,6 +302,14 @@ func GetCurrentThemeConfig(c *gin.Context) {
 	c.JSON(http.StatusOK, errmsg.Success(cfg))
 }
 
+// ListThemes godoc
+// @Summary list themes
+// @Schemes http https
+// @Description list themes
+// @Accept application/json
+// @Param Authorization header string false "Authorization"
+// @Success 200 {object} errmsg.Response{data=[]config.ThemeInfo}
+// @Router /api/admin/themes [get]
 func ListThemes(c *gin.Context) {
 	home, err := dirUtils.GetOrCreateMegrezHome()
 	if err != nil {
@@ -308,6 +351,14 @@ func ListThemes(c *gin.Context) {
 	c.JSON(http.StatusOK, errmsg.Success(themeList))
 }
 
+// GetCurrentThemeID godoc
+// @Summary get current theme id
+// @Schemes http https
+// @Description get current theme id
+// @Accept application/json
+// @Param Authorization header string false "Authorization"
+// @Success 200 {object} errmsg.Response{data=string}
+// @Router /api/admin/theme/current/id [get]
 func GetCurrentThemeID(c *gin.Context) {
 	themeID, err := model.GetOptionByKey(model.OptionKeyBlogTheme)
 	if err != nil {

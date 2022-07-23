@@ -11,6 +11,15 @@ import (
 	"time"
 )
 
+// CreateComment godoc
+// @Summary create comment
+// @Schemes http https
+// @Description create comment
+// @Accept application/json
+// @Param Authorization header string false "Authorization"
+// @Param req body dto.CreateCommentForm true "body"
+// @Success 200 {object} errmsg.Response{}
+// @Router /api/admin/comment [post]
 func CreateComment(c *gin.Context) {
 	var data dto.CreateCommentForm
 	err := c.ShouldBindJSON(&data)
@@ -66,6 +75,16 @@ func CreateComment(c *gin.Context) {
 	c.JSON(http.StatusOK, errmsg.Success(nil))
 }
 
+// ListComments godoc
+// @Summary list comments
+// @Schemes http https
+// @Description list comments
+// @Accept application/json
+// @Param Authorization header string false "Authorization"
+// @Param pageNum query int false "page num"
+// @Param pageSize query int false "page size"
+// @Success 200 {object} errmsg.Response{data=dto.Pagination{list=[]dto.CommentListDTO}}
+// @Router /api/admin/comments [get]
 func ListComments(c *gin.Context) {
 	var pageNum, pageSize int
 	var err error
@@ -121,6 +140,15 @@ func ListComments(c *gin.Context) {
 	c.JSON(http.StatusOK, errmsg.Success(pagination))
 }
 
+// DeleteComment godoc
+// @Summary delete comment by comment id
+// @Schemes http https
+// @Description delete comment by comment id
+// @Accept application/json
+// @Param Authorization header string false "Authorization"
+// @Param id path int true "comment id"
+// @Success 200 {object} errmsg.Response{}
+// @Router /api/admin/comment/{id} [delete]
 func DeleteComment(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {

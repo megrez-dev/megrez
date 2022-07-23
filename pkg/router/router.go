@@ -11,6 +11,8 @@ import (
 	"github.com/megrez/pkg/router/admin"
 	"github.com/megrez/pkg/router/view"
 	dirUtils "github.com/megrez/pkg/utils/dir"
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 	"go.uber.org/zap"
 	"io/fs"
 	"net/http"
@@ -55,6 +57,7 @@ func NewRouter(logger *zap.Logger, debug bool) (*gin.Engine, error) {
 		return nil, err
 	}
 	g.Static("/upload", uploadHome)
+	g.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	g.NoRoute(func(c *gin.Context) {
 		if strings.HasPrefix(c.Request.URL.Path, "/admin") {
 			//设置响应状态

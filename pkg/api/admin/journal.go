@@ -11,6 +11,15 @@ import (
 	"time"
 )
 
+// CreateJournal godoc
+// @Summary create journal
+// @Schemes http https
+// @Description create journal
+// @Accept application/json
+// @Param Authorization header string false "Authorization"
+// @Param req body dto.CreateJournalForm true "body"
+// @Success 200 {object} errmsg.Response{}
+// @Router /api/admin/journal [post]
 func CreateJournal(c *gin.Context) {
 	var data dto.CreateJournalForm
 	err := c.ShouldBindJSON(&data)
@@ -47,6 +56,16 @@ func CreateJournal(c *gin.Context) {
 	c.JSON(http.StatusOK, errmsg.Success(nil))
 }
 
+// ListJournals godoc
+// @Summary list journals
+// @Schemes http https
+// @Description list journals
+// @Accept application/json
+// @Param Authorization header string false "Authorization"
+// @Param pageNum query int false "page num"
+// @Param pageSize query int false "page size"
+// @Success 200 {object} errmsg.Response{data=dto.Pagination{list=[]dto.JournalDTO}}
+// @Router /api/admin/journals [get]
 func ListJournals(c *gin.Context) {
 	var pageNum, pageSize int
 	var err error

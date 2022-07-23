@@ -1,0 +1,1364 @@
+basePath: /
+definitions:
+  config.AuthorInfo:
+    properties:
+      avatar:
+        type: string
+      name:
+        type: string
+      website:
+        type: string
+    type: object
+  config.Item:
+    properties:
+      default:
+        type: string
+      description:
+        type: string
+      key:
+        type: string
+      name:
+        type: string
+      options:
+        items:
+          type: string
+        type: array
+      placeholder:
+        type: string
+      type:
+        type: string
+      value: {}
+      values:
+        items:
+          type: string
+        type: array
+    type: object
+  config.Tab:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/config.Item'
+        type: array
+      key:
+        type: string
+      name:
+        type: string
+    type: object
+  config.ThemeConfig:
+    properties:
+      tabs:
+        items:
+          $ref: '#/definitions/config.Tab'
+        type: array
+    type: object
+  config.ThemeInfo:
+    properties:
+      author:
+        $ref: '#/definitions/config.AuthorInfo'
+      cover:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      repository:
+        type: string
+      version:
+        type: string
+    type: object
+  dto.ArticleDTO:
+    properties:
+      allowedComment:
+        type: boolean
+      categories:
+        items:
+          type: integer
+        type: array
+      cover:
+        type: string
+      editTime:
+        type: string
+      formatContent:
+        type: string
+      id:
+        type: integer
+      isTop:
+        type: boolean
+      likes:
+        type: integer
+      originalContent:
+        type: string
+      password:
+        type: string
+      private:
+        type: boolean
+      publishTime:
+        type: string
+      seoDescription:
+        type: string
+      seoKeywords:
+        items:
+          type: string
+        type: array
+      slug:
+        type: string
+      status:
+        type: integer
+      summary:
+        type: string
+      tags:
+        items:
+          type: integer
+        type: array
+      title:
+        type: string
+      visits:
+        type: integer
+      wordCount:
+        type: integer
+    type: object
+  dto.ArticlesListDTO:
+    properties:
+      allowedComment:
+        type: boolean
+      categories:
+        items:
+          $ref: '#/definitions/model.Category'
+        type: array
+      commentsNum:
+        type: integer
+      cover:
+        type: string
+      editTime:
+        type: string
+      formatContent:
+        type: string
+      id:
+        type: integer
+      isTop:
+        type: boolean
+      likes:
+        type: integer
+      originalContent:
+        type: string
+      password:
+        type: string
+      private:
+        type: boolean
+      publishTime:
+        type: string
+      slug:
+        type: string
+      status:
+        type: integer
+      summary:
+        type: string
+      tags:
+        items:
+          $ref: '#/definitions/model.Tag'
+        type: array
+      title:
+        type: string
+      visits:
+        type: integer
+      wordCount:
+        type: integer
+    type: object
+  dto.AttachmentDTO:
+    properties:
+      ext:
+        type: string
+      fileName:
+        type: string
+      height:
+        type: integer
+      id:
+        type: integer
+      size:
+        type: string
+      thumbURL:
+        type: string
+      type:
+        type: integer
+      uploadTime:
+        type: string
+      url:
+        type: string
+      width:
+        type: integer
+    type: object
+  dto.CommentListDTO:
+    properties:
+      article:
+        $ref: '#/definitions/dto.ArticleDTO'
+      author:
+        type: string
+      content:
+        type: string
+      createTime:
+        type: string
+      id:
+        type: integer
+      ip:
+        type: string
+      mail:
+        type: string
+      page:
+        $ref: '#/definitions/dto.PageDTO'
+      parentID:
+        type: integer
+      rootID:
+        type: integer
+      site:
+        type: string
+      status:
+        type: integer
+      type:
+        type: integer
+    type: object
+  dto.CreateArticleForm:
+    properties:
+      allowedComment:
+        type: boolean
+      categories:
+        items:
+          type: integer
+        type: array
+      cover:
+        type: string
+      formatContent:
+        type: string
+      id:
+        type: integer
+      isTop:
+        type: boolean
+      originalContent:
+        type: string
+      password:
+        type: string
+      private:
+        type: boolean
+      seoDescription:
+        type: string
+      seoKeywords:
+        items:
+          type: string
+        type: array
+      slug:
+        type: string
+      status:
+        type: integer
+      summary:
+        type: string
+      tags:
+        items:
+          type: integer
+        type: array
+      title:
+        type: string
+      wordCount:
+        type: integer
+    type: object
+  dto.CreateCommentForm:
+    properties:
+      articleID:
+        type: integer
+      content:
+        type: string
+      createTime:
+        type: string
+      pageID:
+        type: integer
+      parentID:
+        type: integer
+      rootID:
+        type: integer
+      type:
+        type: integer
+      updateTime:
+        type: string
+    type: object
+  dto.CreateJournalForm:
+    properties:
+      content:
+        type: string
+      images:
+        items:
+          type: string
+        type: array
+      private:
+        type: boolean
+      status:
+        type: integer
+    type: object
+  dto.InstallBlogForm:
+    properties:
+      blogTitle:
+        type: string
+      blogURL:
+        type: string
+      confirmPassword:
+        type: string
+      email:
+        type: string
+      nickname:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  dto.JournalDTO:
+    properties:
+      content:
+        type: string
+      createTime:
+        type: string
+      id:
+        type: integer
+      images:
+        items:
+          type: string
+        type: array
+      likes:
+        type: integer
+      private:
+        type: boolean
+      status:
+        type: integer
+      updateTime:
+        type: string
+      visits:
+        type: integer
+    type: object
+  dto.LoginForm:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  dto.PageDTO:
+    properties:
+      cover:
+        type: string
+      createTime:
+        type: string
+      formatContent:
+        type: string
+      id:
+        type: integer
+      likes:
+        type: integer
+      name:
+        type: string
+      originalContent:
+        type: string
+      password:
+        type: string
+      private:
+        type: boolean
+      slug:
+        type: string
+      status:
+        type: integer
+      updateTime:
+        type: string
+      visits:
+        type: integer
+    type: object
+  dto.Pagination:
+    properties:
+      current:
+        type: integer
+      list: {}
+      pageSize:
+        type: integer
+      total:
+        type: integer
+    type: object
+  errmsg.Response:
+    properties:
+      data: {}
+      msg:
+        type: string
+      status:
+        type: integer
+    type: object
+  model.Article:
+    properties:
+      allowedComment:
+        type: boolean
+      cover:
+        type: string
+      editTime:
+        type: string
+      formatContent:
+        type: string
+      id:
+        type: integer
+      likes:
+        type: integer
+      originalContent:
+        type: string
+      password:
+        type: string
+      private:
+        type: boolean
+      publishTime:
+        type: string
+      seoDescription:
+        type: string
+      seoKeywords:
+        type: string
+      slug:
+        type: string
+      status:
+        type: integer
+      summary:
+        type: string
+      title:
+        type: string
+      topPriority:
+        type: integer
+      visits:
+        type: integer
+      wordCount:
+        type: integer
+    type: object
+  model.Attachment:
+    properties:
+      ThumbURL:
+        type: string
+      ext:
+        type: string
+      fileName:
+        type: string
+      height:
+        type: integer
+      id:
+        type: integer
+      size:
+        type: integer
+      type:
+        type: integer
+      uploadTime:
+        type: string
+      url:
+        type: string
+      width:
+        type: integer
+    type: object
+  model.Category:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      slug:
+        type: string
+      status:
+        type: integer
+    type: object
+  model.Link:
+    properties:
+      createTime:
+        type: string
+      id:
+        type: integer
+      logo:
+        type: string
+      name:
+        type: string
+      priority:
+        type: integer
+      status:
+        type: integer
+      updateTime:
+        type: string
+      url:
+        type: string
+    type: object
+  model.Tag:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      slug:
+        type: string
+      status:
+        type: integer
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: alkaidchen@qq.com
+    name: Megrez
+    url: http://megrez.run
+  description: This is a megrez backend server.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://megrez.run
+  title: Megrez backend API
+  version: "1.0"
+paths:
+  /api/admin/article:
+    post:
+      consumes:
+      - application/json
+      description: create article
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        type: string
+      - description: body
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateArticleForm'
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/errmsg.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.Article'
+              type: object
+      summary: create article
+  /api/admin/article/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: delete article by article id
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        type: string
+      - description: article id
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/errmsg.Response'
+      summary: delete article by article id
+    get:
+      consumes:
+      - application/json
+      description: get article by article id
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        type: string
+      - description: article id
+        in: path
+        name: id
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/errmsg.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.ArticleDTO'
+              type: object
+      summary: get article by article id
+    put:
+      consumes:
+      - application/json
+      description: update article
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        type: string
+      - description: article id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: article
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateArticleForm'
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/errmsg.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.Article'
+              type: object
+      summary: update article
+  /api/admin/articles:
+    get:
+      consumes:
+      - application/json
+      description: list articles
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        type: string
+      - description: page num
+        in: query
+        name: pageNum
+        type: integer
+      - description: page size
+        in: query
+        name: pageSize
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/errmsg.Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/dto.Pagination'
+                  - properties:
+                      list:
+                        items:
+                          $ref: '#/definitions/dto.ArticlesListDTO'
+                        type: array
+                    type: object
+              type: object
+      summary: list articles
+  /api/admin/attachments:
+    get:
+      consumes:
+      - application/json
+      description: list attachments
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        type: string
+      - description: page num
+        in: query
+        name: pageNum
+        type: integer
+      - description: page size
+        in: query
+        name: pageSize
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/errmsg.Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/dto.Pagination'
+                  - properties:
+                      list:
+                        items:
+                          $ref: '#/definitions/dto.AttachmentDTO'
+                        type: array
+                    type: object
+              type: object
+      summary: list attachments
+  /api/admin/categories:
+    get:
+      consumes:
+      - application/json
+      description: list categories
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        type: string
+      - description: page num
+        in: query
+        name: pageNum
+        type: integer
+      - description: page size
+        in: query
+        name: pageSize
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/errmsg.Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/dto.Pagination'
+                  - properties:
+                      list:
+                        items:
+                          $ref: '#/definitions/model.Category'
+                        type: array
+                    type: object
+              type: object
+      summary: list categories
+  /api/admin/category:
+    post:
+      consumes:
+      - application/json
+      description: create category
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        type: string
+      - description: body
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/model.Category'
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/errmsg.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.Category'
+              type: object
+      summary: create category
+  /api/admin/category/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: delete category by category id
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        type: string
+      - description: category id
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/errmsg.Response'
+      summary: delete category by category id
+    get:
+      consumes:
+      - application/json
+      description: get category by category id
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        type: string
+      - description: category id
+        in: path
+        name: id
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/errmsg.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.Category'
+              type: object
+      summary: get category by category id
+    put:
+      consumes:
+      - application/json
+      description: update category
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        type: string
+      - description: category id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: category
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/model.Category'
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/errmsg.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.Category'
+              type: object
+      summary: update category
+  /api/admin/comment:
+    post:
+      consumes:
+      - application/json
+      description: create comment
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        type: string
+      - description: body
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateCommentForm'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/errmsg.Response'
+      summary: create comment
+  /api/admin/comment/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: delete comment by comment id
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        type: string
+      - description: comment id
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/errmsg.Response'
+      summary: delete comment by comment id
+  /api/admin/comments:
+    get:
+      consumes:
+      - application/json
+      description: list comments
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        type: string
+      - description: page num
+        in: query
+        name: pageNum
+        type: integer
+      - description: page size
+        in: query
+        name: pageSize
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/errmsg.Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/dto.Pagination'
+                  - properties:
+                      list:
+                        items:
+                          $ref: '#/definitions/dto.CommentListDTO'
+                        type: array
+                    type: object
+              type: object
+      summary: list comments
+  /api/admin/install:
+    post:
+      consumes:
+      - application/json
+      description: install blog form
+      parameters:
+      - description: install blog form
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/dto.InstallBlogForm'
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/errmsg.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: install blog form
+  /api/admin/journal:
+    post:
+      consumes:
+      - application/json
+      description: create journal
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        type: string
+      - description: body
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateJournalForm'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/errmsg.Response'
+      summary: create journal
+  /api/admin/journals:
+    get:
+      consumes:
+      - application/json
+      description: list journals
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        type: string
+      - description: page num
+        in: query
+        name: pageNum
+        type: integer
+      - description: page size
+        in: query
+        name: pageSize
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/errmsg.Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/dto.Pagination'
+                  - properties:
+                      list:
+                        items:
+                          $ref: '#/definitions/dto.JournalDTO'
+                        type: array
+                    type: object
+              type: object
+      summary: list journals
+  /api/admin/link:
+    post:
+      consumes:
+      - application/json
+      description: create link
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        type: string
+      - description: body
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/model.Link'
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/errmsg.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.Link'
+              type: object
+      summary: create link
+  /api/admin/link/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: delete link by link id
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        type: string
+      - description: link id
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/errmsg.Response'
+      summary: delete link by link id
+    put:
+      consumes:
+      - application/json
+      description: update link
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        type: string
+      - description: link id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: link
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/model.Link'
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/errmsg.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.Link'
+              type: object
+      summary: update link
+  /api/admin/links:
+    get:
+      consumes:
+      - application/json
+      description: list links
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        type: string
+      - description: page num
+        in: query
+        name: pageNum
+        type: integer
+      - description: page size
+        in: query
+        name: pageSize
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/errmsg.Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/dto.Pagination'
+                  - properties:
+                      list:
+                        items:
+                          $ref: '#/definitions/model.Link'
+                        type: array
+                    type: object
+              type: object
+      summary: list links
+  /api/admin/login:
+    post:
+      consumes:
+      - application/json
+      description: login form
+      parameters:
+      - description: login form
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/dto.LoginForm'
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/errmsg.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: login form
+  /api/admin/option/{key}:
+    put:
+      consumes:
+      - application/json
+      description: set blog option
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        type: string
+      - description: option key
+        in: path
+        name: key
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/errmsg.Response'
+      summary: set blog option
+  /api/admin/tag:
+    post:
+      consumes:
+      - application/json
+      description: create tag
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        type: string
+      - description: body
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/model.Tag'
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/errmsg.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.Tag'
+              type: object
+      summary: create tag
+  /api/admin/tags:
+    get:
+      consumes:
+      - application/json
+      description: list tags
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        type: string
+      - description: page num
+        in: query
+        name: pageNum
+        type: integer
+      - description: page size
+        in: query
+        name: pageSize
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/errmsg.Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/dto.Pagination'
+                  - properties:
+                      list:
+                        items:
+                          $ref: '#/definitions/model.Tag'
+                        type: array
+                    type: object
+              type: object
+      summary: list tags
+  /api/admin/theme/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: delete theme by theme id
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        type: string
+      - description: theme id
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/errmsg.Response'
+      summary: delete theme by theme id
+  /api/admin/theme/current/config:
+    get:
+      consumes:
+      - application/json
+      description: get current theme config
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/errmsg.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/config.ThemeConfig'
+              type: object
+      summary: get current theme config
+    put:
+      consumes:
+      - application/json
+      description: update current theme config
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        type: string
+      - description: body
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/config.ThemeConfig'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/errmsg.Response'
+      summary: update current theme config
+  /api/admin/theme/current/id:
+    get:
+      consumes:
+      - application/json
+      description: get current theme id
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/errmsg.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: get current theme id
+  /api/admin/theme/install:
+    post:
+      consumes:
+      - multipart/form-data
+      description: install theme via upload zip file
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        type: string
+      - description: file
+        in: formData
+        name: file
+        required: true
+        type: file
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/errmsg.Response'
+      summary: install theme via upload zip file
+  /api/admin/themes:
+    get:
+      consumes:
+      - application/json
+      description: list themes
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/errmsg.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/config.ThemeInfo'
+                  type: array
+              type: object
+      summary: list themes
+  /api/admin/upload:
+    post:
+      consumes:
+      - application/json
+      - ' text/plain'
+      - ' */*'
+      description: upload attachment
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        type: string
+      - description: file
+        in: formData
+        name: file
+        required: true
+        type: file
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/errmsg.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.Attachment'
+              type: object
+      summary: upload attachment
+swagger: "2.0"

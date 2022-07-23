@@ -21,8 +21,18 @@ import (
 	"github.com/megrez/pkg/utils/errmsg"
 )
 
+// UploadAttachment godoc
+// @Summary upload attachment
+// @Schemes http https
+// @Description upload attachment
+// @Accept application/json, text/plain, */*
+// @Param Authorization header string false "Authorization"
+// @Param  file formData file true "file"
+// @Success 200 {object} errmsg.Response{data=model.Attachment}
+// @Router /api/admin/upload [post]
 func UploadAttachment(c *gin.Context) {
 	file, err := c.FormFile("file")
+	log.Debug("file:", file.Filename)
 	if err != nil {
 		log.Error("get file from request failed: ", err)
 		c.JSON(http.StatusOK, errmsg.Error())
@@ -159,6 +169,16 @@ func UploadAttachment(c *gin.Context) {
 	c.JSON(http.StatusOK, errmsg.Success(attachment))
 }
 
+// ListAttachments godoc
+// @Summary list attachments
+// @Schemes http https
+// @Description list attachments
+// @Accept application/json
+// @Param Authorization header string false "Authorization"
+// @Param pageNum query int false "page num"
+// @Param pageSize query int false "page size"
+// @Success 200 {object} errmsg.Response{data=dto.Pagination{list=[]dto.AttachmentDTO}}
+// @Router /api/admin/attachments [get]
 func ListAttachments(c *gin.Context) {
 	var pageNum, pageSize int
 	var err error

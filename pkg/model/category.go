@@ -116,3 +116,14 @@ func ListCategoriesByArticleID(aid uint) ([]Category, error) {
 	result := db.Where("id in (?)", db.Table("article_categories").Select("category_id").Where("article_id = ?", aid)).Find(&categories)
 	return categories, result.Error
 }
+
+// CountCategories return count of categories
+func CountCategories() (int64, error) {
+	if db.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
+	var count int64
+	result := db.Model(&Category{}).Count(&count)
+	return count, result.Error
+}

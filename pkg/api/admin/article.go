@@ -16,6 +16,15 @@ import (
 	"github.com/gosimple/slug"
 )
 
+// CreateArticle godoc
+// @Summary create article
+// @Schemes http https
+// @Description create article
+// @Accept application/json
+// @Param Authorization header string false "Authorization"
+// @Param req body dto.CreateArticleForm true "body"
+// @Success 200 {object} errmsg.Response{data=model.Article}
+// @Router /api/admin/article [post]
 func CreateArticle(c *gin.Context) {
 	var data dto.CreateArticleForm
 	err := c.ShouldBindJSON(&data)
@@ -111,6 +120,16 @@ func CreateArticle(c *gin.Context) {
 	c.JSON(http.StatusOK, errmsg.Success(article))
 }
 
+// UpdateArticle godoc
+// @Summary update article
+// @Schemes http https
+// @Description update article
+// @Accept application/json
+// @Param Authorization header string false "Authorization"
+// @Param id path int true "article id"
+// @Param req body dto.CreateArticleForm true "article"
+// @Success 200 {object} errmsg.Response{data=model.Article}
+// @Router /api/admin/article/{id} [put]
 func UpdateArticle(c *gin.Context) {
 	var data dto.CreateArticleForm
 	err := c.ShouldBindJSON(&data)
@@ -265,6 +284,15 @@ func UpdateArticle(c *gin.Context) {
 	c.JSON(http.StatusOK, errmsg.Success(article))
 }
 
+// DeleteArticle godoc
+// @Summary delete article by article id
+// @Schemes http https
+// @Description delete article by article id
+// @Accept application/json
+// @Param Authorization header string false "Authorization"
+// @Param id path int true "article id"
+// @Success 200 {object} errmsg.Response{}
+// @Router /api/admin/article/{id} [delete]
 func DeleteArticle(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -306,6 +334,15 @@ func DeleteArticle(c *gin.Context) {
 	c.JSON(http.StatusOK, errmsg.Success(nil))
 }
 
+// GetArticle godoc
+// @Summary get article by article id
+// @Schemes http https
+// @Description get article by article id
+// @Accept application/json
+// @Param Authorization header string false "Authorization"
+// @Param id path int false "article id"
+// @Success 200 {object} errmsg.Response{data=dto.ArticleDTO}
+// @Router /api/admin/article/{id} [get]
 func GetArticle(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -325,6 +362,16 @@ func GetArticle(c *gin.Context) {
 	c.JSON(http.StatusOK, errmsg.Success(articleDTO))
 }
 
+// ListArticles godoc
+// @Summary list articles
+// @Schemes http https
+// @Description list articles
+// @Accept application/json
+// @Param Authorization header string false "Authorization"
+// @Param pageNum query int false "page num"
+// @Param pageSize query int false "page size"
+// @Success 200 {object} errmsg.Response{data=dto.Pagination{list=[]dto.ArticlesListDTO}}
+// @Router /api/admin/articles [get]
 func ListArticles(c *gin.Context) {
 	var pageNum, pageSize int
 	var err error

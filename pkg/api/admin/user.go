@@ -11,6 +11,14 @@ import (
 	"net/http"
 )
 
+// Login godoc
+// @Summary login form
+// @Schemes http https
+// @Description login form
+// @Accept application/json
+// @Param  req body dto.LoginForm true "login form"
+// @Success 200 {object} errmsg.Response{data=string}
+// @Router /api/admin/login [post]
 func Login(c *gin.Context) {
 	var data dto.LoginForm
 	err := c.ShouldBindJSON(&data)

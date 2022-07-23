@@ -57,11 +57,6 @@ func GetOrCreateUploadHome() (string, error) {
 	return uploadDir, nil
 }
 
-// CopyDirFromFS
-// @param static: static/default/css/xxx.css
-// @src: default
-// @dst: ./megrez/themes
-// @return: relative path
 func CopyDirFromFS(static fs.FS, src string, dst string) error {
 	// dirs: default/...
 	err := CreateDir(dst, src)
@@ -109,9 +104,6 @@ func CopyDirFromFS(static fs.FS, src string, dst string) error {
 	return nil
 }
 
-// CreateDir create dir if not exists
-// @param dir: relative path to base
-// @param base: absolute path
 func CreateDir(base, dir string) error {
 	_, err := os.Stat(base)
 	if err != nil {
