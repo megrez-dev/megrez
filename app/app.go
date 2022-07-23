@@ -2,7 +2,9 @@ package app
 
 import (
 	"fmt"
+	"github.com/megrez/pkg/bolt"
 	"github.com/megrez/pkg/config"
+	"go.etcd.io/bbolt"
 	"go.uber.org/zap"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
@@ -19,6 +21,7 @@ import (
 // Megrez application
 type Megrez struct {
 	config *config.Config
+	bolt   *bbolt.DB
 	db     *gorm.DB
 	server *gin.Engine
 	Home   string
@@ -45,6 +48,7 @@ func (m *Megrez) Init() error {
 		m.initDir,
 		m.initLogger,
 		m.initConfig,
+		m.initBolt,
 		m.initDAO,
 		m.initRouter,
 	} {
@@ -94,6 +98,27 @@ func (m *Megrez) initDefaultConfig() error {
 	cfg.Database.SQLite.Path = path.Join(m.Home, "megrez.db")
 	cfg.Debug = true
 	m.config = cfg
+	return nil
+}
+
+func (m *Megrez) initBolt() error {
+	var boltPath string
+	if m.config.Database.Bolt.Path == "" {
+		log.Info("use default bolt path ${megrez_home}/bolt.db")
+		home, err := dirUtils.GetOrCreateMegrezHome()
+		if err != nil {
+			return err
+		}
+		boltPath = path.Join(home, "bolt.db")
+	} else {
+		boltPath = m.config.Database.Bolt.Path
+	}
+	b, err := bolt.NewBolt(boltPath)
+	if err != nil {
+		log.Error("init bolt failed, ", err)
+		return err
+	}
+	m.bolt = b
 	return nil
 }
 

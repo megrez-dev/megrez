@@ -5,6 +5,11 @@ import (
 	"time"
 )
 
+const (
+	PageTypeBuildIn = iota
+	PageTypeCustom
+)
+
 type Page struct {
 	ID              uint      `gorm:"primarykey" json:"id"`
 	Name            string    `gorm:"type:varchar(255)" json:"name"`
@@ -13,6 +18,7 @@ type Page struct {
 	Password        string    `gorm:"type:varchar(255)" json:"password"`
 	Private         bool      `json:"private"`
 	Visits          int64     `gorm:"type:int(11)" json:"visits"`
+	Type            int       `gorm:"type:int(11)" json:"type"`
 	Likes           int64     `gorm:"type:int(11)" json:"likes"`
 	Status          int       `gorm:"type:int(11)" json:"status"`
 	OriginalContent string    `gorm:"type:longtext" json:"originalContent"`
@@ -40,6 +46,17 @@ func GetPageBySlug(slug string) (Page, error) {
 	}
 	page := Page{}
 	result := db.First(&page, "`slug` = ?", slug)
+	return page, result.Error
+}
+
+// GetPageBySlugAndType return page by type and slug
+func GetPageBySlugAndType(slug string, tp int) (Page, error) {
+	if db.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
+	page := Page{}
+	result := db.First(&page, "`slug` = ? AND type = ?", slug, tp)
 	return page, result.Error
 }
 

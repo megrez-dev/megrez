@@ -251,6 +251,7 @@ func Install(c *gin.Context) {
 		FormatContent:   "这是一个默认的关于页面，您可以在后台编辑。",
 		OriginalContent: "这是一个默认的关于页面，您可以在后台编辑。",
 		CreateTime:      time.Now(),
+		Type:            model.PageTypeBuildIn,
 	}
 	pages["link"] = model.Page{
 		Name:            "友链",
@@ -258,11 +259,13 @@ func Install(c *gin.Context) {
 		FormatContent:   "这是一个默认的友链页面，您应当写下添加友链的条件，以及申请方式、申请格式等说明，您可以在后台编辑。",
 		OriginalContent: "这是一个默认的友链页面，您应当写下添加友链的条件，以及申请方式、申请格式等说明，您可以在后台编辑。",
 		CreateTime:      time.Now(),
+		Type:            model.PageTypeBuildIn,
 	}
 	pages["journal"] = model.Page{
 		Name:       "日志",
 		Slug:       "journal",
 		CreateTime: time.Now(),
+		Type:       model.PageTypeBuildIn,
 	}
 	for _, page := range pages {
 		err := model.CreatePage(tx, &page)

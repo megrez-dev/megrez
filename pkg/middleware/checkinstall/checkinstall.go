@@ -28,6 +28,10 @@ func CheckInstall() gin.HandlerFunc {
 			c.Next()
 			return
 		}
+		if c.GetBool(model.OptionKeyIsInstalled) {
+			c.Next()
+			return
+		}
 		isInstalledStr, err := model.GetOptionByKey(model.OptionKeyIsInstalled)
 		if err == gorm.ErrRecordNotFound {
 			log.Println("redirect to install page, origin path:", c.Request.URL.Path)
@@ -50,6 +54,7 @@ func CheckInstall() gin.HandlerFunc {
 			}
 		}
 		if isInstalledStr == "true" {
+			c.Set(model.OptionKeyIsInstalled, true)
 			c.Next()
 		} else {
 			if strings.HasPrefix(c.Request.URL.Path, "/api/admin") {

@@ -6,8 +6,13 @@ type Config struct {
 }
 
 type Database struct {
+	Bolt   Bolt   `yaml:"bolt"`
 	MySQL  MySQL  `yaml:"mysql"`
 	SQLite SQLite `yaml:"sqlite"`
+}
+
+type Bolt struct {
+	Path string `yaml:"path"`
 }
 
 type MySQL struct {
