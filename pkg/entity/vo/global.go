@@ -2,6 +2,7 @@ package vo
 
 import (
 	"fmt"
+	"github.com/megrez/pkg/config"
 	"math/rand"
 	"strconv"
 	"strings"
@@ -21,6 +22,7 @@ type Global struct {
 	QQ              string
 	Email           string
 	Telegram        string
+	ThemePath       string
 	BlogBirth       time.Time
 	Menus           []*Menu
 	Categories      []*BriefCategory
@@ -125,7 +127,7 @@ func GetThemeOptions() map[string]interface{} {
 	}
 	m := make(map[string]interface{})
 	for _, option := range options {
-		if option.Type == "multiSelect" || option.Type == "tags" {
+		if option.Type == config.ItemTypeMultiSelect || option.Type == config.ItemTypeTags {
 			m[option.Key] = strings.Split(option.Value, ";")
 		} else {
 			m[option.Key] = option.Value
@@ -210,6 +212,11 @@ func GetGlobalOption() (Global, error) {
 		}
 		latestComments = append(latestComments, latestComment)
 	}
+	theme, err := model.GetOptionByKey(model.OptionKeyBlogTheme)
+	if err != nil {
+		return global, err
+	}
+	global.ThemePath = "/themes/" + theme
 	themeOptions := GetThemeOptions()
 	global.ThemeOptions = themeOptions
 	global.LatestComments = latestComments

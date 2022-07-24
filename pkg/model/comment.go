@@ -5,6 +5,11 @@ import (
 	"time"
 )
 
+const (
+	CommentTypeArticle = iota
+	CommentTypePage
+)
+
 type Comment struct {
 	ID         uint      `gorm:"primarykey" json:"id"`
 	ArticleID  uint      `gorm:"type:int(11)" json:"articleID"`

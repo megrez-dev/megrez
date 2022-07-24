@@ -3,13 +3,13 @@ package config
 type ItemType string
 
 const (
-	ItemTypeInput       ItemType = "input"
-	ItemTypeTextarea    ItemType = "textarea"
-	ItemTypeSelect      ItemType = "select"
-	ItemTypeMultiSelect ItemType = "multiSelect"
-	ItemTypeTags        ItemType = "tags"
-	ItemTypeImage       ItemType = "image"
-	ItemTypeSwitch      ItemType = "switch"
+	ItemTypeInput       = "input"
+	ItemTypeTextarea    = "textarea"
+	ItemTypeSelect      = "select"
+	ItemTypeMultiSelect = "multiSelect"
+	ItemTypeTags        = "tags"
+	ItemTypeImage       = "image"
+	ItemTypeSwitch      = "switch"
 )
 
 // ThemeConfig is the struct for config.yaml under theme folder

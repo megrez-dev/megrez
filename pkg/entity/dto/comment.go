@@ -44,7 +44,7 @@ func (dto *CommentListDTO) LoadFromModel(comment model.Comment) error {
 	dto.RootID = comment.RootID
 	dto.ParentID = comment.ParentID
 	dto.CreateTime = comment.CreateTime
-	if comment.Type == 1 {
+	if comment.Type == model.CommentTypeArticle {
 		article, err := model.GetArticleByID(comment.ArticleID)
 		if err != nil {
 			return err

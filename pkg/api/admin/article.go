@@ -34,7 +34,9 @@ func CreateArticle(c *gin.Context) {
 		return
 	}
 	article := data.Transfer2Model()
-	article.PublishTime = time.Now()
+	if article.Status == model.ArticleStatusPublished {
+		article.PublishTime = time.Now()
+	}
 	article.EditTime = time.Now()
 
 	// check and generate slug

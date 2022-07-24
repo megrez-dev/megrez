@@ -45,6 +45,7 @@ func NewRouter(logger *zap.Logger, debug bool) (*gin.Engine, error) {
 		return nil, err
 	}
 	g.HTMLRender = pongo2gin.TemplatePath(path.Join(home, "themes", theme))
+	g.StaticFS("/themes/"+theme, http.Dir(path.Join(home, "themes", theme)))
 	// route for template
 	view.RouteView(g)
 	// route for admin API
