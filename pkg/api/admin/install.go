@@ -238,7 +238,7 @@ func Install(c *gin.Context) {
 	comment := model.Comment{
 		ArticleID:  article.ID,
 		Content:    "Welcome to Megrez!",
-		Type:       model.CommentTypePage,
+		Type:       model.CommentTypeArticle,
 		Site:       "https://megrez.run",
 		Email:      "admin@megrez.run",
 		Author:     "MEGREZ",
