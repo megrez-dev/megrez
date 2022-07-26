@@ -288,7 +288,7 @@ func GetCurrentThemeConfig(c *gin.Context) {
 				c.JSON(http.StatusOK, errmsg.Error())
 				return
 			}
-			if item.Type == config.ItemTypeMultiSelect || item.Type == config.ItemTypeSelect {
+			if item.Type == config.ItemTypeMultiSelect || item.Type == config.ItemTypeTags {
 				if value == "" {
 					cfg.Tabs[i].Items[j].Value = []string{}
 				} else {
