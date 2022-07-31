@@ -6,12 +6,12 @@ import (
 )
 
 const (
-	AttachmentTypeLocal = iota
-	AttachmentQiniu
-	AttachmentTypeAliOss
-	AttachmentTypeQcloudOss
-	AttachmentTypeHuaweiObs
-	AttachmentTypeYoupai
+	AttachmentTypeLocal     = "local"
+	AttachmentTypeQcloudCos = "qcloud_cos"
+	AttachmentTypeAliyunOss = "aliyun_oss"
+	AttachmentTypeHuaweiObs = "huawei_obs"
+	AttachmentTypeQiniuyun  = "qiniuyun"
+	AttachmentTypeYoupaiyun = "youpaiyun"
 )
 
 type Attachment struct {
@@ -23,7 +23,7 @@ type Attachment struct {
 	Size       int64     `gorm:"type:bigint" json:"size"`
 	Width      int       `gorm:"type:int(11)" json:"width"`
 	Height     int       `gorm:"type:int(11)" json:"height"`
-	Type       int       `gorm:"type:int(11)" json:"type"`
+	Type       string    `gorm:"type:varchar(255)" json:"type"`
 	UploadTime time.Time `gorm:"default:NULL" json:"uploadTime"`
 }
 

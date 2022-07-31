@@ -66,7 +66,7 @@ func UploadAttachment(c *gin.Context) {
 		return
 	}
 	var url string
-	var tp int
+	var tp string
 	// TODO: make thumbnail
 	uploadType, err := model.GetOptionByKey(model.OptionKeyUploadType)
 	if err != nil {
@@ -79,7 +79,7 @@ func UploadAttachment(c *gin.Context) {
 		}
 	}
 	switch uploadType {
-	case "local":
+	case model.AttachmentTypeLocal:
 		uploadHome, err := dirUtils.GetOrCreateUploadHome()
 		if err != nil {
 			log.Error("get upload dir error: ", err)
@@ -100,12 +100,8 @@ func UploadAttachment(c *gin.Context) {
 			return
 		}
 		log.Infof("upload file success, type: [%s], name: %s", "local", newName)
-	case "qiniu":
-		// TODO
-	case "ali_oss":
-		// TODO
-	case "qcloud_cos":
-		cos, err := uploader.GetTencentCosUploader()
+	case model.AttachmentTypeQcloudCos:
+		cos, err := uploader.GetQcloudCosUploader()
 		if err != nil {
 			log.Error("get cos uploader error: ", err)
 			c.JSON(http.StatusOK, errmsg.Error())
@@ -118,11 +114,14 @@ func UploadAttachment(c *gin.Context) {
 			return
 		}
 		url = cos.GetUrl(path.Join(dayDir, newName))
-		tp = model.AttachmentTypeQcloudOss
-
-	case "huawei_obs":
+		tp = model.AttachmentTypeQcloudCos
+	case model.AttachmentTypeAliyunOss:
 		// TODO
-	case "youpai":
+	case model.AttachmentTypeHuaweiObs:
+		// TODO
+	case model.AttachmentTypeQiniuyun:
+		// TODO
+	case model.AttachmentTypeYoupaiyun:
 		// TODO
 	default:
 		uploadHome, err := dirUtils.GetOrCreateUploadHome()
@@ -232,4 +231,27 @@ func ListAttachments(c *gin.Context) {
 		Total:    total,
 	}
 	c.JSON(http.StatusOK, errmsg.Success(pagination))
+}
+
+func PingQcloudCos(c *gin.Context) {
+	settings := &dto.QCloudCosSetting{}
+	err := c.ShouldBindJSON(settings)
+	if err != nil {
+		log.Error(err)
+		c.JSON(http.StatusOK, errmsg.Fail(errmsg.ErrorInvalidParam))
+		return
+	}
+	cos, err := uploader.GetTempQcloudCosUploader(*settings)
+	if err != nil {
+		log.Error("get cos uploader error: ", err)
+		c.JSON(http.StatusOK, errmsg.Error())
+		return
+	}
+	err = cos.Ping()
+	if err != nil {
+		log.Error("ping cos error: ", err)
+		c.JSON(http.StatusOK, errmsg.FailMsg(err.Error()))
+		return
+	}
+	c.JSON(http.StatusOK, errmsg.Success("连接成功"))
 }

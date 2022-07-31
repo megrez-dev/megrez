@@ -14,7 +14,7 @@ type AttachmentDTO struct {
 	Size       string `json:"size"`
 	Width      int    `json:"width"`
 	Height     int    `json:"height"`
-	Type       int    `json:"type"`
+	Type       string `json:"type"`
 	UploadTime string `json:"uploadTime"`
 }
 

@@ -15,6 +15,7 @@ func RouteAdminAPI(g *gin.Engine) {
 
 	// api for upload
 	auth.POST("upload", admin.UploadAttachment)
+	auth.POST("upload/qcloudcos/ping", admin.PingQcloudCos)
 	auth.GET("attachments", admin.ListAttachments)
 
 	// api for themes
@@ -64,6 +65,10 @@ func RouteAdminAPI(g *gin.Engine) {
 
 	// api for option
 	auth.PUT("option/:key", admin.SetOption)
+
+	// api for setting
+	auth.GET("settings", admin.GetSettings)
+	auth.PUT("settings", admin.UpdateSettings)
 
 	// // api for journal
 	auth.POST("journal", admin.CreateJournal)

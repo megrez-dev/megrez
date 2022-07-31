@@ -360,7 +360,6 @@ func GetArticle(c *gin.Context) {
 		c.JSON(http.StatusOK, errmsg.Error())
 		return
 	}
-
 	c.JSON(http.StatusOK, errmsg.Success(articleDTO))
 }
 
