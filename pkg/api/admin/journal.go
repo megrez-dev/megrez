@@ -2,6 +2,7 @@ package admin
 
 import (
 	"github.com/gin-gonic/gin"
+	admindto "github.com/megrez/pkg/entity/dto/admin"
 	"github.com/megrez/pkg/entity/dto"
 	"github.com/megrez/pkg/log"
 	"github.com/megrez/pkg/model"
@@ -17,11 +18,11 @@ import (
 // @Description create journal
 // @Accept application/json
 // @Param Authorization header string false "Authorization"
-// @Param req body dto.CreateJournalForm true "body"
+// @Param req body admindto.CreateJournalForm true "body"
 // @Success 200 {object} errmsg.Response{}
 // @Router /api/admin/journal [post]
 func CreateJournal(c *gin.Context) {
-	var data dto.CreateJournalForm
+	var data admindto.CreateJournalForm
 	err := c.ShouldBindJSON(&data)
 	if err != nil {
 		log.Error(err.Error())
@@ -64,7 +65,7 @@ func CreateJournal(c *gin.Context) {
 // @Param Authorization header string false "Authorization"
 // @Param pageNum query int false "page num"
 // @Param pageSize query int false "page size"
-// @Success 200 {object} errmsg.Response{data=dto.Pagination{list=[]dto.JournalDTO}}
+// @Success 200 {object} errmsg.Response{data=dto.Pagination{list=[]admindto.JournalDTO}}
 // @Router /api/admin/journals [get]
 func ListJournals(c *gin.Context) {
 	var pageNum, pageSize int
@@ -95,9 +96,9 @@ func ListJournals(c *gin.Context) {
 		c.JSON(http.StatusOK, errmsg.Error())
 		return
 	}
-	var journalDTOs []dto.JournalDTO
+	var journalDTOs []admindto.JournalDTO
 	for _, journal := range journals {
-		journalDTO := dto.JournalDTO{}
+		journalDTO := admindto.JournalDTO{}
 		journalDTO.LoadFromModel(journal)
 		if err != nil {
 			log.Error(err)

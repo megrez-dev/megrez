@@ -1,19 +1,20 @@
 package admin
 
 import (
-	"gorm.io/gorm"
 	"net/http"
 	"strconv"
 	"time"
 
-	"github.com/megrez/pkg/entity/dto"
-	"github.com/megrez/pkg/log"
-	"github.com/megrez/pkg/model"
-	"github.com/megrez/pkg/utils/errmsg"
-
 	"github.com/88250/lute"
 	"github.com/gin-gonic/gin"
 	"github.com/gosimple/slug"
+	"gorm.io/gorm"
+
+	"github.com/megrez/pkg/entity/dto"
+	admindto "github.com/megrez/pkg/entity/dto/admin"
+	"github.com/megrez/pkg/log"
+	"github.com/megrez/pkg/model"
+	"github.com/megrez/pkg/utils/errmsg"
 )
 
 // CreateArticle godoc
@@ -22,11 +23,11 @@ import (
 // @Description create article
 // @Accept application/json
 // @Param Authorization header string false "Authorization"
-// @Param req body dto.CreateArticleForm true "body"
+// @Param req body admindto.CreateArticleForm true "body"
 // @Success 200 {object} errmsg.Response{data=model.Article}
 // @Router /api/admin/article [post]
 func CreateArticle(c *gin.Context) {
-	var data dto.CreateArticleForm
+	var data admindto.CreateArticleForm
 	err := c.ShouldBindJSON(&data)
 	if err != nil {
 		log.Error(err.Error())
@@ -129,11 +130,11 @@ func CreateArticle(c *gin.Context) {
 // @Accept application/json
 // @Param Authorization header string false "Authorization"
 // @Param id path int true "article id"
-// @Param req body dto.CreateArticleForm true "article"
+// @Param req body admindto.CreateArticleForm true "article"
 // @Success 200 {object} errmsg.Response{data=model.Article}
 // @Router /api/admin/article/{id} [put]
 func UpdateArticle(c *gin.Context) {
-	var data dto.CreateArticleForm
+	var data admindto.CreateArticleForm
 	err := c.ShouldBindJSON(&data)
 	if err != nil {
 		log.Error(err)
@@ -343,7 +344,7 @@ func DeleteArticle(c *gin.Context) {
 // @Accept application/json
 // @Param Authorization header string false "Authorization"
 // @Param id path int false "article id"
-// @Success 200 {object} errmsg.Response{data=dto.ArticleDTO}
+// @Success 200 {object} errmsg.Response{data=admindto.ArticleDTO}
 // @Router /api/admin/article/{id} [get]
 func GetArticle(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
@@ -353,7 +354,7 @@ func GetArticle(c *gin.Context) {
 		return
 	}
 	article, err := model.GetArticleByID(uint(id))
-	articleDTO := dto.ArticleDTO{}
+	articleDTO := admindto.ArticleDTO{}
 	err = articleDTO.LoadFromModel(article)
 	if err != nil {
 		log.Error(err)
@@ -371,7 +372,7 @@ func GetArticle(c *gin.Context) {
 // @Param Authorization header string false "Authorization"
 // @Param pageNum query int false "page num"
 // @Param pageSize query int false "page size"
-// @Success 200 {object} errmsg.Response{data=dto.Pagination{list=[]dto.ArticlesListDTO}}
+// @Success 200 {object} errmsg.Response{data=dto.Pagination{list=[]admindto.ArticlesListDTO}}
 // @Router /api/admin/articles [get]
 func ListArticles(c *gin.Context) {
 	var pageNum, pageSize int
@@ -402,9 +403,9 @@ func ListArticles(c *gin.Context) {
 		c.JSON(http.StatusOK, errmsg.Error())
 		return
 	}
-	var articleDTOs []dto.ArticlesListDTO
+	var articleDTOs []admindto.ArticlesListDTO
 	for _, article := range articles {
-		articleDTO := dto.ArticlesListDTO{}
+		articleDTO := admindto.ArticlesListDTO{}
 		err := articleDTO.LoadFromModel(article)
 		if err != nil {
 			log.Error(err)

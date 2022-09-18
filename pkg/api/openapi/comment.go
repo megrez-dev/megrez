@@ -1,15 +1,16 @@
-package admin
+package openapi
 
 import (
+	"net/http"
+	"strconv"
+	"time"
+
 	"github.com/gin-gonic/gin"
-	admindto "github.com/megrez/pkg/entity/dto/admin"
+	openapidto "github.com/megrez/pkg/entity/dto/openapi"
 	"github.com/megrez/pkg/entity/dto"
 	"github.com/megrez/pkg/log"
 	"github.com/megrez/pkg/model"
 	"github.com/megrez/pkg/utils/errmsg"
-	"net/http"
-	"strconv"
-	"time"
 )
 
 // CreateComment godoc
@@ -18,11 +19,11 @@ import (
 // @Description create comment
 // @Accept application/json
 // @Param Authorization header string false "Authorization"
-// @Param req body admindto.CreateCommentForm true "body"
+// @Param req body openapidto.CreateCommentForm true "body"
 // @Success 200 {object} errmsg.Response{}
-// @Router /api/admin/comment [post]
+// @Router /api/comment [post]
 func CreateComment(c *gin.Context) {
-	var data admindto.CreateCommentForm
+	var data openapidto.CreateCommentForm
 	err := c.ShouldBindJSON(&data)
 	if err != nil {
 		log.Error(err.Error())
@@ -37,6 +38,8 @@ func CreateComment(c *gin.Context) {
 		ParentID:  data.ParentID,
 		Type:      data.Type,
 	}
+	// 如果设置的
+	// 检查如果有 jwt token,则解析,如果解析出来的token为有效,则从数据库中查用户信息并且设置
 	uid := c.GetUint("uid")
 	if uid == 0 {
 		log.Error("get uid from gin context is 0")
@@ -84,8 +87,8 @@ func CreateComment(c *gin.Context) {
 // @Param Authorization header string false "Authorization"
 // @Param pageNum query int false "page num"
 // @Param pageSize query int false "page size"
-// @Success 200 {object} errmsg.Response{data=dto.Pagination{list=[]admindto.CommentListDTO}}
-// @Router /api/admin/comments [get]
+// @Success 200 {object} errmsg.Response{data=dto.Pagination{list=[]openapidto.CommentListDTO}}
+// @Router /api/{type}/{id}/comments [get]
 func ListComments(c *gin.Context) {
 	var pageNum, pageSize int
 	var err error
@@ -109,15 +112,26 @@ func ListComments(c *gin.Context) {
 			return
 		}
 	}
-	comments, err := model.ListAllComments(pageNum, pageSize)
+	var parentComments []model.Comment
+	tp := c.Param("type")
+	var id uint
+	if pid, err := strconv.Atoi(c.Param("id")); err != nil {
+		id = uint(pid)
+	}
+	switch tp {
+	case model.CommentTypeArticle:
+		if parentComments, err = model.ListRootCommentsByArticleID(id, pageNum, pageSize); err != nil {
+			log.Error("list root comments for article %d failed, err: %s", )
+		}
+	}
 	if err != nil {
 		log.Error(err)
 		c.JSON(http.StatusOK, errmsg.Error())
 		return
 	}
-	var commentDTOs []admindto.CommentListDTO
-	for _, comment := range comments {
-		commentDTO := admindto.CommentListDTO{}
+	var commentDTOs []openapidto.CommentDTO
+	for _, comment := range parentComments {
+		commentDTO := openapidto.CommentDTO{}
 		err := commentDTO.LoadFromModel(comment)
 		if err != nil {
 			log.Error(err)

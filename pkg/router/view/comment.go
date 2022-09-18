@@ -47,7 +47,7 @@ func createCommentForArticle(c *gin.Context) {
 		Site:       c.PostForm("url"),
 		Agent:      c.Request.UserAgent(),
 		IP:         c.ClientIP(),
-		Type:       1,
+		Type:       model.CommentTypeArticle,
 		Status:     0,
 		CreateTime: time.Now(),
 		UpdateTime: time.Now(),
@@ -121,7 +121,7 @@ func createCommentForPage(c *gin.Context) {
 		Site:     c.PostForm("url"),
 		Agent:    c.Request.UserAgent(),
 		IP:       c.ClientIP(),
-		Type:     2,
+		Type:     model.CommentTypePage,
 		Status:   0,
 	}
 	page, err := model.GetPageByID(uint(pageID))

@@ -1,13 +1,14 @@
 package model
 
 import (
-	"gorm.io/gorm"
 	"time"
+
+	"gorm.io/gorm"
 )
 
 const (
-	CommentTypeArticle = iota
-	CommentTypePage
+	CommentTypeArticle = "article"
+	CommentTypePage    = "page"
 )
 
 type Comment struct {
@@ -17,7 +18,7 @@ type Comment struct {
 	Content    string    `gorm:"type:longtext" json:"content"`
 	RootID     uint      `gorm:"type:int(11)" json:"rootID"`
 	ParentID   uint      `gorm:"type:int(11)" json:"parentID"`
-	Type       int       `gorm:"type:int(11)" json:"type"`
+	Type       string    `gorm:"type:int(11)" json:"type"`
 	Author     string    `gorm:"type:varchar(63)" json:"author"`
 	Role       int       `gorm:"type:int(11)" json:"role"`
 	Email      string    `gorm:"type:varchar(63)" json:"email"`

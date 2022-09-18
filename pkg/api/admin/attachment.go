@@ -2,6 +2,7 @@ package admin
 
 import (
 	"github.com/google/uuid"
+	admindto "github.com/megrez/pkg/entity/dto/admin"
 	"github.com/megrez/pkg/entity/dto"
 	"github.com/megrez/pkg/model"
 	dirUtils "github.com/megrez/pkg/utils/dir"
@@ -176,7 +177,7 @@ func UploadAttachment(c *gin.Context) {
 // @Param Authorization header string false "Authorization"
 // @Param pageNum query int false "page num"
 // @Param pageSize query int false "page size"
-// @Success 200 {object} errmsg.Response{data=dto.Pagination{list=[]dto.AttachmentDTO}}
+// @Success 200 {object} errmsg.Response{data=dto.Pagination{list=[]admindto.AttachmentDTO}}
 // @Router /api/admin/attachments [get]
 func ListAttachments(c *gin.Context) {
 	var pageNum, pageSize int
@@ -207,9 +208,9 @@ func ListAttachments(c *gin.Context) {
 		c.JSON(http.StatusOK, errmsg.Error())
 		return
 	}
-	var attachmentDTOs []dto.AttachmentDTO
+	var attachmentDTOs []admindto.AttachmentDTO
 	for _, attachment := range attachments {
-		attachmentDTO := dto.AttachmentDTO{}
+		attachmentDTO := admindto.AttachmentDTO{}
 		err := attachmentDTO.LoadFromModel(attachment)
 		if err != nil {
 			log.Error(err)
@@ -234,7 +235,7 @@ func ListAttachments(c *gin.Context) {
 }
 
 func PingQcloudCos(c *gin.Context) {
-	settings := &dto.QCloudCosSetting{}
+	settings := &admindto.QCloudCosSetting{}
 	err := c.ShouldBindJSON(settings)
 	if err != nil {
 		log.Error(err)

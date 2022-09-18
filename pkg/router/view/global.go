@@ -1,8 +1,11 @@
 package view
 
 import (
-	"github.com/gin-gonic/gin"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
+	"github.com/megrez/pkg/log"
+	"github.com/megrez/pkg/model"
 )
 
 func RouteFavicon(g *gin.Engine) {
@@ -10,6 +13,11 @@ func RouteFavicon(g *gin.Engine) {
 }
 
 func favicon(c *gin.Context) {
-	// TODO： 这里需要跨域，以后换一种方式
-	c.Redirect(http.StatusFound, "https://alkaidchen-1257721976.cos.ap-guangzhou.myqcloud.com/blog/static/images/favicon.ico")
+	// TODO： 这里用的重定向方式实现，后面看看有没有更好的实现方式
+	url, err := model.GetOptionByKey(model.OptionKeyBlogFavicon)
+	if err != nil {
+		log.Error("incorrect param pageNum, err:", err.Error())
+		c.Redirect(http.StatusInternalServerError, "/error")
+	}
+	c.Redirect(http.StatusFound, url)
 }

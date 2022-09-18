@@ -70,7 +70,7 @@ func GetLatestCommentFromPO(comment *model.Comment) (*LatestComment, error) {
 	}
 	var rootComments []model.Comment
 	// comment for article
-	if comment.Type == 1 {
+	if comment.Type == model.CommentTypeArticle {
 		rootComments, err = model.ListRootCommentsByArticleID(comment.ArticleID, 0, 0)
 		if err != nil {
 			log.Error(err)
@@ -86,7 +86,7 @@ func GetLatestCommentFromPO(comment *model.Comment) (*LatestComment, error) {
 		pagination := (index + commentsPageSize - 1) / commentsPageSize
 		url := fmt.Sprintf("/article/%d/comment-page/%d#comment-%d", comment.ArticleID, pagination, comment.ID)
 		latestComment.URL = url
-	} else if comment.Type == 2 {
+	} else if comment.Type == model.CommentTypePage {
 		// comment for page
 		rootComments, err = model.ListRootCommentsByPageID(comment.PageID, 0, 0)
 		if err != nil {

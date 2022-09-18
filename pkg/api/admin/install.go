@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gosimple/slug"
 	themesAssets "github.com/megrez/assets/themes"
-	"github.com/megrez/pkg/entity/dto"
+	admindto "github.com/megrez/pkg/entity/dto/admin"
 	"github.com/megrez/pkg/log"
 	"github.com/megrez/pkg/model"
 	dirUtils "github.com/megrez/pkg/utils/dir"
@@ -21,11 +21,11 @@ import (
 // @Schemes http https
 // @Description install blog form
 // @Accept application/json
-// @Param  req body dto.InstallBlogForm true "install blog form"
+// @Param  req body admindto.InstallBlogForm true "install blog form"
 // @Success 200 {object} errmsg.Response{data=string}
 // @Router /api/admin/install [post]
 func Install(c *gin.Context) {
-	var data dto.InstallBlogForm
+	var data admindto.InstallBlogForm
 	err := c.ShouldBindJSON(&data)
 	if err != nil {
 		log.Error("decode json data failed, ", err.Error())

@@ -2,7 +2,7 @@ package admin
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/megrez/pkg/entity/dto"
+	dto "github.com/megrez/pkg/entity/dto/admin"
 	"github.com/megrez/pkg/model"
 	"github.com/megrez/pkg/utils/errmsg"
 	"github.com/megrez/pkg/utils/jwt"

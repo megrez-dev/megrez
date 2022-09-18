@@ -3,7 +3,7 @@ package uploader
 import (
 	"context"
 	"errors"
-	"github.com/megrez/pkg/entity/dto"
+	admindto "github.com/megrez/pkg/entity/dto/admin"
 	"github.com/megrez/pkg/log"
 	"github.com/megrez/pkg/model"
 	cos "github.com/tencentyun/cos-go-sdk-v5"
@@ -90,7 +90,7 @@ func GetQcloudCosUploader() (*QcloudCosUploader, error) {
 	}
 }
 
-func GetTempQcloudCosUploader(setting dto.QCloudCosSetting) (*QcloudCosUploader, error) {
+func GetTempQcloudCosUploader(setting admindto.QCloudCosSetting) (*QcloudCosUploader, error) {
 	tempQcloudCosUploader := &QcloudCosUploader{
 		Config: &QcloudCosConfig{
 			SecretId:  setting.SecretID,

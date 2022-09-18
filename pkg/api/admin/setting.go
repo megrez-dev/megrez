@@ -2,12 +2,12 @@ package admin
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/megrez/pkg/entity/dto"
+	admindto "github.com/megrez/pkg/entity/dto/admin"
 	"github.com/megrez/pkg/utils/errmsg"
 )
 
 func GetSettings(c *gin.Context) {
-	settings := &dto.Setting{}
+	settings := &admindto.Setting{}
 	err := settings.LoadFromModel()
 	if err != nil {
 		c.JSON(200, errmsg.Error())
@@ -17,7 +17,7 @@ func GetSettings(c *gin.Context) {
 }
 
 func UpdateSettings(c *gin.Context) {
-	settings := &dto.Setting{}
+	settings := &admindto.Setting{}
 	err := c.ShouldBindJSON(settings)
 	if err != nil {
 		c.JSON(200, errmsg.Fail(errmsg.ErrorInvalidParam))
