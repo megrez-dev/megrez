@@ -1,6 +1,12 @@
 package router
 
 import (
+	"io/fs"
+	"net/http"
+	"path"
+	"strings"
+	"time"
+
 	ginzap "github.com/gin-contrib/zap"
 	"github.com/gin-gonic/gin"
 	adminAssets "github.com/megrez/assets/admin"
@@ -8,17 +14,12 @@ import (
 	"github.com/megrez/pkg/middleware/cros"
 	"github.com/megrez/pkg/middleware/pongo2gin"
 	"github.com/megrez/pkg/model"
-	"github.com/megrez/pkg/router/admin"
+	api "github.com/megrez/pkg/router/api"
 	"github.com/megrez/pkg/router/view"
 	dirUtils "github.com/megrez/pkg/utils/dir"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"go.uber.org/zap"
-	"io/fs"
-	"net/http"
-	"path"
-	"strings"
-	"time"
 )
 
 var DefaultTheme = "default"
@@ -49,7 +50,9 @@ func NewRouter(logger *zap.Logger, debug bool) (*gin.Engine, error) {
 	// route for template
 	view.RouteView(g)
 	// route for admin API
-	admin.RouteAdminAPI(g)
+	api.RouteAdminAPI(g)
+	// route for open API
+	api.RouteOpenAPI(g)
 	// route for admin ui
 	g.StaticFS("/admin", http.FS(adminAssets.Static))
 	// route for upload attachments

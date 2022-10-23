@@ -1,4 +1,4 @@
-package admin
+package api
 
 import (
 	"github.com/gin-gonic/gin"
@@ -43,14 +43,14 @@ func RouteAdminAPI(g *gin.Engine) {
 	auth.GET("comments", admin.ListComments)
 	// auth.GET("comment/:id", admin.GetComment)
 
-	// // api for category
+	// api for category
 	auth.POST("category", admin.CreateCategory)
 	auth.PUT("category/:id", admin.UpdateCategory)
 	auth.DELETE("category/:id", admin.DeleteCategory)
 	auth.GET("categories", admin.ListCategories)
 	auth.GET("category/:id", admin.GetCategory)
 
-	// // api for tag
+	// api for tag
 	auth.POST("tag", admin.CreateTag)
 	// auth.PUT("tag/:id", admin.UpdateTag)
 	// auth.DELETE("tag/:id", admin.DeleteTag)
@@ -70,7 +70,7 @@ func RouteAdminAPI(g *gin.Engine) {
 	auth.GET("settings", admin.GetSettings)
 	auth.PUT("settings", admin.UpdateSettings)
 
-	// // api for journal
+	// api for journal
 	auth.POST("journal", admin.CreateJournal)
 	// auth.PUT("journal/:id", admin.UpdateJournal)
 	// auth.DELETE("journal/:id", admin.DeleteJournal)
@@ -91,8 +91,4 @@ func RouteAdminAPI(g *gin.Engine) {
 	// auth.GET("menus", admin.ListMenu)
 	// auth.GET("menu/:id", admin.GetMenu)
 
-	// // api for option
-	// auth.PUT("option/:key", admin.SetOption)
-	// auth.DELETE("option/:key", admin.DeleteOption)
-	// auth.GET("option/:key", admin.GetOption)
 }

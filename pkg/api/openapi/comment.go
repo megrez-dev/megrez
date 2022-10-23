@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	openapidto "github.com/megrez/pkg/entity/dto/openapi"
 	"github.com/megrez/pkg/entity/dto"
+	openapidto "github.com/megrez/pkg/entity/dto/openapi"
 	"github.com/megrez/pkg/log"
 	"github.com/megrez/pkg/model"
 	"github.com/megrez/pkg/utils/errmsg"
@@ -115,13 +115,17 @@ func ListComments(c *gin.Context) {
 	var parentComments []model.Comment
 	tp := c.Param("type")
 	var id uint
-	if pid, err := strconv.Atoi(c.Param("id")); err != nil {
-		id = uint(pid)
+	pid, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		log.Error(err)
+		c.JSON(http.StatusOK, errmsg.Fail(errmsg.ErrorInvalidParam))
+		return
 	}
+	id = uint(pid)
 	switch tp {
 	case model.CommentTypeArticle:
 		if parentComments, err = model.ListRootCommentsByArticleID(id, pageNum, pageSize); err != nil {
-			log.Error("list root comments for article %d failed, err: %s", )
+			log.Error("list root comments for article %d failed, err: %s")
 		}
 	}
 	if err != nil {
@@ -129,6 +133,7 @@ func ListComments(c *gin.Context) {
 		c.JSON(http.StatusOK, errmsg.Error())
 		return
 	}
+	log.Debugf("len(parentComments): %d", len(parentComments))
 	var commentDTOs []openapidto.CommentDTO
 	for _, comment := range parentComments {
 		commentDTO := openapidto.CommentDTO{}
