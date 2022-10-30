@@ -115,7 +115,6 @@ func ListComments(c *gin.Context) {
 		c.JSON(http.StatusOK, errmsg.Error())
 		return
 	}
-	log.Debugf("len(parentComments): %d", len(parentComments))
 	var commentDTOs []openapidto.CommentDTO
 	for _, comment := range parentComments {
 		commentDTO := openapidto.CommentDTO{}

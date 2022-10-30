@@ -12,6 +12,7 @@ type CommentDTO struct {
 	Avatar      string          `json:"avatar"`
 	Mail        string          `json:"mail"`
 	URL         string          `json:"url"`
+	Role        string          `json:"role"`
 	SubComments []SubCommentDTO `json:"subComments"`
 	IP          string          `json:"ip"`
 	RootID      uint            `json:"rootID"`
@@ -28,6 +29,7 @@ type SubCommentDTO struct {
 	Avatar     string `json:"avatar"`
 	Mail       string `json:"mail"`
 	URL        string `json:"url"`
+	Role       string `json:"role"`
 	IP         string `json:"ip"`
 	Type       string `json:"type"`
 	RootID     uint   `json:"rootID"`
@@ -55,6 +57,7 @@ func (dto *CommentDTO) LoadFromModel(comment model.Comment) error {
 	dto.Author = comment.Author
 	dto.URL = comment.URL
 	dto.Mail = comment.Email
+	dto.Role = comment.Role
 	dto.IP = comment.IP
 	dto.Type = comment.Type
 	dto.Status = comment.Status
@@ -79,6 +82,7 @@ func (dto *SubCommentDTO) LoadFromModel(comment model.Comment) {
 	dto.Content = comment.Content
 	dto.Author = comment.Author
 	dto.URL = comment.URL
+	dto.Role = comment.Role
 	dto.Mail = comment.Email
 	dto.IP = comment.IP
 	dto.Type = comment.Type
