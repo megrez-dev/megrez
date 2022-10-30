@@ -31,37 +31,19 @@ func CreateComment(c *gin.Context) {
 		return
 	}
 	comment := model.Comment{
+		Author:    data.Author,
+		Email:     data.Mail,
+		URL:       data.URL,
+		Content:   data.Content,
 		ArticleID: data.ArticleID,
 		PageID:    data.PageID,
-		Content:   data.Content,
 		RootID:    data.RootID,
 		ParentID:  data.ParentID,
 		Type:      data.Type,
+		Role:      "guest",
 	}
-	// 如果设置的
-	// 检查如果有 jwt token,则解析,如果解析出来的token为有效,则从数据库中查用户信息并且设置
-	uid := c.GetUint("uid")
-	if uid == 0 {
-		log.Error("get uid from gin context is 0")
-		c.JSON(http.StatusOK, errmsg.Fail(errmsg.ErrorTokenInvalid))
-		return
-	}
-	user, err := model.GetUserByID(uid)
-	if err != nil {
-		log.Error("get user failed:", err.Error())
-		c.JSON(http.StatusOK, errmsg.Error())
-		return
-	}
-	comment.Author = user.Nickname
-	comment.Role = 1
-	comment.Email = user.Email
-	site, err := model.GetOptionByKey(model.OptionKeyBlogURL)
-	if err != nil {
-		log.Error("get option failed:", err.Error())
-		c.JSON(http.StatusOK, errmsg.Error())
-		return
-	}
-	comment.Site = site
+	// todo: 查找设置项评论间隔，go-cache 查询间隔时间内 ip 是否发布过评论
+	// todo: 检查如果有 jwt token,则解析,如果解析出来的token为有效,则从数据库中查用户信息并且设置
 	comment.Agent = c.Request.UserAgent()
 	comment.IP = c.ClientIP()
 	comment.Status = 0

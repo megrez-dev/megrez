@@ -9,7 +9,7 @@ func RouteOpenAPI(g *gin.Engine) {
 	api := g.Group("api")
 
 	// api for comment
-	// api.POST("comment", openapi.CreateComment)
+	api.POST("comment", openapi.CreateComment)
 	// auth.PUT("comment/:id", admin.UpdateComment)
 	// api.DELETE("comment/:id", openapi.DeleteComment)
 	api.GET(":type/:id/comments", openapi.ListComments)

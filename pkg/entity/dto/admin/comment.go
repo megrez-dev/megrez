@@ -1,8 +1,9 @@
 package admin
 
 import (
-	"github.com/megrez/pkg/model"
 	"time"
+
+	"github.com/megrez/pkg/model"
 )
 
 type CommentListDTO struct {
@@ -12,7 +13,7 @@ type CommentListDTO struct {
 	Content    string     `json:"content"`
 	Author     string     `json:"author"`
 	IP         string     `json:"ip"`
-	Site       string     `json:"site"`
+	URL        string     `json:"url"`
 	Mail       string     `json:"mail"`
 	Status     int        `json:"status"`
 	Type       string     `json:"type"`
@@ -36,7 +37,7 @@ func (dto *CommentListDTO) LoadFromModel(comment model.Comment) error {
 	dto.ID = comment.ID
 	dto.Content = comment.Content
 	dto.Author = comment.Author
-	dto.Site = comment.Site
+	dto.URL = comment.URL
 	dto.Mail = comment.Email
 	dto.IP = comment.IP
 	dto.Type = comment.Type

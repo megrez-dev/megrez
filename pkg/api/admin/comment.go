@@ -1,15 +1,16 @@
 package admin
 
 import (
-	"github.com/gin-gonic/gin"
-	admindto "github.com/megrez/pkg/entity/dto/admin"
-	"github.com/megrez/pkg/entity/dto"
-	"github.com/megrez/pkg/log"
-	"github.com/megrez/pkg/model"
-	"github.com/megrez/pkg/utils/errmsg"
 	"net/http"
 	"strconv"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/megrez/pkg/entity/dto"
+	admindto "github.com/megrez/pkg/entity/dto/admin"
+	"github.com/megrez/pkg/log"
+	"github.com/megrez/pkg/model"
+	"github.com/megrez/pkg/utils/errmsg"
 )
 
 // CreateComment godoc
@@ -50,15 +51,15 @@ func CreateComment(c *gin.Context) {
 		return
 	}
 	comment.Author = user.Nickname
-	comment.Role = 1
+	comment.Role = model.RoleTypeAdmin
 	comment.Email = user.Email
-	site, err := model.GetOptionByKey(model.OptionKeyBlogURL)
+	url, err := model.GetOptionByKey(model.OptionKeyBlogURL)
 	if err != nil {
 		log.Error("get option failed:", err.Error())
 		c.JSON(http.StatusOK, errmsg.Error())
 		return
 	}
-	comment.Site = site
+	comment.URL = url
 	comment.Agent = c.Request.UserAgent()
 	comment.IP = c.ClientIP()
 	comment.Status = 0

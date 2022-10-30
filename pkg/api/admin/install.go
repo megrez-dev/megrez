@@ -239,7 +239,7 @@ func Install(c *gin.Context) {
 		ArticleID:  article.ID,
 		Content:    "Welcome to Megrez!",
 		Type:       model.CommentTypeArticle,
-		Site:       "https://megrez.run",
+		URL:       "https://megrez.run",
 		Email:      "admin@megrez.run",
 		Author:     "MEGREZ",
 		CreateTime: time.Now(),

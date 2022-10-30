@@ -6,27 +6,6 @@ import (
 	"github.com/megrez/pkg/model"
 )
 
-type Role int
-
-const (
-	RoleAdmin Role = iota
-	RoleGuest
-	RoleFriend
-)
-
-func (role Role) String() string {
-	switch role {
-	case RoleAdmin:
-		return "admin"
-	case RoleGuest:
-		return "guest"
-	case RoleFriend:
-		return "friend"
-	default:
-		return "unknown"
-	}
-}
-
 type Comment struct {
 	ID          uint
 	ParentID    uint
@@ -40,7 +19,7 @@ type Comment struct {
 	Avatar      string
 	Role        string
 	Mail        string
-	Site        string
+	URL        string
 	Agent       string
 	CreateTime  time.Time
 }
@@ -56,7 +35,7 @@ type SubComment struct {
 	Avatar     string
 	Role       string
 	Mail       string
-	Site       string
+	URL       string
 	Agent      string
 	CreateTime time.Time
 }
@@ -70,9 +49,9 @@ func GetCommentFromPO(comment model.Comment) (*Comment, error) {
 	commentVO.Status = comment.Status
 	commentVO.CreateTime = comment.CreateTime
 	commentVO.Author = comment.Author
-	commentVO.Role = Role(comment.Role).String()
+	commentVO.Role = comment.Role
 	commentVO.Mail = comment.Email
-	commentVO.Site = comment.Site
+	commentVO.URL = comment.URL
 	// TODO: 设置头像
 	commentVO.Avatar = "https://cdn.rawchen.com/logo/alkaidchen.jpg"
 	commentVO.Agent = comment.Agent
@@ -106,9 +85,9 @@ func GetSubCommentFromPO(comment model.Comment) (*SubComment, error) {
 	subComment.Status = comment.Status
 	subComment.CreateTime = comment.CreateTime
 	subComment.Author = comment.Author
-	subComment.Role = Role(comment.Role).String()
+	subComment.Role = comment.Role
 	subComment.Mail = comment.Email
-	subComment.Site = comment.Site
+	subComment.URL = comment.URL
 	// TODO: 设置头像
 	subComment.Avatar = "https://cdn.rawchen.com/logo/alkaidchen.jpg"
 	// TODO: 计算Agent的浏览器和内核

@@ -2,11 +2,12 @@ package view
 
 import (
 	"fmt"
-	"github.com/megrez/pkg/log"
-	"gorm.io/gorm"
 	"net/http"
 	"strconv"
 	"time"
+
+	"github.com/megrez/pkg/log"
+	"gorm.io/gorm"
 
 	"github.com/gin-gonic/gin"
 	"github.com/megrez/pkg/model"
@@ -44,7 +45,7 @@ func createCommentForArticle(c *gin.Context) {
 		ParentID:   uint(parentID),
 		Author:     c.PostForm("author"),
 		Email:      c.PostForm("email"),
-		Site:       c.PostForm("url"),
+		URL:        c.PostForm("url"),
 		Agent:      c.Request.UserAgent(),
 		IP:         c.ClientIP(),
 		Type:       model.CommentTypeArticle,
@@ -118,7 +119,7 @@ func createCommentForPage(c *gin.Context) {
 		ParentID: uint(parentID),
 		Author:   c.PostForm("author"),
 		Email:    c.PostForm("email"),
-		Site:     c.PostForm("url"),
+		URL:      c.PostForm("url"),
 		Agent:    c.Request.UserAgent(),
 		IP:       c.ClientIP(),
 		Type:     model.CommentTypePage,

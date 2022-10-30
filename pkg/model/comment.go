@@ -9,6 +9,8 @@ import (
 const (
 	CommentTypeArticle = "article"
 	CommentTypePage    = "page"
+	RoleTypeGuest      = "guest"
+	RoleTypeAdmin      = "admin"
 )
 
 type Comment struct {
@@ -20,9 +22,9 @@ type Comment struct {
 	ParentID   uint      `gorm:"type:int(11)" json:"parentID"`
 	Type       string    `gorm:"type:int(11)" json:"type"`
 	Author     string    `gorm:"type:varchar(63)" json:"author"`
-	Role       int       `gorm:"type:int(11)" json:"role"`
+	Role       string    `gorm:"type:varchar(20)" json:"role"`
 	Email      string    `gorm:"type:varchar(63)" json:"email"`
-	Site       string    `gorm:"type:varchar(63)" json:"site"`
+	URL       string    `gorm:"type:varchar(63)" json:"url"`
 	Agent      string    `gorm:"type:varchar(1023)" json:"agent"`
 	IP         string    `gorm:"type:varchar(20)" json:"ip"`
 	Status     int       `gorm:"type:int(11)" json:"status"`
