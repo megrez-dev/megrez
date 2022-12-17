@@ -1,5 +1,306 @@
 basePath: /
 definitions:
+  admin.ArticleDTO:
+    properties:
+      allowedComment:
+        type: boolean
+      categories:
+        items:
+          type: integer
+        type: array
+      cover:
+        type: string
+      editTime:
+        type: string
+      formatContent:
+        type: string
+      id:
+        type: integer
+      isTop:
+        type: boolean
+      likes:
+        type: integer
+      originalContent:
+        type: string
+      password:
+        type: string
+      private:
+        type: boolean
+      publishTime:
+        type: string
+      seoDescription:
+        type: string
+      seoKeywords:
+        items:
+          type: string
+        type: array
+      slug:
+        type: string
+      status:
+        type: integer
+      summary:
+        type: string
+      tags:
+        items:
+          type: integer
+        type: array
+      title:
+        type: string
+      visits:
+        type: integer
+      wordCount:
+        type: integer
+    type: object
+  admin.ArticlesListDTO:
+    properties:
+      allowedComment:
+        type: boolean
+      categories:
+        items:
+          $ref: '#/definitions/model.Category'
+        type: array
+      commentsNum:
+        type: integer
+      cover:
+        type: string
+      editTime:
+        type: string
+      formatContent:
+        type: string
+      id:
+        type: integer
+      isTop:
+        type: boolean
+      likes:
+        type: integer
+      originalContent:
+        type: string
+      password:
+        type: string
+      private:
+        type: boolean
+      publishTime:
+        type: string
+      slug:
+        type: string
+      status:
+        type: integer
+      summary:
+        type: string
+      tags:
+        items:
+          $ref: '#/definitions/model.Tag'
+        type: array
+      title:
+        type: string
+      visits:
+        type: integer
+      wordCount:
+        type: integer
+    type: object
+  admin.AttachmentDTO:
+    properties:
+      ext:
+        type: string
+      fileName:
+        type: string
+      height:
+        type: integer
+      id:
+        type: integer
+      size:
+        type: string
+      thumbURL:
+        type: string
+      type:
+        type: string
+      uploadTime:
+        type: string
+      url:
+        type: string
+      width:
+        type: integer
+    type: object
+  admin.CommentListDTO:
+    properties:
+      article:
+        $ref: '#/definitions/admin.ArticleDTO'
+      author:
+        type: string
+      content:
+        type: string
+      createTime:
+        type: string
+      id:
+        type: integer
+      ip:
+        type: string
+      mail:
+        type: string
+      page:
+        $ref: '#/definitions/admin.PageDTO'
+      parentID:
+        type: integer
+      rootID:
+        type: integer
+      status:
+        type: integer
+      type:
+        type: string
+      url:
+        type: string
+    type: object
+  admin.CreateArticleForm:
+    properties:
+      allowedComment:
+        type: boolean
+      categories:
+        items:
+          type: integer
+        type: array
+      cover:
+        type: string
+      formatContent:
+        type: string
+      id:
+        type: integer
+      isTop:
+        type: boolean
+      originalContent:
+        type: string
+      password:
+        type: string
+      private:
+        type: boolean
+      seoDescription:
+        type: string
+      seoKeywords:
+        items:
+          type: string
+        type: array
+      slug:
+        type: string
+      status:
+        type: integer
+      summary:
+        type: string
+      tags:
+        items:
+          type: integer
+        type: array
+      title:
+        type: string
+      wordCount:
+        type: integer
+    type: object
+  admin.CreateCommentForm:
+    properties:
+      articleID:
+        type: integer
+      content:
+        type: string
+      createTime:
+        type: string
+      pageID:
+        type: integer
+      parentID:
+        type: integer
+      rootID:
+        type: integer
+      type:
+        type: string
+      updateTime:
+        type: string
+    type: object
+  admin.CreateJournalForm:
+    properties:
+      content:
+        type: string
+      images:
+        items:
+          type: string
+        type: array
+      private:
+        type: boolean
+      status:
+        type: integer
+    type: object
+  admin.InstallBlogForm:
+    properties:
+      blogTitle:
+        type: string
+      blogURL:
+        type: string
+      confirmPassword:
+        type: string
+      email:
+        type: string
+      nickname:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  admin.JournalDTO:
+    properties:
+      content:
+        type: string
+      createTime:
+        type: string
+      id:
+        type: integer
+      images:
+        items:
+          type: string
+        type: array
+      likes:
+        type: integer
+      private:
+        type: boolean
+      status:
+        type: integer
+      updateTime:
+        type: string
+      visits:
+        type: integer
+    type: object
+  admin.LoginForm:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  admin.PageDTO:
+    properties:
+      cover:
+        type: string
+      createTime:
+        type: string
+      formatContent:
+        type: string
+      id:
+        type: integer
+      likes:
+        type: integer
+      name:
+        type: string
+      originalContent:
+        type: string
+      password:
+        type: string
+      private:
+        type: boolean
+      slug:
+        type: string
+      status:
+        type: integer
+      updateTime:
+        type: string
+      visits:
+        type: integer
+    type: object
   config.AuthorInfo:
     properties:
       avatar:
@@ -67,307 +368,6 @@ definitions:
         type: string
       version:
         type: string
-    type: object
-  dto.ArticleDTO:
-    properties:
-      allowedComment:
-        type: boolean
-      categories:
-        items:
-          type: integer
-        type: array
-      cover:
-        type: string
-      editTime:
-        type: string
-      formatContent:
-        type: string
-      id:
-        type: integer
-      isTop:
-        type: boolean
-      likes:
-        type: integer
-      originalContent:
-        type: string
-      password:
-        type: string
-      private:
-        type: boolean
-      publishTime:
-        type: string
-      seoDescription:
-        type: string
-      seoKeywords:
-        items:
-          type: string
-        type: array
-      slug:
-        type: string
-      status:
-        type: integer
-      summary:
-        type: string
-      tags:
-        items:
-          type: integer
-        type: array
-      title:
-        type: string
-      visits:
-        type: integer
-      wordCount:
-        type: integer
-    type: object
-  dto.ArticlesListDTO:
-    properties:
-      allowedComment:
-        type: boolean
-      categories:
-        items:
-          $ref: '#/definitions/model.Category'
-        type: array
-      commentsNum:
-        type: integer
-      cover:
-        type: string
-      editTime:
-        type: string
-      formatContent:
-        type: string
-      id:
-        type: integer
-      isTop:
-        type: boolean
-      likes:
-        type: integer
-      originalContent:
-        type: string
-      password:
-        type: string
-      private:
-        type: boolean
-      publishTime:
-        type: string
-      slug:
-        type: string
-      status:
-        type: integer
-      summary:
-        type: string
-      tags:
-        items:
-          $ref: '#/definitions/model.Tag'
-        type: array
-      title:
-        type: string
-      visits:
-        type: integer
-      wordCount:
-        type: integer
-    type: object
-  dto.AttachmentDTO:
-    properties:
-      ext:
-        type: string
-      fileName:
-        type: string
-      height:
-        type: integer
-      id:
-        type: integer
-      size:
-        type: string
-      thumbURL:
-        type: string
-      type:
-        type: integer
-      uploadTime:
-        type: string
-      url:
-        type: string
-      width:
-        type: integer
-    type: object
-  dto.CommentListDTO:
-    properties:
-      article:
-        $ref: '#/definitions/dto.ArticleDTO'
-      author:
-        type: string
-      content:
-        type: string
-      createTime:
-        type: string
-      id:
-        type: integer
-      ip:
-        type: string
-      mail:
-        type: string
-      page:
-        $ref: '#/definitions/dto.PageDTO'
-      parentID:
-        type: integer
-      rootID:
-        type: integer
-      site:
-        type: string
-      status:
-        type: integer
-      type:
-        type: integer
-    type: object
-  dto.CreateArticleForm:
-    properties:
-      allowedComment:
-        type: boolean
-      categories:
-        items:
-          type: integer
-        type: array
-      cover:
-        type: string
-      formatContent:
-        type: string
-      id:
-        type: integer
-      isTop:
-        type: boolean
-      originalContent:
-        type: string
-      password:
-        type: string
-      private:
-        type: boolean
-      seoDescription:
-        type: string
-      seoKeywords:
-        items:
-          type: string
-        type: array
-      slug:
-        type: string
-      status:
-        type: integer
-      summary:
-        type: string
-      tags:
-        items:
-          type: integer
-        type: array
-      title:
-        type: string
-      wordCount:
-        type: integer
-    type: object
-  dto.CreateCommentForm:
-    properties:
-      articleID:
-        type: integer
-      content:
-        type: string
-      createTime:
-        type: string
-      pageID:
-        type: integer
-      parentID:
-        type: integer
-      rootID:
-        type: integer
-      type:
-        type: integer
-      updateTime:
-        type: string
-    type: object
-  dto.CreateJournalForm:
-    properties:
-      content:
-        type: string
-      images:
-        items:
-          type: string
-        type: array
-      private:
-        type: boolean
-      status:
-        type: integer
-    type: object
-  dto.InstallBlogForm:
-    properties:
-      blogTitle:
-        type: string
-      blogURL:
-        type: string
-      confirmPassword:
-        type: string
-      email:
-        type: string
-      nickname:
-        type: string
-      password:
-        type: string
-      username:
-        type: string
-    type: object
-  dto.JournalDTO:
-    properties:
-      content:
-        type: string
-      createTime:
-        type: string
-      id:
-        type: integer
-      images:
-        items:
-          type: string
-        type: array
-      likes:
-        type: integer
-      private:
-        type: boolean
-      status:
-        type: integer
-      updateTime:
-        type: string
-      visits:
-        type: integer
-    type: object
-  dto.LoginForm:
-    properties:
-      password:
-        type: string
-      username:
-        type: string
-    type: object
-  dto.PageDTO:
-    properties:
-      cover:
-        type: string
-      createTime:
-        type: string
-      formatContent:
-        type: string
-      id:
-        type: integer
-      likes:
-        type: integer
-      name:
-        type: string
-      originalContent:
-        type: string
-      password:
-        type: string
-      private:
-        type: boolean
-      slug:
-        type: string
-      status:
-        type: integer
-      updateTime:
-        type: string
-      visits:
-        type: integer
     type: object
   dto.Pagination:
     properties:
@@ -443,7 +443,7 @@ definitions:
       size:
         type: integer
       type:
-        type: integer
+        type: string
       uploadTime:
         type: string
       url:
@@ -496,6 +496,91 @@ definitions:
       status:
         type: integer
     type: object
+  openapi.CommentDTO:
+    properties:
+      author:
+        type: string
+      avatar:
+        type: string
+      content:
+        type: string
+      createTime:
+        type: string
+      id:
+        type: integer
+      ip:
+        type: string
+      mail:
+        type: string
+      parentID:
+        type: integer
+      role:
+        type: string
+      rootID:
+        type: integer
+      status:
+        type: integer
+      subComments:
+        items:
+          $ref: '#/definitions/openapi.SubCommentDTO'
+        type: array
+      type:
+        type: string
+      url:
+        type: string
+    type: object
+  openapi.CreateCommentForm:
+    properties:
+      articleID:
+        type: integer
+      author:
+        type: string
+      avatar:
+        type: string
+      content:
+        type: string
+      mail:
+        type: string
+      pageID:
+        type: integer
+      parentID:
+        type: integer
+      rootID:
+        type: integer
+      type:
+        type: string
+      url:
+        type: string
+    type: object
+  openapi.SubCommentDTO:
+    properties:
+      author:
+        type: string
+      avatar:
+        type: string
+      content:
+        type: string
+      createTime:
+        type: string
+      id:
+        type: integer
+      ip:
+        type: string
+      mail:
+        type: string
+      parentID:
+        type: integer
+      role:
+        type: string
+      rootID:
+        type: integer
+      status:
+        type: integer
+      type:
+        type: string
+      url:
+        type: string
+    type: object
 host: localhost:8080
 info:
   contact:
@@ -510,6 +595,42 @@ info:
   title: Megrez backend API
   version: "1.0"
 paths:
+  /api/{type}/{id}/comments:
+    get:
+      consumes:
+      - application/json
+      description: list comments
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        type: string
+      - description: page num
+        in: query
+        name: pageNum
+        type: integer
+      - description: page size
+        in: query
+        name: pageSize
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/errmsg.Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/dto.Pagination'
+                  - properties:
+                      list:
+                        items:
+                          $ref: '#/definitions/openapi.CommentDTO'
+                        type: array
+                    type: object
+              type: object
+      summary: list comments
   /api/admin/article:
     post:
       consumes:
@@ -525,7 +646,7 @@ paths:
         name: req
         required: true
         schema:
-          $ref: '#/definitions/dto.CreateArticleForm'
+          $ref: '#/definitions/admin.CreateArticleForm'
       responses:
         "200":
           description: OK
@@ -579,7 +700,7 @@ paths:
             - $ref: '#/definitions/errmsg.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/dto.ArticleDTO'
+                  $ref: '#/definitions/admin.ArticleDTO'
               type: object
       summary: get article by article id
     put:
@@ -601,7 +722,7 @@ paths:
         name: req
         required: true
         schema:
-          $ref: '#/definitions/dto.CreateArticleForm'
+          $ref: '#/definitions/admin.CreateArticleForm'
       responses:
         "200":
           description: OK
@@ -644,7 +765,7 @@ paths:
                   - properties:
                       list:
                         items:
-                          $ref: '#/definitions/dto.ArticlesListDTO'
+                          $ref: '#/definitions/admin.ArticlesListDTO'
                         type: array
                     type: object
               type: object
@@ -680,7 +801,7 @@ paths:
                   - properties:
                       list:
                         items:
-                          $ref: '#/definitions/dto.AttachmentDTO'
+                          $ref: '#/definitions/admin.AttachmentDTO'
                         type: array
                     type: object
               type: object
@@ -839,7 +960,7 @@ paths:
         name: req
         required: true
         schema:
-          $ref: '#/definitions/dto.CreateCommentForm'
+          $ref: '#/definitions/admin.CreateCommentForm'
       responses:
         "200":
           description: OK
@@ -898,7 +1019,7 @@ paths:
                   - properties:
                       list:
                         items:
-                          $ref: '#/definitions/dto.CommentListDTO'
+                          $ref: '#/definitions/admin.CommentListDTO'
                         type: array
                     type: object
               type: object
@@ -914,7 +1035,7 @@ paths:
         name: req
         required: true
         schema:
-          $ref: '#/definitions/dto.InstallBlogForm'
+          $ref: '#/definitions/admin.InstallBlogForm'
       responses:
         "200":
           description: OK
@@ -941,7 +1062,7 @@ paths:
         name: req
         required: true
         schema:
-          $ref: '#/definitions/dto.CreateJournalForm'
+          $ref: '#/definitions/admin.CreateJournalForm'
       responses:
         "200":
           description: OK
@@ -979,7 +1100,7 @@ paths:
                   - properties:
                       list:
                         items:
-                          $ref: '#/definitions/dto.JournalDTO'
+                          $ref: '#/definitions/admin.JournalDTO'
                         type: array
                     type: object
               type: object
@@ -1110,7 +1231,7 @@ paths:
         name: req
         required: true
         schema:
-          $ref: '#/definitions/dto.LoginForm'
+          $ref: '#/definitions/admin.LoginForm'
       responses:
         "200":
           description: OK
@@ -1361,4 +1482,26 @@ paths:
                   $ref: '#/definitions/model.Attachment'
               type: object
       summary: upload attachment
+  /api/comment:
+    post:
+      consumes:
+      - application/json
+      description: create comment
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        type: string
+      - description: body
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/openapi.CreateCommentForm'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/errmsg.Response'
+      summary: create comment
 swagger: "2.0"

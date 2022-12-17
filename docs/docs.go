@@ -45,7 +45,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.CreateArticleForm"
+                            "$ref": "#/definitions/admin.CreateArticleForm"
                         }
                     }
                 ],
@@ -104,7 +104,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/dto.ArticleDTO"
+                                            "$ref": "#/definitions/admin.ArticleDTO"
                                         }
                                     }
                                 }
@@ -139,7 +139,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.CreateArticleForm"
+                            "$ref": "#/definitions/admin.CreateArticleForm"
                         }
                     }
                 ],
@@ -244,7 +244,7 @@ const docTemplate = `{
                                                         "list": {
                                                             "type": "array",
                                                             "items": {
-                                                                "$ref": "#/definitions/dto.ArticlesListDTO"
+                                                                "$ref": "#/definitions/admin.ArticlesListDTO"
                                                             }
                                                         }
                                                     }
@@ -308,7 +308,7 @@ const docTemplate = `{
                                                         "list": {
                                                             "type": "array",
                                                             "items": {
-                                                                "$ref": "#/definitions/dto.AttachmentDTO"
+                                                                "$ref": "#/definitions/admin.AttachmentDTO"
                                                             }
                                                         }
                                                     }
@@ -577,7 +577,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.CreateCommentForm"
+                            "$ref": "#/definitions/admin.CreateCommentForm"
                         }
                     }
                 ],
@@ -672,7 +672,7 @@ const docTemplate = `{
                                                         "list": {
                                                             "type": "array",
                                                             "items": {
-                                                                "$ref": "#/definitions/dto.CommentListDTO"
+                                                                "$ref": "#/definitions/admin.CommentListDTO"
                                                             }
                                                         }
                                                     }
@@ -701,7 +701,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.InstallBlogForm"
+                            "$ref": "#/definitions/admin.InstallBlogForm"
                         }
                     }
                 ],
@@ -747,7 +747,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.CreateJournalForm"
+                            "$ref": "#/definitions/admin.CreateJournalForm"
                         }
                     }
                 ],
@@ -810,7 +810,7 @@ const docTemplate = `{
                                                         "list": {
                                                             "type": "array",
                                                             "items": {
-                                                                "$ref": "#/definitions/dto.JournalDTO"
+                                                                "$ref": "#/definitions/admin.JournalDTO"
                                                             }
                                                         }
                                                     }
@@ -1032,7 +1032,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.LoginForm"
+                            "$ref": "#/definitions/admin.LoginForm"
                         }
                     }
                 ],
@@ -1454,9 +1454,564 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/api/comment": {
+            "post": {
+                "description": "create comment",
+                "consumes": [
+                    "application/json"
+                ],
+                "summary": "create comment",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header"
+                    },
+                    {
+                        "description": "body",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/openapi.CreateCommentForm"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/errmsg.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/{type}/{id}/comments": {
+            "get": {
+                "description": "list comments",
+                "consumes": [
+                    "application/json"
+                ],
+                "summary": "list comments",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "page num",
+                        "name": "pageNum",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "page size",
+                        "name": "pageSize",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/errmsg.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/dto.Pagination"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/openapi.CommentDTO"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
+        "admin.ArticleDTO": {
+            "type": "object",
+            "properties": {
+                "allowedComment": {
+                    "type": "boolean"
+                },
+                "categories": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "cover": {
+                    "type": "string"
+                },
+                "editTime": {
+                    "type": "string"
+                },
+                "formatContent": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "isTop": {
+                    "type": "boolean"
+                },
+                "likes": {
+                    "type": "integer"
+                },
+                "originalContent": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "private": {
+                    "type": "boolean"
+                },
+                "publishTime": {
+                    "type": "string"
+                },
+                "seoDescription": {
+                    "type": "string"
+                },
+                "seoKeywords": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "slug": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "summary": {
+                    "type": "string"
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "title": {
+                    "type": "string"
+                },
+                "visits": {
+                    "type": "integer"
+                },
+                "wordCount": {
+                    "type": "integer"
+                }
+            }
+        },
+        "admin.ArticlesListDTO": {
+            "type": "object",
+            "properties": {
+                "allowedComment": {
+                    "type": "boolean"
+                },
+                "categories": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Category"
+                    }
+                },
+                "commentsNum": {
+                    "type": "integer"
+                },
+                "cover": {
+                    "type": "string"
+                },
+                "editTime": {
+                    "type": "string"
+                },
+                "formatContent": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "isTop": {
+                    "type": "boolean"
+                },
+                "likes": {
+                    "type": "integer"
+                },
+                "originalContent": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "private": {
+                    "type": "boolean"
+                },
+                "publishTime": {
+                    "type": "string"
+                },
+                "slug": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "summary": {
+                    "type": "string"
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Tag"
+                    }
+                },
+                "title": {
+                    "type": "string"
+                },
+                "visits": {
+                    "type": "integer"
+                },
+                "wordCount": {
+                    "type": "integer"
+                }
+            }
+        },
+        "admin.AttachmentDTO": {
+            "type": "object",
+            "properties": {
+                "ext": {
+                    "type": "string"
+                },
+                "fileName": {
+                    "type": "string"
+                },
+                "height": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "size": {
+                    "type": "string"
+                },
+                "thumbURL": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "uploadTime": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
+                },
+                "width": {
+                    "type": "integer"
+                }
+            }
+        },
+        "admin.CommentListDTO": {
+            "type": "object",
+            "properties": {
+                "article": {
+                    "$ref": "#/definitions/admin.ArticleDTO"
+                },
+                "author": {
+                    "type": "string"
+                },
+                "content": {
+                    "type": "string"
+                },
+                "createTime": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "ip": {
+                    "type": "string"
+                },
+                "mail": {
+                    "type": "string"
+                },
+                "page": {
+                    "$ref": "#/definitions/admin.PageDTO"
+                },
+                "parentID": {
+                    "type": "integer"
+                },
+                "rootID": {
+                    "type": "integer"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
+                }
+            }
+        },
+        "admin.CreateArticleForm": {
+            "type": "object",
+            "properties": {
+                "allowedComment": {
+                    "type": "boolean"
+                },
+                "categories": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "cover": {
+                    "type": "string"
+                },
+                "formatContent": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "isTop": {
+                    "type": "boolean"
+                },
+                "originalContent": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "private": {
+                    "type": "boolean"
+                },
+                "seoDescription": {
+                    "type": "string"
+                },
+                "seoKeywords": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "slug": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "summary": {
+                    "type": "string"
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "title": {
+                    "type": "string"
+                },
+                "wordCount": {
+                    "type": "integer"
+                }
+            }
+        },
+        "admin.CreateCommentForm": {
+            "type": "object",
+            "properties": {
+                "articleID": {
+                    "type": "integer"
+                },
+                "content": {
+                    "type": "string"
+                },
+                "createTime": {
+                    "type": "string"
+                },
+                "pageID": {
+                    "type": "integer"
+                },
+                "parentID": {
+                    "type": "integer"
+                },
+                "rootID": {
+                    "type": "integer"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "updateTime": {
+                    "type": "string"
+                }
+            }
+        },
+        "admin.CreateJournalForm": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "images": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "private": {
+                    "type": "boolean"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "admin.InstallBlogForm": {
+            "type": "object",
+            "properties": {
+                "blogTitle": {
+                    "type": "string"
+                },
+                "blogURL": {
+                    "type": "string"
+                },
+                "confirmPassword": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "nickname": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "admin.JournalDTO": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "createTime": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "images": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "likes": {
+                    "type": "integer"
+                },
+                "private": {
+                    "type": "boolean"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "updateTime": {
+                    "type": "string"
+                },
+                "visits": {
+                    "type": "integer"
+                }
+            }
+        },
+        "admin.LoginForm": {
+            "type": "object",
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "admin.PageDTO": {
+            "type": "object",
+            "properties": {
+                "cover": {
+                    "type": "string"
+                },
+                "createTime": {
+                    "type": "string"
+                },
+                "formatContent": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "likes": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "originalContent": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "private": {
+                    "type": "boolean"
+                },
+                "slug": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "updateTime": {
+                    "type": "string"
+                },
+                "visits": {
+                    "type": "integer"
+                }
+            }
+        },
         "config.AuthorInfo": {
             "type": "object",
             "properties": {
@@ -1558,463 +2113,6 @@ const docTemplate = `{
                 },
                 "version": {
                     "type": "string"
-                }
-            }
-        },
-        "dto.ArticleDTO": {
-            "type": "object",
-            "properties": {
-                "allowedComment": {
-                    "type": "boolean"
-                },
-                "categories": {
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    }
-                },
-                "cover": {
-                    "type": "string"
-                },
-                "editTime": {
-                    "type": "string"
-                },
-                "formatContent": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "isTop": {
-                    "type": "boolean"
-                },
-                "likes": {
-                    "type": "integer"
-                },
-                "originalContent": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                },
-                "private": {
-                    "type": "boolean"
-                },
-                "publishTime": {
-                    "type": "string"
-                },
-                "seoDescription": {
-                    "type": "string"
-                },
-                "seoKeywords": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "slug": {
-                    "type": "string"
-                },
-                "status": {
-                    "type": "integer"
-                },
-                "summary": {
-                    "type": "string"
-                },
-                "tags": {
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    }
-                },
-                "title": {
-                    "type": "string"
-                },
-                "visits": {
-                    "type": "integer"
-                },
-                "wordCount": {
-                    "type": "integer"
-                }
-            }
-        },
-        "dto.ArticlesListDTO": {
-            "type": "object",
-            "properties": {
-                "allowedComment": {
-                    "type": "boolean"
-                },
-                "categories": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/model.Category"
-                    }
-                },
-                "commentsNum": {
-                    "type": "integer"
-                },
-                "cover": {
-                    "type": "string"
-                },
-                "editTime": {
-                    "type": "string"
-                },
-                "formatContent": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "isTop": {
-                    "type": "boolean"
-                },
-                "likes": {
-                    "type": "integer"
-                },
-                "originalContent": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                },
-                "private": {
-                    "type": "boolean"
-                },
-                "publishTime": {
-                    "type": "string"
-                },
-                "slug": {
-                    "type": "string"
-                },
-                "status": {
-                    "type": "integer"
-                },
-                "summary": {
-                    "type": "string"
-                },
-                "tags": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/model.Tag"
-                    }
-                },
-                "title": {
-                    "type": "string"
-                },
-                "visits": {
-                    "type": "integer"
-                },
-                "wordCount": {
-                    "type": "integer"
-                }
-            }
-        },
-        "dto.AttachmentDTO": {
-            "type": "object",
-            "properties": {
-                "ext": {
-                    "type": "string"
-                },
-                "fileName": {
-                    "type": "string"
-                },
-                "height": {
-                    "type": "integer"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "size": {
-                    "type": "string"
-                },
-                "thumbURL": {
-                    "type": "string"
-                },
-                "type": {
-                    "type": "integer"
-                },
-                "uploadTime": {
-                    "type": "string"
-                },
-                "url": {
-                    "type": "string"
-                },
-                "width": {
-                    "type": "integer"
-                }
-            }
-        },
-        "dto.CommentListDTO": {
-            "type": "object",
-            "properties": {
-                "article": {
-                    "$ref": "#/definitions/dto.ArticleDTO"
-                },
-                "author": {
-                    "type": "string"
-                },
-                "content": {
-                    "type": "string"
-                },
-                "createTime": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "ip": {
-                    "type": "string"
-                },
-                "mail": {
-                    "type": "string"
-                },
-                "page": {
-                    "$ref": "#/definitions/dto.PageDTO"
-                },
-                "parentID": {
-                    "type": "integer"
-                },
-                "rootID": {
-                    "type": "integer"
-                },
-                "site": {
-                    "type": "string"
-                },
-                "status": {
-                    "type": "integer"
-                },
-                "type": {
-                    "type": "integer"
-                }
-            }
-        },
-        "dto.CreateArticleForm": {
-            "type": "object",
-            "properties": {
-                "allowedComment": {
-                    "type": "boolean"
-                },
-                "categories": {
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    }
-                },
-                "cover": {
-                    "type": "string"
-                },
-                "formatContent": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "isTop": {
-                    "type": "boolean"
-                },
-                "originalContent": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                },
-                "private": {
-                    "type": "boolean"
-                },
-                "seoDescription": {
-                    "type": "string"
-                },
-                "seoKeywords": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "slug": {
-                    "type": "string"
-                },
-                "status": {
-                    "type": "integer"
-                },
-                "summary": {
-                    "type": "string"
-                },
-                "tags": {
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    }
-                },
-                "title": {
-                    "type": "string"
-                },
-                "wordCount": {
-                    "type": "integer"
-                }
-            }
-        },
-        "dto.CreateCommentForm": {
-            "type": "object",
-            "properties": {
-                "articleID": {
-                    "type": "integer"
-                },
-                "content": {
-                    "type": "string"
-                },
-                "createTime": {
-                    "type": "string"
-                },
-                "pageID": {
-                    "type": "integer"
-                },
-                "parentID": {
-                    "type": "integer"
-                },
-                "rootID": {
-                    "type": "integer"
-                },
-                "type": {
-                    "type": "integer"
-                },
-                "updateTime": {
-                    "type": "string"
-                }
-            }
-        },
-        "dto.CreateJournalForm": {
-            "type": "object",
-            "properties": {
-                "content": {
-                    "type": "string"
-                },
-                "images": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "private": {
-                    "type": "boolean"
-                },
-                "status": {
-                    "type": "integer"
-                }
-            }
-        },
-        "dto.InstallBlogForm": {
-            "type": "object",
-            "properties": {
-                "blogTitle": {
-                    "type": "string"
-                },
-                "blogURL": {
-                    "type": "string"
-                },
-                "confirmPassword": {
-                    "type": "string"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "nickname": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                },
-                "username": {
-                    "type": "string"
-                }
-            }
-        },
-        "dto.JournalDTO": {
-            "type": "object",
-            "properties": {
-                "content": {
-                    "type": "string"
-                },
-                "createTime": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "images": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "likes": {
-                    "type": "integer"
-                },
-                "private": {
-                    "type": "boolean"
-                },
-                "status": {
-                    "type": "integer"
-                },
-                "updateTime": {
-                    "type": "string"
-                },
-                "visits": {
-                    "type": "integer"
-                }
-            }
-        },
-        "dto.LoginForm": {
-            "type": "object",
-            "properties": {
-                "password": {
-                    "type": "string"
-                },
-                "username": {
-                    "type": "string"
-                }
-            }
-        },
-        "dto.PageDTO": {
-            "type": "object",
-            "properties": {
-                "cover": {
-                    "type": "string"
-                },
-                "createTime": {
-                    "type": "string"
-                },
-                "formatContent": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "likes": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "originalContent": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                },
-                "private": {
-                    "type": "boolean"
-                },
-                "slug": {
-                    "type": "string"
-                },
-                "status": {
-                    "type": "integer"
-                },
-                "updateTime": {
-                    "type": "string"
-                },
-                "visits": {
-                    "type": "integer"
                 }
             }
         },
@@ -2129,7 +2227,7 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "type": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "uploadTime": {
                     "type": "string"
@@ -2208,6 +2306,135 @@ const docTemplate = `{
                 },
                 "status": {
                     "type": "integer"
+                }
+            }
+        },
+        "openapi.CommentDTO": {
+            "type": "object",
+            "properties": {
+                "author": {
+                    "type": "string"
+                },
+                "avatar": {
+                    "type": "string"
+                },
+                "content": {
+                    "type": "string"
+                },
+                "createTime": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "ip": {
+                    "type": "string"
+                },
+                "mail": {
+                    "type": "string"
+                },
+                "parentID": {
+                    "type": "integer"
+                },
+                "role": {
+                    "type": "string"
+                },
+                "rootID": {
+                    "type": "integer"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "subComments": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/openapi.SubCommentDTO"
+                    }
+                },
+                "type": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
+                }
+            }
+        },
+        "openapi.CreateCommentForm": {
+            "type": "object",
+            "properties": {
+                "articleID": {
+                    "type": "integer"
+                },
+                "author": {
+                    "type": "string"
+                },
+                "avatar": {
+                    "type": "string"
+                },
+                "content": {
+                    "type": "string"
+                },
+                "mail": {
+                    "type": "string"
+                },
+                "pageID": {
+                    "type": "integer"
+                },
+                "parentID": {
+                    "type": "integer"
+                },
+                "rootID": {
+                    "type": "integer"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
+                }
+            }
+        },
+        "openapi.SubCommentDTO": {
+            "type": "object",
+            "properties": {
+                "author": {
+                    "type": "string"
+                },
+                "avatar": {
+                    "type": "string"
+                },
+                "content": {
+                    "type": "string"
+                },
+                "createTime": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "ip": {
+                    "type": "string"
+                },
+                "mail": {
+                    "type": "string"
+                },
+                "parentID": {
+                    "type": "integer"
+                },
+                "role": {
+                    "type": "string"
+                },
+                "rootID": {
+                    "type": "integer"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
                 }
             }
         }

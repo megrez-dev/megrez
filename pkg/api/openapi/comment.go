@@ -69,7 +69,7 @@ func CreateComment(c *gin.Context) {
 // @Param Authorization header string false "Authorization"
 // @Param pageNum query int false "page num"
 // @Param pageSize query int false "page size"
-// @Success 200 {object} errmsg.Response{data=dto.Pagination{list=[]openapidto.CommentListDTO}}
+// @Success 200 {object} errmsg.Response{data=dto.Pagination{list=[]openapidto.CommentDTO}}
 // @Router /api/{type}/{id}/comments [get]
 func ListComments(c *gin.Context) {
 	var pageNum, pageSize int

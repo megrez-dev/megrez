@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/flosch/pongo2/v4"
+	"github.com/flosch/pongo2/v6"
 	"github.com/gin-gonic/gin"
 	"github.com/megrez/pkg/entity/vo"
 	"github.com/megrez/pkg/model"
