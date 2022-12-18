@@ -66,5 +66,10 @@ func page(c *gin.Context) {
 	pageVO.CommentsNum = commentsNum
 	pagination := vo.CalculatePagination(pageNum, pageSize, int(commentsNum))
 	template := page.Slug + ".html"
-	c.HTML(http.StatusOK, template, pongo2.Context{"page": page, "pagination": pagination, "comments": comments, "global": globalOption})
+	c.HTML(http.StatusOK, template, pongo2.Context{
+		"page": page,
+		"pagination": pagination,
+		"comments": comments,
+		"global": globalOption,
+	})
 }

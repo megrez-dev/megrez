@@ -17,18 +17,6 @@ func RouteLink(g *gin.Engine) {
 }
 
 func listLinks(c *gin.Context) {
-	page := struct {
-		ID          uint
-		Name        string
-		Slug        string
-		CommentsNum int64
-		Visits      int64
-	}{
-		ID:     2,
-		Name:   "友链",
-		Slug:   "links",
-		Visits: 10086,
-	}
 	var pageNum, pageSize int
 	var err error
 	if c.Param("pageNum") == "" {
@@ -49,6 +37,12 @@ func listLinks(c *gin.Context) {
 			c.Redirect(http.StatusInternalServerError, "/error")
 		}
 	}
+
+	page, err := model.GetPageBySlugAndType("links", model.PageTypeBuildIn)
+	if err != nil {
+		c.Redirect(http.StatusInternalServerError, "/error")
+	}
+	pageVO := vo.GetPageFromPO(page)
 
 	linkPOs, err := model.ListAllLinks()
 	links := []*vo.Link{}
@@ -78,7 +72,13 @@ func listLinks(c *gin.Context) {
 	if err != nil {
 		c.Redirect(http.StatusInternalServerError, "/error")
 	}
-	page.CommentsNum = commentsNum
+	pageVO.CommentsNum = commentsNum
 	pagination := vo.CalculatePagination(pageNum, pageSize, int(commentsNum))
-	c.HTML(http.StatusOK, "links.html", pongo2.Context{"page": page, "links": links, "comments": comments, "pagination": pagination, "global": globalOption})
+	c.HTML(http.StatusOK, "links.html", pongo2.Context{
+		"page":       pageVO,
+		"links":      links,
+		"comments":   comments,
+		"pagination": pagination,
+		"global":     globalOption,
+	})
 }

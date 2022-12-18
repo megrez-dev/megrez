@@ -57,17 +57,16 @@ func listJournal(c *gin.Context) {
 	if err != nil {
 		c.Redirect(http.StatusInternalServerError, "/error")
 	}
-	page := struct {
-		ID     uint
-		Slug   string
-		Name   string
-		Visits int64
-	}{
-		ID:     3,
-		Slug:   "journal",
-		Name:   "日志",
-		Visits: 2311,
+	page, err := model.GetPageBySlugAndType("about", model.PageTypeBuildIn)
+	if err != nil {
+		c.Redirect(http.StatusInternalServerError, "/error")
 	}
+	pageVO := vo.GetPageFromPO(page)
 	pagination := vo.CalculatePagination(pageNum, pageSize, int(journalsNum))
-	c.HTML(http.StatusOK, "journal.html", pongo2.Context{"page": page, "journals": journals, "pagination": pagination, "global": globalOption})
+	c.HTML(http.StatusOK, "journal.html", pongo2.Context{
+		"page":       pageVO,
+		"journals":   journals,
+		"pagination": pagination,
+		"global":     globalOption,
+	})
 }

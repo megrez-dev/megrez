@@ -1,13 +1,14 @@
 package view
 
 import (
+	"log"
+	"net/http"
+	"strconv"
+
 	"github.com/flosch/pongo2/v6"
 	"github.com/gin-gonic/gin"
 	"github.com/megrez/pkg/entity/vo"
 	"github.com/megrez/pkg/model"
-	"log"
-	"net/http"
-	"strconv"
 )
 
 func RouteAbout(g *gin.Engine) {
@@ -16,18 +17,6 @@ func RouteAbout(g *gin.Engine) {
 }
 
 func about(c *gin.Context) {
-	page := struct {
-		ID          uint
-		Slug        string
-		Name        string
-		CommentsNum int64
-		Visits      int64
-	}{
-		ID:     1,
-		Slug:   "about",
-		Name:   "关于",
-		Visits: 2311,
-	}
 	var pageNum, pageSize int
 	var err error
 	if c.Param("pageNum") == "" {
@@ -48,6 +37,11 @@ func about(c *gin.Context) {
 			c.Redirect(http.StatusInternalServerError, "/error")
 		}
 	}
+	page, err := model.GetPageBySlugAndType("about", model.PageTypeBuildIn)
+	if err != nil {
+		c.Redirect(http.StatusInternalServerError, "/error")
+	}
+	pageVO := vo.GetPageFromPO(page)
 	commentPOs, err := model.ListRootCommentsByPageID(page.ID, pageNum, pageSize)
 	if err != nil {
 		c.Redirect(http.StatusInternalServerError, "/error")
@@ -68,7 +62,12 @@ func about(c *gin.Context) {
 	if err != nil {
 		c.Redirect(http.StatusInternalServerError, "/error")
 	}
-	page.CommentsNum = commentsNum
+	pageVO.CommentsNum = commentsNum
 	pagination := vo.CalculatePagination(pageNum, pageSize, int(commentsNum))
-	c.HTML(http.StatusOK, "about.html", pongo2.Context{"page": page, "comments": comments, "pagination": pagination, "global": globalOption})
+	c.HTML(http.StatusOK, "about.html", pongo2.Context{
+		"page":       pageVO,
+		"comments":   comments,
+		"pagination": pagination,
+		"global":     globalOption,
+	})
 }

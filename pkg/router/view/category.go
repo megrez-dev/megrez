@@ -63,5 +63,10 @@ func listArticlesByCategory(c *gin.Context) {
 		c.Redirect(http.StatusInternalServerError, "/error")
 	}
 	pagination := vo.CalculatePagination(pageNum, pageSize, int(articlesNum))
-	c.HTML(http.StatusOK, "category.html", pongo2.Context{"category": category, "pagination": pagination, "articles": articles, "global": globalOption})
+	c.HTML(http.StatusOK, "category.html", pongo2.Context{
+		"category":   category,
+		"pagination": pagination,
+		"articles":   articles,
+		"global":     globalOption,
+	})
 }
