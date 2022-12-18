@@ -1,6 +1,6 @@
 ## Megrez 博客
 
-> `megrez` 为北斗之一的天权星，又名文曲星，作为博客项目的名字再适合不过了
+> Megrez 为北斗之一的天权星，古称文曲星，作为博客项目的名字再适合不过了
 
 ## 快速开始
 
@@ -31,4 +31,15 @@ $ ./megrez-linux-amd64
 
 ```bash
 $ docker run -it -d --name megrez -p 8080:8080 alkaidchen/megrez
+```
+
+## 编译运行
+> Golang: go1.19.3
+
+```bash
+$ git clone https://github.com/AlkaidChan/megrez.git
+$ git submodule init
+$ git submodule update
+$ go mod tidy
+$ go run main.go
 ```
