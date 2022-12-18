@@ -4,7 +4,7 @@ tidy:
 	go mod tidy
 
 docker:
-	docker build . -t megrez@latest
+	docker build . -t megrez
 
 docker-release: docker
 	docker push megrez@latest
