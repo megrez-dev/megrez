@@ -16,14 +16,16 @@ $ ./megrez-windows-amd64.exe
 ### MacOS
 
 ```bash
-$ wget https://github.com/AlkaidChan/megrez/releases/download/0.1.0-alpha.1/megrez-darwin-amd64
+$ wget --no-check-certificate https://github.com/AlkaidChan/megrez/releases/download/0.1.0-alpha.1/megrez-darwin-amd64
+$ chmod +x megrez-darwin-amd64
 $ ./megrez-darwin-amd64
 ```
 
 ### Linux
 
 ```bash
-$ wget https://github.com/AlkaidChan/megrez/releases/download/0.1.0-alpha.1/megrez-linux-amd64
+$ wget --no-check-certificate https://github.com/AlkaidChan/megrez/releases/download/0.1.0-alpha.1/megrez-linux-amd64
+$ chmod +x megrez-linux-amd64
 $ ./megrez-linux-amd64
 ```
 
@@ -34,7 +36,7 @@ $ docker run -it -d --name megrez -p 8080:8080 alkaidchen/megrez
 ```
 
 ## 编译运行
-> Golang: go1.19.3
+> Golang: 1.19.3
 
 ```bash
 $ git clone https://github.com/AlkaidChan/megrez.git
