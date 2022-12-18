@@ -4,10 +4,10 @@ tidy:
 	go mod tidy
 
 docker:
-	docker build . -t megrez
+	docker build . -t alkaidchen/megrez:latest
 
 docker-release: docker
-	docker push megrez
+	docker push alkaidchen/megrez:latest
 
 build-release: tidy docker-release
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o build/megrez-linux-amd64 main.go
