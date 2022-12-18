@@ -57,7 +57,7 @@ func listJournal(c *gin.Context) {
 	if err != nil {
 		c.Redirect(http.StatusInternalServerError, "/error")
 	}
-	page, err := model.GetPageBySlugAndType("about", model.PageTypeBuildIn)
+	page, err := model.GetPageBySlugAndType("journal", model.PageTypeBuildIn)
 	if err != nil {
 		c.Redirect(http.StatusInternalServerError, "/error")
 	}

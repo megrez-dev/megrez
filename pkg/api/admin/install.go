@@ -218,6 +218,7 @@ func Install(c *gin.Context) {
 		FormatContent:   "Hello Megrez",
 		AllowedComment:  true,
 		PublishTime:     time.Now(),
+		EditTime:        time.Now(),
 	}
 	err = model.CreateArticle(tx, &article)
 	if err != nil {
@@ -239,7 +240,7 @@ func Install(c *gin.Context) {
 		ArticleID:  article.ID,
 		Content:    "Welcome to Megrez!",
 		Type:       model.CommentTypeArticle,
-		URL:       "https://megrez.run",
+		URL:        "https://megrez.run",
 		Email:      "admin@megrez.run",
 		Author:     "MEGREZ",
 		CreateTime: time.Now(),
