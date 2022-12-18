@@ -10,8 +10,6 @@ COPY . .
 
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o megrez main.go
 
-ADD build/megrez-linux-amd64 /usr/bin/
-
 # runner
 FROM alpine
 
