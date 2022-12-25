@@ -9,7 +9,7 @@ docker:
 docker-release: docker
 	docker push alkaidchen/megrez:latest
 
-build-release: tidy docker-release
+build-release: tidy
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o build/megrez-linux-amd64 main.go
 	CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -o build/megrez-linux-arm64 main.go
 	CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -o build/megrez-darwin-amd64 main.go
