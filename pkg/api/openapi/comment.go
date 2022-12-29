@@ -58,7 +58,13 @@ func CreateComment(c *gin.Context) {
 		return
 	}
 	tx.Commit()
-	c.JSON(http.StatusOK, errmsg.Success(nil))
+	commentDTO := openapidto.CommentDTO{}
+	if err := commentDTO.LoadFromModel(comment); err != nil {
+		log.Error(err.Error())
+		c.JSON(http.StatusOK, errmsg.Error())
+		return
+	}
+	c.JSON(http.StatusOK, errmsg.Success(commentDTO))
 }
 
 // ListComments godoc
@@ -94,7 +100,8 @@ func ListComments(c *gin.Context) {
 			return
 		}
 	}
-	var parentComments []model.Comment
+	var rootComments []model.Comment
+	var total int64
 	tp := c.Param("type")
 	var id uint
 	pid, err := strconv.Atoi(c.Param("id"))
@@ -106,8 +113,11 @@ func ListComments(c *gin.Context) {
 	id = uint(pid)
 	switch tp {
 	case model.CommentTypeArticle:
-		if parentComments, err = model.ListRootCommentsByArticleID(id, pageNum, pageSize); err != nil {
-			log.Error("list root comments for article %d failed, err: %s")
+		if rootComments, err = model.ListRootCommentsByArticleID(id, pageNum, pageSize); err != nil {
+			log.Error("list root comments for article %d failed, err: %s", id, err.Error())
+		}
+		if total, err = model.CountRootCommentsByArticleID(id); err != nil {
+			log.Error("count root comments for article %d failed, err: %s", id, err.Error())
 		}
 	}
 	if err != nil {
@@ -116,7 +126,7 @@ func ListComments(c *gin.Context) {
 		return
 	}
 	var commentDTOs []openapidto.CommentDTO
-	for _, comment := range parentComments {
+	for _, comment := range rootComments {
 		commentDTO := openapidto.CommentDTO{}
 		err := commentDTO.LoadFromModel(comment)
 		if err != nil {
@@ -125,12 +135,6 @@ func ListComments(c *gin.Context) {
 			return
 		}
 		commentDTOs = append(commentDTOs, commentDTO)
-	}
-	total, err := model.CountAllComments()
-	if err != nil {
-		log.Error(err)
-		c.JSON(http.StatusOK, errmsg.Error())
-		return
 	}
 	pagination := dto.Pagination{
 		List:     commentDTOs,

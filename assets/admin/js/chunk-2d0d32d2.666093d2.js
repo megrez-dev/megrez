@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0d32d2"],{"5c3a":function(e,t,a){"use strict";a.r(t);var n=function(){var e=this,t=e.$createElement,a=e._self._c||t;return a("PageView",[a("template",{slot:"content"},[a("t-card",{attrs:{title:"仪表盘",bordered:!1}},[e._v(" 未实现 ")])],1)],2)},c=[],r=a("c8c3"),o={name:"Dashboard",data(){return{}},methods:{},components:{PageView:r["a"]}},s=o,d=a("2877"),l=Object(d["a"])(s,n,c,!1,null,"40f7ee8f",null);t["default"]=l.exports}}]);
+//# sourceMappingURL=chunk-2d0d32d2.666093d2.js.map

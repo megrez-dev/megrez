@@ -1,13 +1,6 @@
 package admin
 
 import (
-	"github.com/google/uuid"
-	admindto "github.com/megrez/pkg/entity/dto/admin"
-	"github.com/megrez/pkg/entity/dto"
-	"github.com/megrez/pkg/model"
-	dirUtils "github.com/megrez/pkg/utils/dir"
-	"github.com/megrez/pkg/utils/uploader"
-	"gorm.io/gorm"
 	"image"
 	_ "image/gif"
 	_ "image/jpeg"
@@ -16,6 +9,14 @@ import (
 	"path"
 	"strconv"
 	"time"
+
+	"github.com/google/uuid"
+	"github.com/megrez/pkg/entity/dto"
+	admindto "github.com/megrez/pkg/entity/dto/admin"
+	"github.com/megrez/pkg/model"
+	dirUtils "github.com/megrez/pkg/utils/dir"
+	"github.com/megrez/pkg/utils/uploader"
+	"gorm.io/gorm"
 
 	"github.com/gin-gonic/gin"
 	"github.com/megrez/pkg/log"
@@ -45,27 +46,22 @@ func UploadAttachment(c *gin.Context) {
 	open, err := file.Open()
 	if err != nil {
 		log.Error("open file failed: ", err)
-		c.JSON(http.StatusOK, errmsg.Error())
+		c.JSON(http.StatusOK, errmsg.FailMsg("打开文件失败"))
 		return
 	}
 	defer open.Close()
 	config, _, err := image.DecodeConfig(open)
+	var width, height int
 	if err != nil {
 		log.Error("decode image error: ", err)
-		c.JSON(http.StatusOK, errmsg.Error())
-		return
+	} else {
+		width = config.Width
+		height = config.Height
 	}
-	width := config.Width
-	height := config.Height
 	size := file.Size
 	dayDir := path.Join(strconv.Itoa(time.Now().Year()),
 		strconv.Itoa(int(time.Now().Month())),
 		strconv.Itoa(time.Now().Day()))
-	if err != nil {
-		log.Error("get upload dir error: ", err)
-		c.JSON(http.StatusOK, errmsg.Error())
-		return
-	}
 	var url string
 	var tp string
 	// TODO: make thumbnail
