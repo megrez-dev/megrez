@@ -2,20 +2,22 @@ package app
 
 import (
 	"fmt"
-	"github.com/megrez/pkg/bolt"
-	"github.com/megrez/pkg/config"
-	"go.etcd.io/bbolt"
-	"go.uber.org/zap"
-	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"path"
 
 	"github.com/gin-gonic/gin"
+	gocache "github.com/patrickmn/go-cache"
+	"go.etcd.io/bbolt"
+	"go.uber.org/zap"
+	"gopkg.in/yaml.v2"
+	"gorm.io/gorm"
+
+	"github.com/megrez/pkg/cache"
+	"github.com/megrez/pkg/config"
 	"github.com/megrez/pkg/log"
 	"github.com/megrez/pkg/model"
 	"github.com/megrez/pkg/router"
 	dirUtils "github.com/megrez/pkg/utils/dir"
-	"gorm.io/gorm"
 )
 
 // Megrez application
@@ -23,6 +25,7 @@ type Megrez struct {
 	config *config.Config
 	bolt   *bbolt.DB
 	db     *gorm.DB
+	cache  *gocache.Cache
 	server *gin.Engine
 	Home   string
 	Logger *zap.Logger
@@ -48,8 +51,8 @@ func (m *Megrez) Init() error {
 		m.initDir,
 		m.initLogger,
 		m.initConfig,
-		m.initBolt,
 		m.initDAO,
+		m.initCache,
 		m.initRouter,
 	} {
 		if err := f(); err != nil {
@@ -101,24 +104,8 @@ func (m *Megrez) initDefaultConfig() error {
 	return nil
 }
 
-func (m *Megrez) initBolt() error {
-	var boltPath string
-	if m.config.Database.Bolt.Path == "" {
-		log.Info("use default bolt path ${megrez_home}/bolt.db")
-		home, err := dirUtils.GetOrCreateMegrezHome()
-		if err != nil {
-			return err
-		}
-		boltPath = path.Join(home, "bolt.db")
-	} else {
-		boltPath = m.config.Database.Bolt.Path
-	}
-	b, err := bolt.NewBolt(boltPath)
-	if err != nil {
-		log.Error("init bolt failed, ", err)
-		return err
-	}
-	m.bolt = b
+func (m *Megrez) initCache() error {
+	m.cache = cache.NewCache()
 	return nil
 }
 

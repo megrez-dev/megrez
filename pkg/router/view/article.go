@@ -106,6 +106,6 @@ func articleDetail(c *gin.Context) {
 	if err != nil {
 		c.Redirect(http.StatusInternalServerError, "/error")
 	}
-	go model.AddArticleView(uint(id))
+	go model.IncrementArticleVisits(uint(id))
 	c.HTML(http.StatusOK, "article.html", pongo2.Context{"article": article, "global": globalOption})
 }

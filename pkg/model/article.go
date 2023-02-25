@@ -1,9 +1,10 @@
 package model
 
 import (
+	"time"
+
 	"github.com/megrez/pkg/log"
 	"gorm.io/gorm"
-	"time"
 )
 
 const (
@@ -73,7 +74,7 @@ func DeleteArticleByID(tx *gorm.DB, id uint) error {
 	return result.Error
 }
 
-func AddArticleView(id uint) {
+func IncrementArticleVisits(id uint) {
 	log.Debug("AddArticleView")
 	if db.Dialector.Name() == "sqlite3" {
 		lock.Lock()

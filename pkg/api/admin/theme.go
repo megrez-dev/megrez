@@ -346,6 +346,11 @@ func ListThemes(c *gin.Context) {
 			c.JSON(http.StatusOK, errmsg.Error())
 			return
 		}
+		if themeInfo.Cover == "" {
+			if _, err := os.Stat(path.Join(home, "themes", theme.Name(), "cover.jpg")); err == nil{
+				themeInfo.Cover = path.Join("themes", theme.Name(), "cover.jpg")
+			}
+		}
 		themeList = append(themeList, themeInfo)
 	}
 	c.JSON(http.StatusOK, errmsg.Success(themeList))
