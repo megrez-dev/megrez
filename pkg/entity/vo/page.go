@@ -23,6 +23,7 @@ type Page struct {
 
 func GetPageFromPO(page model.Page) *Page {
 	return &Page{
+		ID:         page.ID,
 		Name:       page.Name,
 		Slug:       page.Slug,
 		Cover:      page.Cover,

@@ -119,6 +119,13 @@ func ListComments(c *gin.Context) {
 		if total, err = model.CountRootCommentsByArticleID(id); err != nil {
 			log.Error("count root comments for article %d failed, err: %s", id, err.Error())
 		}
+	case model.CommentTypePage:
+		if rootComments, err = model.ListRootCommentsByPageID(id, pageNum, pageSize); err != nil {
+			log.Error("list root comments for page %d failed, err: %s", id, err.Error())
+		}
+		if total, err = model.CountRootCommentsByPageID(id); err != nil {
+			log.Error("count root comments for page %d failed, err: %s", id, err.Error())
+		}
 	}
 	if err != nil {
 		log.Error(err)

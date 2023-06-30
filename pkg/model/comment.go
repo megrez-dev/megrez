@@ -24,7 +24,7 @@ type Comment struct {
 	Author     string    `gorm:"type:varchar(63)" json:"author"`
 	Role       string    `gorm:"type:varchar(20)" json:"role"`
 	Email      string    `gorm:"type:varchar(63)" json:"email"`
-	URL       string    `gorm:"type:varchar(63)" json:"url"`
+	URL        string    `gorm:"type:varchar(63)" json:"url"`
 	Agent      string    `gorm:"type:varchar(1023)" json:"agent"`
 	IP         string    `gorm:"type:varchar(20)" json:"ip"`
 	Status     int       `gorm:"type:int(11)" json:"status"`
@@ -122,7 +122,7 @@ func ListCommentsByRootID(rid uint) ([]Comment, error) {
 		defer lock.Unlock()
 	}
 	var comments []Comment
-	result := db.Order("create_time DESC").Find(&comments, "root_id = ?", rid)
+	result := db.Order("create_time").Find(&comments, "root_id = ?", rid)
 	return comments, result.Error
 }
 
