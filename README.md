@@ -56,3 +56,12 @@ $ git submodule update
 $ go mod tidy
 $ go run main.go
 ```
+
+## 🌈 效果预览
+![默认主题](./docs/images/preview-1.png)
+
+![管理端登录界面](./docs/images/preview-2.png)
+
+![管理端编辑文章界面](./docs/images/preview-3.png)
+
+![暗色模式](./docs/images/preview-4.png)
