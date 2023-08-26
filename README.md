@@ -1,6 +1,16 @@
-## Megrez 博客
+<div align="center">
+	<h1>📝 Megrez</h1>
+	<span><b>Megrez</b>[ˈmiːɡrɛz] 基于 golang 的博客系统，可跨平台一键部署🚀，支持自定义主题🌈</span>
+	<div align="center">
+		<img alt="Golang 1.19" src="https://img.shields.io/badge/golang-1.19-blue">
+    <img alt="Vue 2.6" src="https://img.shields.io/badge/vue-2.6-deepgreen">
+    <img alt="Static Badge" src="https://img.shields.io/badge/License-MIT-red">
+	</div>
+</div>
 
-> Megrez 为北斗之一的天权星，古称文曲星，作为博客项目的名字再适合不过了
+## Megrez 名称由来
+
+Megrez 为北斗之一的天权星，古称文曲星，作为博客项目的名字再适合不过了
 
 ## 快速开始
 
