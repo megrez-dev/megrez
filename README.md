@@ -1,10 +1,11 @@
 <div align="center">
 	<h1>📝 Megrez</h1>
 	<span><b>Megrez</b>[ˈmiːɡrɛz] 基于 golang 的博客系统，可跨平台一键部署🚀，支持自定义主题🌈</span>
+    <br/>
 	<div align="center">
 		<img alt="Golang 1.19" src="https://img.shields.io/badge/golang-1.19-blue">
-    <img alt="Vue 2.6" src="https://img.shields.io/badge/vue-2.6-deepgreen">
-    <img alt="Static Badge" src="https://img.shields.io/badge/License-MIT-red">
+        <img alt="Vue 2.6" src="https://img.shields.io/badge/vue-2.6-deepgreen">
+        <img alt="Static Badge" src="https://img.shields.io/badge/License-MIT-red">
 	</div>
 </div>
 
