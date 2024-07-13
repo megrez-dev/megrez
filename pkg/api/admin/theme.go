@@ -154,31 +154,12 @@ func InstallTheme(c *gin.Context) {
 		c.JSON(http.StatusOK, errmsg.Error())
 		return
 	}
-	if _, err := os.Stat(path.Join(home, "themes", themeInfo.ID)); err != nil {
-		if err != nil {
-			if !os.IsNotExist(err) {
-				log.Errorf("get theme %s dir failed: %s", themeInfo.ID, err.Error())
-				c.JSON(http.StatusOK, errmsg.Error())
-				return
-			}
-		} else {
-			log.Errorf("theme %s already exists", themeInfo.ID)
-			c.JSON(http.StatusOK, errmsg.FailMsg("主题已存在"))
-			return
-		}
-	}
-	if err := os.MkdirAll(path.Join(home, "themes", themeInfo.ID), 0755); err != nil {
-		log.Error("create theme dir failed:", err.Error())
-		c.JSON(http.StatusOK, errmsg.Error())
+	if _, err := os.Stat(path.Join(home, "themes", themeInfo.ID)); err == nil {
+		log.Errorf("theme %s already exists", themeInfo.ID)
+		c.JSON(http.StatusOK, errmsg.FailMsg("主题文件夹已存在"))
 		return
-	}
-	err = zipUtils.UnZip(reader, path.Join(home, "themes", themeInfo.ID))
-	if err != nil {
-		err := os.RemoveAll(path.Join(home, "themes", themeInfo.ID))
-		if err != nil {
-			log.Error("remove theme dir failed:", err.Error())
-		}
-		log.Error("unzip theme failed:", err.Error())
+	} else if !os.IsNotExist(err) {
+		log.Errorf("get theme %s dir failed: %s", themeInfo.ID, err.Error())
 		c.JSON(http.StatusOK, errmsg.Error())
 		return
 	}
@@ -191,18 +172,151 @@ func InstallTheme(c *gin.Context) {
 				Value:   item.Default,
 				Type:    item.Type,
 			}
-			err := model.CreateThemeOption(tx, option)
-			if err != nil {
-				err := os.RemoveAll(path.Join(home, "themes", themeInfo.ID))
-				if err != nil {
-					log.Error("remove theme dir failed:", err.Error())
-				}
+			if err := model.CreateThemeOption(tx, option); err != nil {
 				log.Errorf("init theme option %s failed: %s", themeInfo.ID, err.Error())
 				tx.Rollback()
 				c.JSON(http.StatusOK, errmsg.Error())
 				return
 			}
 		}
+	}
+	if err := os.MkdirAll(path.Join(home, "themes", themeInfo.ID), 0755); err != nil {
+		log.Error("create theme dir failed:", err.Error())
+		tx.Rollback()
+		c.JSON(http.StatusOK, errmsg.Error())
+		return
+	}
+	if err := zipUtils.UnZip(reader, path.Join(home, "themes", themeInfo.ID)); err != nil {
+		if e := os.RemoveAll(path.Join(home, "themes", themeInfo.ID)); e != nil {
+			log.Error("remove theme dir failed:", e.Error())
+		}
+		log.Error("unzip theme failed:", err.Error())
+		tx.Rollback()
+		c.JSON(http.StatusOK, errmsg.Error())
+		return
+	}
+	tx.Commit()
+	c.JSON(http.StatusOK, errmsg.Success(nil))
+}
+
+func UpdateTheme(c *gin.Context) {
+	file, err := c.FormFile("file")
+	if err != nil {
+		log.Error("get file from request failed: ", err)
+		c.JSON(http.StatusOK, errmsg.Error())
+		return
+	}
+	fileName := file.Filename
+	ext := path.Ext(fileName)
+	if ext != ".zip" {
+		c.JSON(http.StatusOK, errmsg.FailMsg("仅支持zip格式"))
+		return
+	}
+	open, err := file.Open()
+	if err != nil {
+		log.Error("open zip file failed: ", err)
+		c.JSON(http.StatusOK, errmsg.FailMsg("打开压缩文件失败"))
+		return
+	}
+	defer func(open multipart.File) {
+		err := open.Close()
+		if err != nil {
+			log.Error("close zip file failed: ", err)
+		}
+	}(open)
+	reader, err := zip.NewReader(open, file.Size)
+	if err != nil {
+		log.Error("new zip reader failed: ", err)
+		c.JSON(http.StatusOK, errmsg.FailMsg("解压失败"))
+		return
+	}
+	infoFile, err := reader.Open("theme.yaml")
+	if err != nil {
+		log.Error("open theme.yaml failed: ", err)
+		c.JSON(http.StatusOK, errmsg.FailMsg("打开主题信息文件失败"))
+		return
+	}
+	defer func(infoFile fs.File) {
+		err := infoFile.Close()
+		if err != nil {
+			log.Error("close theme.yaml failed: ", err)
+		}
+	}(infoFile)
+	themeInfo, ok := getThemeInfo(infoFile)
+	if !ok {
+		c.JSON(http.StatusOK, errmsg.FailMsg("主题信息文件格式错误"))
+		return
+	}
+	if themeInfo.ID == "" {
+		c.JSON(http.StatusOK, errmsg.FailMsg("主题ID不能为空"))
+		return
+	}
+	cfgFile, err := reader.Open("config.yaml")
+	if err != nil {
+		log.Error("open config.yaml failed: ", err)
+		c.JSON(http.StatusOK, errmsg.FailMsg("打开主题配置文件失败"))
+		return
+	}
+	defer func(cfgFile fs.File) {
+		err := cfgFile.Close()
+		if err != nil {
+			log.Error("close config.yaml failed: ", err)
+		}
+	}(cfgFile)
+	themeConfig, ok := getThemeConfig(cfgFile)
+	if !ok {
+		c.JSON(http.StatusOK, errmsg.FailMsg("主题配置文件格式错误"))
+		return
+	}
+	home, err := dirUtils.GetOrCreateMegrezHome()
+	if err != nil {
+		log.Error("get megrez home failed:", err.Error())
+		c.JSON(http.StatusOK, errmsg.Error())
+		return
+	}
+	if _, err := os.Stat(path.Join(home, "themes", themeInfo.ID)); err != nil {
+		if os.IsNotExist(err) {
+			log.Errorf("theme %s not exists", themeInfo.ID)
+			c.JSON(http.StatusOK, errmsg.FailMsg("主题文件夹不存在"))
+			return
+		} else {
+			log.Errorf("get theme %s dir failed: %s", themeInfo.ID, err.Error())
+			c.JSON(http.StatusOK, errmsg.Error())
+			return
+		}
+	}
+	tx := model.BeginTx()
+	for _, tab := range themeConfig.Tabs {
+		for _, item := range tab.Items {
+			option := &model.ThemeOption{
+				ThemeID: themeInfo.ID,
+				Key:     item.Key,
+				Value:   item.Default,
+				Type:    item.Type,
+			}
+			if err := model.CreateThemeOptionIfNotExists(tx, option); err != nil {
+				log.Errorf("init theme option %s failed: %s", themeInfo.ID, err.Error())
+				tx.Rollback()
+				c.JSON(http.StatusOK, errmsg.Error())
+				return
+			}
+		}
+	}
+	// TODO: 怎么样在不删除原来的文件夹的情况下更新主题
+	if err := os.MkdirAll(path.Join(home, "themes", themeInfo.ID), 0755); err != nil {
+		log.Error("create theme dir failed:", err.Error())
+		tx.Rollback()
+		c.JSON(http.StatusOK, errmsg.Error())
+		return
+	}
+	if err := zipUtils.UnZip(reader, path.Join(home, "themes", themeInfo.ID)); err != nil {
+		if e := os.RemoveAll(path.Join(home, "themes", themeInfo.ID)); e != nil {
+			log.Error("remove theme dir failed:", e.Error())
+		}
+		log.Error("unzip theme failed:", err.Error())
+		tx.Rollback()
+		c.JSON(http.StatusOK, errmsg.Error())
+		return
 	}
 	tx.Commit()
 	c.JSON(http.StatusOK, errmsg.Success(nil))
@@ -347,7 +461,7 @@ func ListThemes(c *gin.Context) {
 			return
 		}
 		if themeInfo.Cover == "" {
-			if _, err := os.Stat(path.Join(home, "themes", theme.Name(), "cover.jpg")); err == nil{
+			if _, err := os.Stat(path.Join(home, "themes", theme.Name(), "cover.jpg")); err == nil {
 				themeInfo.Cover = path.Join("themes", theme.Name(), "cover.jpg")
 			}
 		}

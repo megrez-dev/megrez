@@ -1,8 +1,9 @@
 package model
 
 import (
-	"gorm.io/gorm"
 	"time"
+
+	"gorm.io/gorm"
 )
 
 type ThemeOption struct {
@@ -37,6 +38,19 @@ func UpdateThemeOption(tx *gorm.DB, themeID, key, value string) error {
 		defer lock.Unlock()
 	}
 	result := tx.Model(&ThemeOption{}).Where("theme_id = ? AND key = ?", themeID, key).Update("value", value)
+	return result.Error
+}
+
+func CreateThemeOptionIfNotExists(tx *gorm.DB, themeOption *ThemeOption) error {
+	if tx == nil {
+		tx = db
+	}
+	if tx.Dialector.Name() == "sqlite3" {
+		lock.Lock()
+		defer lock.Unlock()
+	}
+	themeOption.CreateTime = time.Now()
+	result := tx.FirstOrCreate(themeOption, "theme_id = ? AND key = ?", themeOption.ThemeID, themeOption.Key)
 	return result.Error
 }
 
