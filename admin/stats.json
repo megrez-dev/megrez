@@ -1,0 +1,63 @@
+
+> megrez-admin@0.1.0 build /Users/marston/Personal/megrez-admin
+> vue-cli-service build "--profile" "--json"
+
+
+ WARNING  Compiled with 2 warnings02:19:41
+
+ warning  
+
+asset size limit: The following asset(s) exceed the recommended size limit (244 KiB).
+This can impact web performance.
+Assets: 
+  js/chunk-1cb14f74.29deb4fc.js (276 KiB)
+  css/chunk-vendors.2dd156b8.css (312 KiB)
+  js/chunk-vendors.96ac9797.js (1.22 MiB)
+
+ warning  
+
+entrypoint size limit: The following entrypoint(s) combined asset size exceeds the recommended limit (244 KiB). This can impact web performance.
+Entrypoints:
+  app (1.59 MiB)
+      css/chunk-vendors.2dd156b8.css
+      js/chunk-vendors.96ac9797.js
+      css/app.e6f26ce1.css
+      js/app.1434525f.js
+
+
+  File                                    Size              Gzipped
+
+  dist/js/chunk-vendors.96ac9797.js       1252.45 KiB       338.49 KiB
+  dist/js/chunk-1cb14f74.29deb4fc.js      276.29 KiB        67.20 KiB
+  dist/js/app.1434525f.js                 14.42 KiB         5.32 KiB
+  dist/js/chunk-4d1230b2.05b3958d.js      13.00 KiB         4.61 KiB
+  dist/js/chunk-34a21f38.321cdfa3.js      11.02 KiB         2.80 KiB
+  dist/js/chunk-9869b7e0.8493a3ec.js      7.65 KiB          2.64 KiB
+  dist/js/chunk-cbf2bb94.ffe99c2e.js      6.98 KiB          2.81 KiB
+  dist/js/chunk-2c23e359.8a010263.js      6.43 KiB          2.70 KiB
+  dist/js/chunk-5562d44b.2b8c7b6c.js      5.66 KiB          2.14 KiB
+  dist/js/chunk-48095178.a539fefa.js      5.17 KiB          1.93 KiB
+  dist/js/chunk-607e7944.f505b569.js      4.81 KiB          1.78 KiB
+  dist/js/chunk-0db5944b.84e90335.js      4.51 KiB          1.82 KiB
+  dist/js/chunk-2344d801.f5234c9e.js      1.46 KiB          0.75 KiB
+  dist/js/chunk-5e156909.db2e0f55.js      0.67 KiB          0.48 KiB
+  dist/css/chunk-vendors.2dd156b8.css     311.64 KiB        40.92 KiB
+  dist/css/chunk-1cb14f74.55dc0219.css    70.94 KiB         14.26 KiB
+  dist/css/chunk-4d1230b2.33e658ef.css    67.47 KiB         7.83 KiB
+  dist/css/app.e6f26ce1.css               53.36 KiB         7.95 KiB
+  dist/css/chunk-9869b7e0.d0363005.css    36.01 KiB         6.79 KiB
+  dist/css/chunk-2344d801.f63c399a.css    35.81 KiB         6.77 KiB
+  dist/css/chunk-cbf2bb94.d951129a.css    21.18 KiB         6.57 KiB
+  dist/css/chunk-5562d44b.b992a46c.css    20.37 KiB         6.33 KiB
+  dist/css/chunk-5e156909.e58d6abb.css    19.94 KiB         6.24 KiB
+  dist/css/chunk-0db5944b.4355b681.css    19.82 KiB         6.22 KiB
+  dist/css/chunk-607e7944.afb82167.css    19.79 KiB         6.23 KiB
+  dist/css/chunk-34a21f38.575cac38.css    19.79 KiB         6.24 KiB
+  dist/css/chunk-48095178.9fc2f41f.css    19.69 KiB         6.18 KiB
+  dist/css/chunk-2c23e359.036b615c.css    19.58 KiB         6.14 KiB
+
+  Images and other types of assets omitted.
+
+ DONE  Build complete. The dist directory is ready to be deployed.
+ INFO  Check out deployment instructions at https://cli.vuejs.org/guide/deployment.html
+      

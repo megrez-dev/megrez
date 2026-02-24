@@ -50,7 +50,7 @@ func CheckInstall() gin.HandlerFunc {
 				c.AbortWithStatusJSON(http.StatusInternalServerError, errmsg.Error())
 				return
 			} else {
-				c.Redirect(http.StatusInternalServerError, "/error")
+				c.AbortWithStatus(http.StatusInternalServerError)
 				return
 			}
 		}
@@ -62,7 +62,7 @@ func CheckInstall() gin.HandlerFunc {
 				c.AbortWithStatusJSON(http.StatusOK, errmsg.Fail(errmsg.ErrorNotInstalled))
 				return
 			} else {
-				c.Redirect(http.StatusInternalServerError, "/error")
+				c.Redirect(http.StatusFound, "/admin/install")
 				return
 			}
 		}
