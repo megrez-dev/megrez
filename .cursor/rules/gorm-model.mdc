@@ -1,0 +1,62 @@
+---
+description: GORM 数据模型层规范
+globs: "pkg/model/**/*.go"
+alwaysApply: false
+---
+
+# 数据模型层规范
+
+## 模型定义
+
+结构体使用 `gorm` 和 `json` 双 tag：
+
+```go
+type Example struct {
+    ID   uint   `gorm:"primarykey" json:"id"`
+    Name string `gorm:"type:varchar(255)" json:"name"`
+}
+```
+
+## 数据操作函数
+
+包级函数，写操作支持可选事务参数：
+
+```go
+func CreateExample(tx *gorm.DB, example *Example) error {
+    if tx == nil {
+        tx = db
+    }
+    return tx.Create(example).Error
+}
+```
+
+只读操作直接使用全局 `db`：
+
+```go
+func GetExampleByID(id uint) (Example, error) {
+    var example Example
+    result := db.First(&example, id)
+    return example, result.Error
+}
+```
+
+## 分页查询
+
+```go
+db.Order("...").Offset(pageSize * (pageNum - 1)).Limit(pageSize).Find(&list)
+```
+
+## 新模型注册
+
+新增模型必须在 `pkg/model/db.go` 的 `AutoMigrate()` 中注册：
+
+```go
+err = db.AutoMigrate(
+    // ... 已有模型
+    &NewModel{},
+)
+```
+
+## 数据库兼容
+
+避免使用 MySQL 或 SQLite 特定语法，确保两种数据库都能正常运行。

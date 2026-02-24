@@ -1,0 +1,31 @@
+---
+description: Megrez 博客系统全局项目约定
+alwaysApply: true
+---
+
+# Megrez 项目规则
+
+Megrez 是基于 Go + Vue 的博客系统，详细架构参见项目根目录 `OVERVIEW.md`。
+
+## 架构分层
+
+```
+main.go → app/ → pkg/router/ → pkg/api/ → pkg/model/
+```
+
+- `app/` — 应用初始化（目录、日志、配置、数据库、缓存、路由）
+- `pkg/router/` — 路由注册与中间件
+- `pkg/api/admin/` — 管理端 API handler（需 JWT）
+- `pkg/api/openapi/` — 开放 API handler
+- `pkg/model/` — GORM 数据模型与数据操作
+- `pkg/entity/` — DTO / VO 定义
+- `admin/` — Vue 2.6 前端管理界面
+
+## 关键约定
+
+- Go 模块路径：`github.com/megrez`，Go 1.19
+- 数据库同时支持 SQLite 和 MySQL，不要使用特定数据库方言语法
+- 静态资源通过 `embed.FS` 嵌入二进制，修改前端后需 `make admin` 重新构建
+- 主题通过 git submodule 管理，位于 `assets/themes/`
+- 新增 API 必须同步更新路由注册（`pkg/router/api/`）和 Swagger godoc 注解
+- 使用中文进行沟通

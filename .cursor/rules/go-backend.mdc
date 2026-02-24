@@ -1,0 +1,50 @@
+---
+description: Go 后端编码规范
+globs: "**/*.go"
+alwaysApply: false
+---
+
+# Go 后端规范
+
+## 日志
+
+使用 `github.com/megrez/pkg/log` 封装的 Zap 日志，不要使用标准库 `log`。
+
+## API 响应
+
+所有 API 统一使用 `errmsg.Response` 返回：
+
+```go
+c.JSON(http.StatusOK, errmsg.Success(data))   // 成功
+c.JSON(http.StatusOK, errmsg.Fail(errCode))   // 业务错误（带错误码）
+c.JSON(http.StatusOK, errmsg.Error())          // 服务端未知错误
+```
+
+## 错误码
+
+在 `pkg/utils/errmsg/errmsg.go` 中按模块分段追加：
+- 1000+ 用户模块
+- 2000+ 文章模块
+- 3000+ 分类模块
+- 4000+ 评论模块
+- 5000+ 附件模块
+
+同时在 `codeMsg` map 中添加对应中文描述。
+
+## 事务
+
+```go
+tx := model.BeginTx()
+if err := model.SomeOperation(tx, ...); err != nil {
+    tx.Rollback()
+    c.JSON(http.StatusOK, errmsg.Error())
+    return
+}
+tx.Commit()
+```
+
+## API Handler
+
+- 包级函数，接收 `*gin.Context`，命名为 `Create/Update/Delete/Get/List` + 资源名
+- 参数绑定：JSON body 用 `c.ShouldBindJSON()`，路径参数用 `c.Param()`，查询参数用 `c.Query()`
+- 每个 handler 必须带 Swagger godoc 注解（`@Summary`、`@Router` 等）

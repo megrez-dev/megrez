@@ -1,0 +1,157 @@
+---
+description: Megrez 主题开发规范
+globs: "assets/themes/**/*.{html,css,js,yaml}"
+alwaysApply: false
+---
+
+# 主题开发规范
+
+## 模板引擎
+
+使用 Pongo2（Django 风格），语法要点：
+- 变量：`{{ variable }}`
+- 标签：`{% tag %}`
+- 包含：`{% include "component/head.html" %}`
+- 循环：`{% for item in list %}...{% endfor %}`
+- 条件：`{% if cond %}...{% elif cond %}...{% else %}...{% endif %}`
+- 过滤器：`{{ value|date:"2006-01-02" }}`、`{{ html|safe }}`
+- Go 时间格式使用 `2006-01-02 15:04:05` 占位符
+
+## 主题目录结构
+
+每个主题位于 `assets/themes/<theme-id>/`，必须包含：
+
+```
+<theme-id>/
+├── theme.yaml              # 主题元信息（id, name, author, version）
+├── config.yaml             # 可配置选项定义（tabs/items）
+├── index.html              # 首页
+├── article.html            # 文章详情页
+├── category.html           # 分类页
+├── journal.html            # 日志页
+├── links.html              # 友链页
+├── about.html              # 关于页
+├── search.html             # 搜索页
+├── 404.html                # 404 页面
+├── component/              # 可复用组件
+│   ├── head.html           # <head> 标签内容（CSS、meta）
+│   ├── header.html         # 页头导航
+│   ├── footer.html         # 页脚
+│   └── tail.html           # 尾部脚本
+└── static/                 # 静态资源
+    ├── css/
+    ├── js/
+    └── images/
+```
+
+## theme.yaml 格式
+
+```yaml
+id: my-theme
+name: My Theme
+author:
+  name: AuthorName
+  website: "https://example.com"
+  avatar: "https://example.com/avatar.png"
+cover: "https://example.com/cover.jpg"
+description: "主题描述"
+version: "1.0.0"
+repository: "https://github.com/user/repo"
+```
+
+## config.yaml 格式
+
+定义管理后台中可配置的主题选项：
+
+```yaml
+tabs:
+  - name: "基本设置"
+    key: "basic"
+    items:
+      - key: "fieldKey"
+        name: "显示名称"
+        type: "input"           # input/textarea/select/multiSelect/tags/image/switch
+        placeholder: "提示文字"
+        default: "默认值"
+```
+
+模板中通过 `global.ThemeOptions.fieldKey` 访问配置值。
+
+## 模板变量
+
+### 全局变量 `global`（所有页面可用）
+
+| 变量 | 类型 | 说明 |
+|------|------|------|
+| `global.BlogTitle` | string | 博客标题 |
+| `global.BlogDescription` | string | 博客描述 |
+| `global.BlogURL` | string | 博客地址 |
+| `global.BlogBirth` | time.Time | 博客创建时间 |
+| `global.ThemePath` | string | 主题静态资源路径（如 `/themes/default`） |
+| `global.ThemeOptions` | map | 主题配置项（config.yaml 中定义的键值） |
+| `global.Menus` | []Menu | 导航菜单（Name, Slug） |
+| `global.Categories` | []Category | 所有分类（Name, Slug） |
+| `global.LatestArticles` | []LatestArticle | 最新文章（Title, URL） |
+| `global.LatestComments` | []LatestComment | 最新评论（Content, URL） |
+| `global.RandomColor` | func | 随机颜色函数（返回 blue/purple/green/yellow/red/orange） |
+
+### index.html
+
+| 变量 | 类型 | 说明 |
+|------|------|------|
+| `articles` | []IndexArticle | 文章列表 |
+| `page` | Pagination | 分页信息（Current, Pre, Next, First, Last, Range） |
+
+IndexArticle 字段：ID, Title, Summary, Cover, Categories, CommentsNum, Visits, PublishTime, EditTime
+
+### article.html
+
+| 变量 | 类型 | 说明 |
+|------|------|------|
+| `article` | ArticleDetail | 文章详情 |
+
+ArticleDetail 字段：ID, Title, FormatContent, Cover, Categories, Tags, Comments, CommentsNum, Visits, Likes, WordCount, PublishTime, EditTime, Pre, Next
+
+- `article.FormatContent` 为 HTML 内容，需用 `{{ article.FormatContent|safe }}` 渲染
+- `article.Pre` / `article.Next`：上/下一篇文章（ID, Title, Cover），可能为 nil
+
+### category.html
+
+| 变量 | 说明 |
+|------|------|
+| `category` | 当前分类 |
+| `articles` | 该分类下的文章列表 |
+| `page` | 分页信息 |
+
+### journal.html / links.html / about.html / search.html
+
+各页面有对应的上下文变量，具体参考 `pkg/router/view/` 下对应文件。
+
+## 静态资源引用
+
+使用 `global.ThemePath` 作为前缀：
+
+```html
+<link rel="stylesheet" href="{{ global.ThemePath }}/static/css/style.css">
+<script src="{{ global.ThemePath }}/static/js/app.js"></script>
+```
+
+## 评论组件
+
+文章详情页使用 Vue 评论组件：
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
+<script src="{{ global.ThemePath }}/static/js/megrez-comment.min.js"></script>
+<megrez-comment id={{article.ID}} type="article"></megrez-comment>
+```
+
+## 代码注入
+
+支持通过 config.yaml 定义代码注入点，在模板中使用：
+
+```html
+{{ global.ThemeOptions.globalHeadTag | safe }}     <!-- head.html 中 -->
+{{ global.ThemeOptions.contentHeadTag | safe }}     <!-- 文章页 head 中 -->
+{{ global.ThemeOptions.globalFooterTag | safe }}    <!-- footer.html 中 -->
+```

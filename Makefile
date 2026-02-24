@@ -1,7 +1,10 @@
-.PHONY: tidy docker docker-release build-release
+.PHONY: tidy admin docker docker-release build-release
 
 tidy:
 	go mod tidy
+
+admin:
+	cd admin && npm install && NODE_OPTIONS=--openssl-legacy-provider npm run build
 
 docker:
 	docker build . -t alkaidchen/megrez:latest

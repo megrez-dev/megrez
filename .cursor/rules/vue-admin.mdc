@@ -1,0 +1,33 @@
+---
+description: Vue 前端管理界面规范
+globs: "admin/**/*.{vue,js}"
+alwaysApply: false
+---
+
+# Vue 管理界面规范
+
+## 技术栈
+
+- Vue 2.6 + Vue Router + Vuex
+- UI 组件库：TDesign Vue
+- Markdown 编辑器：Vditor
+
+## 构建
+
+```bash
+make admin
+```
+
+产物输出到 `admin/dist/`，通过 `assets/admin/admin.go` 的 `embed.FS` 嵌入 Go 二进制。修改前端代码后必须重新构建才能在 Go 服务中生效。
+
+## API 调用
+
+- 管理端 API 基础路径：`/api/admin/`
+- 请求需携带 JWT Token（`Authorization` header）
+- 响应格式统一为 `{ status, msg, data }`
+
+## 组件规范
+
+- 使用 TDesign Vue 组件，避免引入其他 UI 库
+- 页面组件放在 `admin/src/views/`
+- 公共组件放在 `admin/src/components/`

@@ -47,15 +47,51 @@ $ docker run -it -d --name megrez -p 8080:8080 alkaidchen/megrez
 ```
 
 ## 🔨 编译运行
-> Golang: 1.19.3
+
+### 环境要求
+
+- Go >= 1.19
+- Node.js（构建管理后台前端所需）
+- Make（可选，用于自动化构建）
+
+### 源码编译
 
 ```bash
-$ git clone https://github.com/AlkaidChan/megrez.git
-$ git submodule init
-$ git submodule update
+$ git clone --recurse-submodules https://github.com/megrez-dev/megrez.git
+$ cd megrez
 $ go mod tidy
 $ go run main.go
 ```
+
+### 构建管理后台前端
+
+```bash
+$ make admin
+```
+
+### 多平台交叉编译
+
+支持 Linux / macOS / Windows（amd64 / arm64），产物输出到 `build/` 目录：
+
+```bash
+$ make build-release
+```
+
+### Docker 构建
+
+```bash
+$ make docker
+```
+
+### Makefile 目标一览
+
+| 目标 | 说明 |
+|------|------|
+| `make tidy` | 整理 Go 模块依赖 |
+| `make admin` | 构建前端管理界面 |
+| `make docker` | 构建 Docker 镜像 |
+| `make docker-release` | 构建并推送 Docker 镜像 |
+| `make build-release` | 多平台交叉编译（6 个目标） |
 
 ## 🌈 效果预览
 ![默认主题](./docs/images/preview-1.png)

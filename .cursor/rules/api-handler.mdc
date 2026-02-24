@@ -1,0 +1,68 @@
+---
+description: API 处理层规范
+globs: "pkg/api/**/*.go"
+alwaysApply: false
+---
+
+# API Handler 规范
+
+## DTO 定义
+
+- 管理端：`pkg/entity/dto/admin/`
+- 开放端：`pkg/entity/dto/openapi/`
+- 视图对象：`pkg/entity/vo/`
+
+## DTO 转换
+
+```go
+// DTO -> Model（用于创建/更新请求）
+article := dto.Transfer2Model()
+
+// Model -> DTO（用于查询响应）
+dto := ArticleDTO{}
+dto.LoadFromModel(article)
+```
+
+## 路由注册
+
+新增 API 后必须在对应路由文件中注册：
+- 管理端：`pkg/router/api/admin.go` — 需 JWT 认证
+- 开放端：`pkg/router/api/openapi.go` — 公开访问
+
+```go
+auth.POST("resource", admin.CreateResource)
+auth.PUT("resource/:id", admin.UpdateResource)
+auth.DELETE("resource/:id", admin.DeleteResource)
+auth.GET("resources", admin.ListResources)
+auth.GET("resource/:id", admin.GetResource)
+```
+
+## 分页
+
+参数名 `pageNum`（默认 1）和 `pageSize`（默认 10），返回 `dto.Pagination`：
+
+```go
+pagination := dto.Pagination{
+    List:     items,
+    Current:  pageNum,
+    PageSize: pageSize,
+    Total:    total,
+}
+c.JSON(http.StatusOK, errmsg.Success(pagination))
+```
+
+## Swagger 注解
+
+每个 handler 必须包含 godoc 注解：
+
+```go
+// CreateResource godoc
+// @Summary create resource
+// @Schemes http https
+// @Description create resource
+// @Accept application/json
+// @Param Authorization header string false "Authorization"
+// @Param req body admindto.CreateResourceForm true "body"
+// @Success 200 {object} errmsg.Response{data=model.Resource}
+// @Router /api/admin/resource [post]
+```
