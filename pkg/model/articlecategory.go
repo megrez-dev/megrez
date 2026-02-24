@@ -12,10 +12,6 @@ func CreateArticleCategory(tx *gorm.DB, aid, cid uint) error {
 	if tx == nil {
 		tx = db
 	}
-	if tx.Dialector.Name() == "sqlite3" {
-		lock.Lock()
-		defer lock.Unlock()
-	}
 	articleCategory := ArticleCategory{
 		ArticleID:  aid,
 		CategoryID: cid,
@@ -27,10 +23,6 @@ func CreateArticleCategory(tx *gorm.DB, aid, cid uint) error {
 func DeleteArticleCategory(tx *gorm.DB, aid, cid uint) error {
 	if tx == nil {
 		tx = db
-	}
-	if tx.Dialector.Name() == "sqlite3" {
-		lock.Lock()
-		defer lock.Unlock()
 	}
 	result := tx.Where("article_id = ? AND category_id = ?", aid, cid).Delete(&ArticleCategory{})
 	return result.Error

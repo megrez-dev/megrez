@@ -19,10 +19,6 @@ type Journal struct {
 
 // ListAllJournals return all journals
 func ListAllJournals(pageNum, pageSize int) ([]Journal, error) {
-	if db.Dialector.Name() == "sqlite3" {
-		lock.Lock()
-		defer lock.Unlock()
-	}
 	var journals []Journal
 	result := db.Order("create_time DESC").Offset(pageSize * (pageNum - 1)).Limit(pageSize).Find(&journals)
 	return journals, result.Error
@@ -30,10 +26,6 @@ func ListAllJournals(pageNum, pageSize int) ([]Journal, error) {
 
 // CountAllJournals count all journal
 func CountAllJournals() (int64, error) {
-	if db.Dialector.Name() == "sqlite3" {
-		lock.Lock()
-		defer lock.Unlock()
-	}
 	var count int64
 	result := db.Model(&Journal{}).Count(&count)
 	return count, result.Error
@@ -43,10 +35,6 @@ func CountAllJournals() (int64, error) {
 func CreateJournal(tx *gorm.DB, journal *Journal) error {
 	if tx == nil {
 		tx = db
-	}
-	if tx.Dialector.Name() == "sqlite3" {
-		lock.Lock()
-		defer lock.Unlock()
 	}
 	result := tx.Create(journal)
 	return result.Error

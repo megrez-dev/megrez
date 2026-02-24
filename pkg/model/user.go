@@ -15,10 +15,6 @@ type User struct {
 
 // GetUserByUsername return user by username or email
 func GetUserByUsername(username string) (User, error) {
-	if db.Dialector.Name() == "sqlite3" {
-		lock.Lock()
-		defer lock.Unlock()
-	}
 	user := User{}
 	result := db.Where("username = ?", username).Or("email = ?", username).First(&user)
 	return user, result.Error
@@ -26,10 +22,6 @@ func GetUserByUsername(username string) (User, error) {
 
 // GetUserByID return user by id
 func GetUserByID(id uint) (User, error) {
-	if db.Dialector.Name() == "sqlite3" {
-		lock.Lock()
-		defer lock.Unlock()
-	}
 	user := User{}
 	result := db.First(&user, id)
 	return user, result.Error
@@ -39,10 +31,6 @@ func GetUserByID(id uint) (User, error) {
 func CreateUser(tx *gorm.DB, user *User) error {
 	if tx == nil {
 		tx = db
-	}
-	if tx.Dialector.Name() == "sqlite3" {
-		lock.Lock()
-		defer lock.Unlock()
 	}
 	result := tx.Create(user)
 	return result.Error

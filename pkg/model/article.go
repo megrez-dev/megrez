@@ -40,10 +40,6 @@ func CreateArticle(tx *gorm.DB, article *Article) error {
 	if tx == nil {
 		tx = db
 	}
-	if tx.Dialector.Name() == "sqlite3" {
-		lock.Lock()
-		defer lock.Unlock()
-	}
 	result := tx.Create(article)
 	return result.Error
 }
@@ -52,10 +48,6 @@ func CreateArticle(tx *gorm.DB, article *Article) error {
 func UpdateArticleByID(tx *gorm.DB, article *Article) error {
 	if tx == nil {
 		tx = db
-	}
-	if tx.Dialector.Name() == "sqlite3" {
-		lock.Lock()
-		defer lock.Unlock()
 	}
 	result := tx.Model(&article).Select("*").Omit("publish_time").Updates(article)
 	return result.Error
@@ -66,29 +58,17 @@ func DeleteArticleByID(tx *gorm.DB, id uint) error {
 	if tx == nil {
 		tx = db
 	}
-	if tx.Dialector.Name() == "sqlite3" {
-		lock.Lock()
-		defer lock.Unlock()
-	}
 	result := tx.Delete(&Article{}, id)
 	return result.Error
 }
 
 func IncrementArticleVisits(id uint) {
 	log.Debug("AddArticleView")
-	if db.Dialector.Name() == "sqlite3" {
-		lock.Lock()
-		defer lock.Unlock()
-	}
 	db.Model(&Article{}).Where("id = ?", id).Update("visits", gorm.Expr("visits + 1"))
 }
 
 // GetArticleByID return article by id
 func GetArticleByID(id uint) (Article, error) {
-	if db.Dialector.Name() == "sqlite3" {
-		lock.Lock()
-		defer lock.Unlock()
-	}
 	article := Article{}
 	result := db.First(&article, id)
 	return article, result.Error
@@ -96,30 +76,18 @@ func GetArticleByID(id uint) (Article, error) {
 
 // GetArticleBySlug return article by slug
 func GetArticleBySlug(slug string) (Article, error) {
-	if db.Dialector.Name() == "sqlite3" {
-		lock.Lock()
-		defer lock.Unlock()
-	}
 	article := Article{}
 	result := db.First(&article, "`slug` = ?", slug)
 	return article, result.Error
 }
 
 func GetPreArticleByID(id uint) (Article, error) {
-	if db.Dialector.Name() == "sqlite3" {
-		lock.Lock()
-		defer lock.Unlock()
-	}
 	article := Article{}
 	result := db.Where("id < ? AND status = ?", id, ArticleStatusPublished).Order("id DESC").First(&article)
 	return article, result.Error
 }
 
 func GetNextArticleByID(id uint) (Article, error) {
-	if db.Dialector.Name() == "sqlite3" {
-		lock.Lock()
-		defer lock.Unlock()
-	}
 	article := Article{}
 	result := db.Where("id > ? AND status = ?", id, ArticleStatusPublished).Order("id").First(&article)
 	return article, result.Error
@@ -127,10 +95,6 @@ func GetNextArticleByID(id uint) (Article, error) {
 
 // ListAllArticles return all articles
 func ListAllArticles(pageNum, pageSize int) ([]Article, error) {
-	if db.Dialector.Name() == "sqlite3" {
-		lock.Lock()
-		defer lock.Unlock()
-	}
 	var articles []Article
 	result := db.Order("publish_time DESC").Offset(pageSize * (pageNum - 1)).Limit(pageSize).Find(&articles)
 	return articles, result.Error
@@ -138,10 +102,6 @@ func ListAllArticles(pageNum, pageSize int) ([]Article, error) {
 
 // ListPublishedArticles return all articles with status published
 func ListPublishedArticles(pageNum, pageSize int) ([]Article, error) {
-	if db.Dialector.Name() == "sqlite3" {
-		lock.Lock()
-		defer lock.Unlock()
-	}
 	var articles []Article
 	result := db.Where("status = ?", ArticleStatusPublished).Order("publish_time DESC").Offset(pageSize * (pageNum - 1)).Limit(pageSize).Find(&articles)
 	return articles, result.Error
@@ -149,10 +109,6 @@ func ListPublishedArticles(pageNum, pageSize int) ([]Article, error) {
 
 // ListLatestArticles return latest articles
 func ListLatestArticles() ([]Article, error) {
-	if db.Dialector.Name() == "sqlite3" {
-		lock.Lock()
-		defer lock.Unlock()
-	}
 	var articles []Article
 	result := db.Order("publish_time DESC").Limit(8).Find(&articles)
 	return articles, result.Error
@@ -160,10 +116,6 @@ func ListLatestArticles() ([]Article, error) {
 
 // ListArticlesByCategoryID return articles by categoryID
 func ListArticlesByCategoryID(cid uint, pageNum, pageSize int) ([]Article, error) {
-	if db.Dialector.Name() == "sqlite3" {
-		lock.Lock()
-		defer lock.Unlock()
-	}
 	var articles []Article
 	result := db.Where("id in (?)", db.Table("article_categories").Select("article_id").
 		Where("category_id = ?", cid)).Order("publish_time DESC").Offset(pageSize * (pageNum - 1)).Limit(pageSize).Find(&articles)
@@ -172,10 +124,6 @@ func ListArticlesByCategoryID(cid uint, pageNum, pageSize int) ([]Article, error
 
 // CountAllArticles return count of all articles
 func CountAllArticles() (int64, error) {
-	if db.Dialector.Name() == "sqlite3" {
-		lock.Lock()
-		defer lock.Unlock()
-	}
 	var count int64
 	result := db.Model(&Article{}).Count(&count)
 	return count, result.Error
@@ -183,10 +131,6 @@ func CountAllArticles() (int64, error) {
 
 // CountArticlesByCategoryID return count for articles by categoryID
 func CountArticlesByCategoryID(cid uint) (int64, error) {
-	if db.Dialector.Name() == "sqlite3" {
-		lock.Lock()
-		defer lock.Unlock()
-	}
 	var count int64
 	result := db.Model(&ArticleCategory{}).Where("category_id = ?", cid).Count(&count)
 	return count, result.Error
@@ -194,10 +138,6 @@ func CountArticlesByCategoryID(cid uint) (int64, error) {
 
 // CountArticlesByTagID return count for articles by tagID
 func CountArticlesByTagID(tid uint) (int64, error) {
-	if db.Dialector.Name() == "sqlite3" {
-		lock.Lock()
-		defer lock.Unlock()
-	}
 	var count int64
 	result := db.Model(&ArticleTag{}).Where("tag_id = ?", tid).Count(&count)
 	return count, result.Error

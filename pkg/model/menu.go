@@ -13,10 +13,6 @@ type Menu struct {
 
 // ListAllMenus list all menus
 func ListAllMenus() ([]Menu, error) {
-	if db.Dialector.Name() == "sqlite3" {
-		lock.Lock()
-		defer lock.Unlock()
-	}
 	var menus []Menu
 	result := db.Order("priority").Find(&menus)
 	return menus, result.Error
@@ -26,10 +22,6 @@ func ListAllMenus() ([]Menu, error) {
 func CreateMenu(tx *gorm.DB, menu *Menu) error {
 	if tx == nil {
 		tx = db
-	}
-	if tx.Dialector.Name() == "sqlite3" {
-		lock.Lock()
-		defer lock.Unlock()
 	}
 	result := tx.Create(menu)
 	return result.Error

@@ -29,10 +29,6 @@ type Page struct {
 
 // GetPageByID return page by pageID
 func GetPageByID(id uint) (Page, error) {
-	if db.Dialector.Name() == "sqlite3" {
-		lock.Lock()
-		defer lock.Unlock()
-	}
 	page := Page{}
 	result := db.First(&page, id)
 	return page, result.Error
@@ -40,10 +36,6 @@ func GetPageByID(id uint) (Page, error) {
 
 // GetPageBySlug return page by slug
 func GetPageBySlug(slug string) (Page, error) {
-	if db.Dialector.Name() == "sqlite3" {
-		lock.Lock()
-		defer lock.Unlock()
-	}
 	page := Page{}
 	result := db.First(&page, "`slug` = ?", slug)
 	return page, result.Error
@@ -51,10 +43,6 @@ func GetPageBySlug(slug string) (Page, error) {
 
 // GetPageBySlugAndType return page by type and slug
 func GetPageBySlugAndType(slug string, tp int) (Page, error) {
-	if db.Dialector.Name() == "sqlite3" {
-		lock.Lock()
-		defer lock.Unlock()
-	}
 	page := Page{}
 	result := db.First(&page, "`slug` = ? AND type = ?", slug, tp)
 	return page, result.Error
@@ -64,10 +52,6 @@ func GetPageBySlugAndType(slug string, tp int) (Page, error) {
 func CreatePage(tx *gorm.DB, page *Page) error {
 	if tx == nil {
 		tx = db
-	}
-	if tx.Dialector.Name() == "sqlite3" {
-		lock.Lock()
-		defer lock.Unlock()
 	}
 	result := tx.Create(page)
 	return result.Error

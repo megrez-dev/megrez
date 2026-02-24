@@ -35,10 +35,6 @@ type Option struct {
 
 // GetOptionByKey return option by key
 func GetOptionByKey(key string) (string, error) {
-	if db.Dialector.Name() == "sqlite3" {
-		lock.Lock()
-		defer lock.Unlock()
-	}
 	option := Option{}
 	result := db.First(&option, "`key` = ?", key)
 	return option.Value, result.Error
@@ -49,15 +45,11 @@ func SetOption(tx *gorm.DB, key, value string) error {
 	if tx == nil {
 		tx = db
 	}
-	if tx.Dialector.Name() == "sqlite3" {
-		lock.Lock()
-		defer lock.Unlock()
-	}
 	option := &Option{
 		Key:   key,
 		Value: value,
 	}
-	result := db.First(&option, "`key` = ?", key)
+	result := tx.First(&option, "`key` = ?", key)
 	if result.Error == gorm.ErrRecordNotFound {
 		result = tx.Create(option)
 		return result.Error

@@ -1,8 +1,6 @@
 package model
 
 import (
-	"sync"
-
 	"github.com/glebarez/sqlite"
 	"github.com/megrez/pkg/log"
 	"gorm.io/driver/mysql"
@@ -11,7 +9,6 @@ import (
 
 var db *gorm.DB
 var err error
-var lock sync.Mutex
 
 func NewMySQL(dsn string) (*gorm.DB, error) {
 	return NewDB(mysql.Open(dsn))
@@ -26,6 +23,20 @@ func NewDB(dial gorm.Dialector) (*gorm.DB, error) {
 	if err != nil {
 		log.Error("connect db failed, ", err)
 		return nil, err
+	}
+	if db.Dialector.Name() == "sqlite3" {
+		sqlDB, e := db.DB()
+		if e != nil {
+			log.Error("get underlying sql.DB failed, ", e)
+			return nil, e
+		}
+		sqlDB.SetMaxOpenConns(1)
+		if _, e = sqlDB.Exec("PRAGMA journal_mode=WAL"); e != nil {
+			log.Error("set journal_mode=WAL failed, ", e)
+		}
+		if _, e = sqlDB.Exec("PRAGMA busy_timeout=5000"); e != nil {
+			log.Error("set busy_timeout failed, ", e)
+		}
 	}
 	err = db.AutoMigrate(
 		&User{},
