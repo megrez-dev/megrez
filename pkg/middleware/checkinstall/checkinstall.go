@@ -45,8 +45,9 @@ func CheckInstall() gin.HandlerFunc {
 				return
 			}
 		} else if err != nil {
+			log.Println("check install error:", err)
 			if strings.HasPrefix(c.Request.URL.Path, "/api/admin") {
-				c.AbortWithStatusJSON(http.StatusOK, errmsg.Error())
+				c.AbortWithStatusJSON(http.StatusInternalServerError, errmsg.Error())
 				return
 			} else {
 				c.Redirect(http.StatusInternalServerError, "/error")
@@ -58,7 +59,7 @@ func CheckInstall() gin.HandlerFunc {
 			c.Next()
 		} else {
 			if strings.HasPrefix(c.Request.URL.Path, "/api/admin") {
-				c.AbortWithStatusJSON(http.StatusOK, errmsg.Error())
+				c.AbortWithStatusJSON(http.StatusOK, errmsg.Fail(errmsg.ErrorNotInstalled))
 				return
 			} else {
 				c.Redirect(http.StatusInternalServerError, "/error")
