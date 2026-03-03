@@ -1,0 +1,48 @@
+<header id="header" class="header bg-white">
+    <div class="navbar-container">
+        <a href="/" class="navbar-logo">
+<!--            <img src="{{ global.HeaderLogo }}" alt="{{ global.BlogTitle }}" />-->
+            {{ global.BlogTitle }}
+        </a>
+        <div class="navbar-menu">
+
+            <div>
+                <a>分类</a>
+                <ul>
+                    {% for category in global.Categories %}
+                    <li><a href="/category/{{ category.Slug }}">{{ category.Name }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+
+            {% for menu in global.Menus %}
+            <a href="/{{ menu.Slug }}">{{ menu.Name }}</a>
+            {% endfor %}
+
+        </div>
+        <a href="/search" class="navbar-search">
+            <span class="icon-search"></span>
+        </a>
+        <div class="navbar-mobile-menu" id="navbar-mobile-swith" onclick="">
+            <span class="icon-menu cross"><span class="middle"></span></span>
+            <ul>
+                <!--分类-->
+                <li class="navbar-menu-categorys">
+                    <a>分类</a>
+                    <ul>
+                        {% for category in global.Categories %}
+                        <li><a href="/category/{{ category.Slug }}">{{ category.Name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </li>
+
+
+                
+                {% for menu in global.Menus %}
+                <li><a href="/{{ menu.Slug }}">{{ menu.Name }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</header>

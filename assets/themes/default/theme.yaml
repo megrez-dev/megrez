@@ -1,0 +1,10 @@
+id: default
+name: default
+author:
+  name: AlkaidChen
+  website: "http://alkaidchen.com"
+  avatar: "https://avatars.githubusercontent.com/u/43276537?v=4"
+cover: "https://cdn.rawchen.com/cover.jpg"
+description: "default theme for megrez."
+version: "1.0.0"
+repository: "https://github.com/AlkaidChan/megrez-theme-default"
